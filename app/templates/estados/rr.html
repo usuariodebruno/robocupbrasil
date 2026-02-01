@@ -1,18 +1,9 @@
-<!DOCTYPE html>
-<html lang="pt-br">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Estado RR | RoboCup Brasil</title>
-</head>
-<body>
-  {% include "components/header_rcb.html" %}
+{% extends "base.html" %}
 
-  <main>
-    <h1>Estado RR</h1>
-    <p>Conteúdo em construção (MVP funcional).</p>
-  </main>
+{% block title %}{{ nome_estado }} - {{ sigla }} | RoboCup Brasil{% endblock %}
 
-  {% include "components/footer.html" %}
-</body>
-</html>
+{% block content %}
+    <h1>Rio Grande do Norte (RN)</h1>
+    <img src="{{ bandeira_url }}" alt="Bandeira do Rio Grande do Norte" width="300">
+    <p>Representante(s): (futuro)</p>
+{% endblock %}

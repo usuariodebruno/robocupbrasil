@@ -21,9 +21,6 @@ urlpatterns = [
     path('todas-as-noticias/', TemplateView.as_view(template_name='public/todas-as-noticias.html')),
     path('contato/', TemplateView.as_view(template_name='public/contato.html')),
 
-    # Estados
-    path('<str:sigla>/', views.estado_view, name='estado'),
-
     # OBR
     path('obr/', TemplateView.as_view(template_name='public/obr.html'), name='obr'),
     path('obr/sobre/', TemplateView.as_view(template_name='public/obr/sobre.html')),
@@ -54,4 +51,7 @@ urlpatterns = [
     path('mnr/bolsista/', TemplateView.as_view(template_name='public/mnr/bolsista.html')),
     path('mnr/avaliador/', TemplateView.as_view(template_name='public/mnr/avaliador.html')),
     path('mnr/resultados/', RedirectView.as_view(url='/mnr/anais/', permanent=False)),
+
+    # Estados
+    path('<str:sigla>/', views.estado_view, name='estado'),
 ]

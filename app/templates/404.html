@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>404 - Página Não Encontrada | RoboCup Brasil</title>
+</head>
+<body>
+    {% include "components/header_rcb.html" %}
+
+    <main style="text-align: center; padding: 100px 20px;">
+        <h1>404 - Página Não Encontrada</h1>
+        <p style="font-size: 1.2em; margin: 20px 0;">
+            Ops! A página que você está procurando não existe ou foi movida.
+        </p>
+        <p>
+            Talvez você tenha digitado o endereço errado ou o link esteja desatualizado.
+        </p>
+
+        <div style="margin: 40px 0;">
+            <a href="{% url 'index' %}" style="padding: 12px 24px; background: #0066cc; color: white; text-decoration: none; border-radius: 5px;">
+                Voltar para a página inicial
+            </a>
+        </div>
+
+        {% if exception %}
+            <p style="color: #666; font-size: 0.9em;">
+                Detalhe técnico: {{ exception }}
+            </p>
+        {% endif %}
+    </main>
+
+    {% include "components/footer.html" %}
+</body>
+</html>

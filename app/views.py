@@ -1,12 +1,26 @@
 from django.shortcuts import render
 from django.http import Http404
+from .models import Regiao
 
-ESTADOS_VALIDOS = {'ac', 'al', 'ap', 'am', 'ba', 'ce', 'df', 'es', 'go', 'ma', 'mt', 'ms', 'mg',
-                   'pa', 'pb', 'pr', 'pe', 'pi', 'rj', 'rn', 'rs', 'ro', 'rr', 'sc', 'sp', 'se', 'to'}
+def custom_404(request, exception):
+    return render(request, '404.html', {
+        'exception': exception,
+    }, status=404)
 
 def estado_view(request, sigla):
-    sigla = sigla.lower()
-    if sigla not in ESTADOS_VALIDOS:
+    sigla_upper = sigla.upper()  # RN, SP, etc.
+
+    try:
+        regiao = Regiao[sigla_upper]
+    except KeyError:
         raise Http404("Estado não encontrado")
-    template = f'estados/{sigla}.html'
-    return render(request, template, {'sigla': sigla.upper()})
+
+    context = {
+        'sigla': sigla_upper,
+        'nome_estado': regiao.label,
+        'bandeira_url': regiao.bandeira,
+    }
+
+    return render(request, f'estados/{sigla.lower()}.html', context)
+
+from django.shortcuts import render

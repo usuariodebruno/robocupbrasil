@@ -172,6 +172,10 @@ class Subevento(models.Model):
     icone = models.ImageField(upload_to='icones/', blank=True)
     quadro_avisos = RichTextField()
 
+    class Meta:
+        verbose_name = "Subevento (Liga)"
+        verbose_name_plural = "Subeventos (Ligas)"
+
     def __str__(self):
         return self.nome
 
@@ -185,8 +189,8 @@ class ConfiguracaoGlobal(models.Model):
     linkedin = models.URLField(blank=True)
 
     class Meta:
-        verbose_name = "Configurações e Patrocínio"
-        verbose_name_plural = "Configurações e Patrocínio"
+        verbose_name = "Config. e Patrocínio"
+        verbose_name_plural = "Config. e Patrocínio"
 
     def __str__(self):
         return "Configurações Globais do Site"
@@ -246,7 +250,7 @@ class Pagina(models.Model):
     privada = models.BooleanField(
         default=False,
         verbose_name="Privada",
-        help_text="Se verdadeiro, adiciona meta robots noindex no head da página."
+        help_text="Se verdadeiro, a página só é visível para quem tiver o link de acesso."
     )
 
     class Meta:

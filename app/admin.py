@@ -37,7 +37,7 @@ def _get_app_list_with_avancado(self, request):
             'app_label': 'avancado',
             'app_url': '',
             'icon': 'fa-solid fa-gear',
-            'models': sorted(advanced_models, key=lambda m: m['name'])
+            'models': sorted(advanced_models, key=lambda m: m['name']),
         })
     return app_list
 

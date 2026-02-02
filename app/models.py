@@ -147,6 +147,10 @@ class Data(models.Model):
     def __str__(self):
         return f"{self.descricao} ({self.data})"
 
+    class Meta:
+        verbose_name = "Data no Calendário"
+        verbose_name_plural = "Datas no Calendário"
+
 class TagArquivo(models.Model):
     nome = models.CharField(max_length=100)
 
@@ -181,8 +185,8 @@ class ConfiguracaoGlobal(models.Model):
     linkedin = models.URLField(blank=True)
 
     class Meta:
-        verbose_name = "Dados Configurados"
-        verbose_name_plural = "Dados Configurados"
+        verbose_name = "Configurações e Patrocínio"
+        verbose_name_plural = "Configurações e Patrocínio"
 
     def __str__(self):
         return "Configurações Globais do Site"
@@ -238,6 +242,11 @@ class Pagina(models.Model):
         blank=True,
         null=True,
         help_text="Evento ligado (para filtros automáticos)"
+    )
+    privada = models.BooleanField(
+        default=False,
+        verbose_name="Privada",
+        help_text="Se verdadeiro, adiciona meta robots noindex no head da página."
     )
 
     class Meta:

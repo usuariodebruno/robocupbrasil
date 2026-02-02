@@ -10,18 +10,17 @@ SECRET_KEY = os.getenv('DJANGO_SECRET_KEY') or 'django-insecure-mude-isso-em-pro
 DEBUG = os.getenv('DJANGO_DEBUG', 'True') == 'True'
 ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', '127.0.0.1,localhost').split(',')
 
-
-# Application definition
-
 INSTALLED_APPS = [
     'app',
     'ckeditor',
-    'django.contrib.admin',
+    'django_daisy',
     'django.contrib.auth',
-    'django.contrib.contenttypes',
+    'django.contrib.admin',
+    'django.contrib.humanize',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.contenttypes',
 ]
 
 MIDDLEWARE = [
@@ -53,7 +52,6 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'rcb.wsgi.application'
 
-
 # Database
 # https://docs.djangoproject.com/en/6.0/ref/settings/#databases
 
@@ -63,7 +61,6 @@ DATABASES = {
         'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/6.0/ref/settings/#auth-password-validators
@@ -83,7 +80,6 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
 # Internationalization
 # https://docs.djangoproject.com/en/6.0/topics/i18n/
 
@@ -97,7 +93,6 @@ USE_L10N = True
 
 USE_TZ = True
 
-
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/6.0/howto/static-files/
 
@@ -110,5 +105,23 @@ MEDIA_ROOT = BASE_DIR / 'media'
 CKEDITOR_CONFIGS = {
     'default': {
         'toolbar': 'full',
+    },
+}
+
+DAISY_SETTINGS = {
+    "SITE_LOGO": "/static/logo.png",
+    "SITE_TITLE": "Site RoboCup Brasil",
+    "SITE_HEADER": "Site RoboCup Brasil",
+    "APPS_REORDER": {
+        "auth": {
+            "icon": "fa-solid fa-user-lock",
+            "name": "Autenticação",
+            "hide": False,
+        },
+        "app": {
+            "icon": "fa-solid fa-globe",
+            "name": "Site RoboCup Brasil",
+            "hide": False,
+        },
     },
 }

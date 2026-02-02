@@ -9,11 +9,9 @@ def custom_404(request, exception):
 
 def estado_view(request, sigla):
     sigla_upper = sigla.upper()
-    # Valida se estado existe
     if sigla_upper not in [choice[0] for choice in Regiao.choices]:
         raise Http404("Estado não encontrado")
 
-    # Pega a página do estado (cria se não existir, ou deixa 404)
     pagina = get_object_or_404(PaginaEstado, estado=sigla_upper)
 
     context = {
@@ -41,7 +39,6 @@ def pagina_dinamica_view(request, path):
 
     rendered_components = []
     for comp in pagina.componentes:
-        # ... lógica de render por type (equipe, calendario, etc.)
         pass
 
     context = {
@@ -56,7 +53,7 @@ def noticia_detail(request, pk):
 
     context = {
         'noticia': noticia,
-        'header_type': noticia.header_type,  # passa para o template decidir o header
+        'header_type': noticia.header_type,
     }
 
     return render(request, 'news_dynamic.html', context)

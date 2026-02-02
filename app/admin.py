@@ -12,6 +12,37 @@ from .models import (
     PaginaEstado,
 )
 
+_original_get_app_list = admin.sites.AdminSite.get_app_list
+
+def _get_app_list_with_avancado(self, request):
+    app_list = _original_get_app_list(self, request)
+    target_names = {'TagArquivo', 'TagData', 'TagFuncionario', 'TagNoticia', 'UserProfile', 'Subevento'}
+    advanced_models = []
+    for app in list(app_list):
+        models = app.get('models', [])
+        kept = []
+        for m in models:
+            if m.get('object_name') in target_names:
+                advanced_models.append(m)
+            else:
+                kept.append(m)
+        if kept != models:
+            if kept:
+                app['models'] = kept
+            else:
+                app_list.remove(app)
+    if advanced_models:
+        app_list.append({
+            'name': 'Avançado',
+            'app_label': 'avancado',
+            'app_url': '',
+            'icon': 'fa-solid fa-gear',
+            'models': sorted(advanced_models, key=lambda m: m['name'])
+        })
+    return app_list
+
+admin.site.get_app_list = _get_app_list_with_avancado.__get__(admin.site, admin.sites.AdminSite)
+
 @admin.register(TagFuncionario)
 class TagFuncionarioAdmin(admin.ModelAdmin):
     list_display = ['nome']
@@ -83,12 +114,12 @@ class ConfiguracaoGlobalAdmin(admin.ModelAdmin):
 
 @admin.register(Pagina)
 class PaginaAdmin(admin.ModelAdmin):
-    list_display = ['nome', 'slug', 'parent', 'header_type', 'mostrar_no_menu', 'evento_associado']
-    list_filter = ['header_type', 'mostrar_no_menu', 'evento_associado']
+    list_display = ['nome', 'slug', 'parent', 'header_type', 'mostrar_no_menu', 'privada', 'evento_associado']
+    list_filter = ['header_type', 'mostrar_no_menu', 'privada', 'evento_associado']
     search_fields = ['nome', 'slug']
     fieldsets = (
         (None, {
-            'fields': ('nome', 'slug', 'parent', 'header_type', 'mostrar_no_menu', 'evento_associado'),
+            'fields': ('nome', 'slug', 'parent', 'header_type', 'mostrar_no_menu', 'privada', 'evento_associado'),
         }),
         ('Componentes (ordem importa!)', {
             'fields': ('componentes',),

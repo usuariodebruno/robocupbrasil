@@ -15,6 +15,9 @@
 {% endblock %}
 
 {% block extra_head %}
+    {% if pagina.privada %}
+        <meta name="robots" content="noindex">
+    {% endif %}
     {% if header_type == 'OBR' %}
         <link rel="icon" href="{% static 'favicon_obr.png' %}" type="image/png"/>
     {% elif header_type == 'CBR' %}

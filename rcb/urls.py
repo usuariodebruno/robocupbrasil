@@ -4,8 +4,7 @@ from django.conf import settings
 from django.conf.urls.static import static
 from app import views
 
-admin.site.site_header = "Administração RoboCup Brasil"
-admin.site.site_title = "Admin RCB"
+admin.site.site_header = admin.site.site_title = "Painel Administrativo | RoboCup Brasil"
 admin.site.index_title = "Painel de Controle - RoboCup Brasil"
 
 urlpatterns = [

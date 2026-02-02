@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}
+    {{ pagina.nome }} |
+    {% if header_type == 'OBR' %}
+        Olimpíada Brasileira de Robótica
+    {% elif header_type == 'CBR' %}
+        Competição Brasileira de Robótica
+    {% elif header_type == 'MNR' %}
+        Mostra Nacional de Robótica
+    {% else %}
+        RoboCup Brasil
+    {% endif %}
+{% endblock %}
+
+{% block extra_head %}
+    {% if header_type == 'OBR' %}
+        <link rel="icon" href="{% static 'favicon_obr.png' %}" type="image/png"/>
+    {% elif header_type == 'CBR' %}
+        <link rel="icon" href="{% static 'favicon_cbr.png' %}" type="image/png"/>
+    {% elif header_type == 'MNR' %}
+        <link rel="icon" href="{% static 'favicon_mnr.png' %}" type="image/png"/>
+    {% else %}
+        <link rel="icon" href="{% static 'favicon_rcb.png' %}" type="image/png"/>
+    {% endif %}
+{% endblock %}
+
+{% block header %}
+    {% if header_type == 'OBR' %}
+        {% include "components/header_obr.html" %}
+    {% elif header_type == 'CBR' %}
+        {% include "components/header_cbr.html" %}
+    {% elif header_type == 'MNR' %}
+        {% include "components/header_mnr.html" %}
+    {% else %}
+        {% include "components/header_rcb.html" %}
+    {% endif %}
+{% endblock %}
+
+{% block content %}
+    {% for comp in componentes_rendered %}
+        {{ comp | safe }}
+    {% endfor %}
+{% endblock %}

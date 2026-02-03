@@ -21,3 +21,85 @@ msgstr "Administrativo"
 # lowercase/other variants
 msgid "dashboard"
 msgstr "administrativo"
+
+msgid "Are you sure?"
+msgstr "Tem certeza?"
+
+msgid "Yes, I'm sure"
+msgstr "Sim, tenho certeza"
+
+msgid "Empty Result"
+msgstr "Sem Resultados"
+
+msgid "No data available"
+msgstr "Sem dados disponíveis"
+
+msgid "All of the following related items will be deleted:"
+msgstr "Todos os seguintes itens relacionados serão deletados:"
+
+msgid "Objects with foreign keys pointing here must be deleted before deleting this object."
+msgstr "Objetos com chaves estrangeiras apontando para aqui devem ser deletados antes de deletar este objeto."
+
+msgid "This object doesn't have a change history. It probably wasn't added via this admin site."
+msgstr "Este objeto não tem histórico de alterações. Provavelmente não foi adicionado através deste site de admin."
+
+msgid "First, enter a username and password. Then, you’ll be able to edit more user options."
+msgstr "Primeiro, informe um usuário e uma senha para poder adicionar dados e alterar permissões do usuário."
+
+msgid "Add"
+msgstr "Adicionar"
+
+msgid "Change"
+msgstr "Alterar"
+
+msgid "Delete"
+msgstr "Deletar"
+
+msgid "View"
+msgstr "Visualizar"
+
+msgid "Save"
+msgstr "Salvar"
+
+msgid "Save and continue editing"
+msgstr "Salvar e continuar editando"
+
+msgid "Save and add another"
+msgstr "Salvar e adicionar outro"
+
+msgid "Save as new"
+msgstr "Salvar como novo"
+
+# Role-specific messages
+msgid "Já existe um Superusuário. Só pode haver um."
+msgstr "Já existe um Superusuário. Só pode haver um."
+
+msgid "Options"
+msgstr "Opções"
+
+msgid "Choose"
+msgstr "Escolher"
+
+msgid "Remove"
+msgstr "Remover"
+
+msgid "Remove all"
+msgstr "Remover todos"
+
+msgid "Choose all"
+msgstr "Escolher todos"
+
+msgid "No recent changes found"
+msgstr "Nenhuma alteração recente encontrada"
+
+msgid "Log entry"
+msgstr "Entrada de log"
+
+msgid "Are you sure you want to delete the %s"
+msgstr "Tem certeza de que deseja deletar %s"
+
+msgid "Sem permissão para acessar este objeto."
+msgstr "Sem permissão para acessar este objeto."
+
+msgid "Você não tem permissão para criar neste formulário."
+msgstr "Você não tem permissão para criar neste formulário."

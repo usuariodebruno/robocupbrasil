@@ -43,6 +43,7 @@ TEMPLATES = [
         'OPTIONS': {
             'context_processors': [
                 'django.template.context_processors.request',
+                'django.template.context_processors.i18n',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
             ],
@@ -117,6 +118,11 @@ DAISY_SETTINGS = {
     "SITE_TITLE": "Site RoboCup Brasil",
     "SITE_HEADER": "Site RoboCup Brasil",
     "APPS_REORDER": {
+        "admin": {
+            "icon": "fa-solid fa-file-waveform",
+            "name": "Gerenciar Logs",
+            "hide": False,
+        },
         "auth": {
             "icon": "fa-solid fa-user-lock",
             "name": "Autenticação",

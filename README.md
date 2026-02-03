@@ -64,17 +64,20 @@ Generate a secure key with:
 python -c "import secrets; print(secrets.token_urlsafe(50))"
 ```
 
-### 5. Apply migrations and create a superuser
+### 5. Apply migrations and set up role-based permissions
 
 ```bash
-python manage.py makemigrations app
+# Apply database migrations
 python manage.py migrate
+
+# Create default role groups and assign permissions
+python manage.py setup_role_permissions
 
 # Create an admin user (if none exists)
 python manage.py createsuperuser
 # Suggested: Username: admin
 # Email: (optional)
-# Password: admin (or your choice)
+# Password: (your choice)
 ```
 
 ### 6. Start the development server

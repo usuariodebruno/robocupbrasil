@@ -2,8 +2,21 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.db.models.signals import post_save
 from django.dispatch import receiver
+from django.core.exceptions import ValidationError
 from ckeditor.fields import RichTextField
 import jsonfield
+
+def validate_file_size_8mb(f):
+    if f and getattr(f, 'size', 0) > 8 * 1024 * 1024:
+        raise ValidationError("Tamanho máximo do arquivo: 8MB.")
+
+def validate_file_size_16mb(f):
+    if f and getattr(f, 'size', 0) > 16 * 1024 * 1024:
+        raise ValidationError("Tamanho máximo do arquivo: 16MB.")
+
+def validate_file_size_64mb(f):
+    if f and getattr(f, 'size', 0) > 64 * 1024 * 1024:
+        raise ValidationError("Tamanho máximo do arquivo: 64MB.")
 
 class Evento(models.TextChoices):
     MNR = 'MNR', 'MNR'
@@ -96,7 +109,13 @@ class Funcionario(models.Model):
     evento = models.CharField(max_length=50, choices=Evento.choices)
     tags = models.ManyToManyField(TagFuncionario)
     bio = models.TextField(blank=True)
-    foto = models.ImageField(upload_to='fotos_funcionarios/', blank=True)
+    foto = models.ImageField(
+        upload_to='fotos_funcionarios/',
+        blank=True,
+        verbose_name='Foto (tam. ideal 512x512)',
+        help_text='Tamanho máximo: 8MB',
+        validators=[validate_file_size_8mb],
+    )
     nome = models.CharField(max_length=200)
     cargo = models.CharField(max_length=200)
 
@@ -121,11 +140,11 @@ class Noticia(models.Model):
             ('MNR', 'Header MNR'),
         ],
         default='RCB',
-        verbose_name="Tipo de Header",
-        help_text="Qual header usar nesta notícia (como se fosse uma página)"
+        verbose_name="Cabeçalho da Página",
+        help_text="Qual cabeçalho usar nesta notícia (como se fosse uma página)"
     )
-    evento = models.CharField(max_length=50, choices=Evento.choices)
-    tags = models.ManyToManyField(TagNoticia)
+    evento = models.CharField(max_length=50, choices=Evento.choices, verbose_name='Evento associado')
+    tags = models.ManyToManyField(TagNoticia, verbose_name='Tag(s) da Notícia')
     data = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
@@ -138,11 +157,13 @@ class TagData(models.Model):
         return self.nome
 
 class Data(models.Model):
-    descricao = models.CharField(max_length=200)
+    descricao = models.CharField(max_length=200, verbose_name='Descrição')
     data = models.DateField()
     cor = models.CharField(max_length=7, default='#000000')
-    action_link = models.URLField(blank=True)
+    action_link = models.URLField(blank=True, verbose_name='Link de mais informações')
     tags = models.ManyToManyField(TagData)
+
+    owner = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, editable=False)
 
     def __str__(self):
         return f"{self.descricao} ({self.data})"
@@ -159,7 +180,12 @@ class TagArquivo(models.Model):
 
 class Arquivo(models.Model):
     nome = models.CharField(max_length=200)
-    arquivo = models.FileField(upload_to='arquivos/')
+    arquivo = models.FileField(
+        upload_to='arquivos/',
+        verbose_name='Arquivo (tamanho máximo 64MB)',
+        help_text='Tamanho máximo: 64MB',
+        validators=[validate_file_size_64mb],
+    )
     evento = models.CharField(max_length=50, choices=Evento.choices)
     tags = models.ManyToManyField(TagArquivo)
 
@@ -169,8 +195,14 @@ class Arquivo(models.Model):
 class Subevento(models.Model):
     nome = models.CharField(max_length=200)
     evento = models.CharField(max_length=50, choices=Evento.choices)
-    icone = models.ImageField(upload_to='icones/', blank=True)
-    quadro_avisos = RichTextField()
+    icone = models.ImageField(
+        upload_to='icones/',
+        blank=True,
+        verbose_name='Ícone (tam. ideal 256x256)',
+        help_text='Tamanho máximo: 8MB',
+        validators=[validate_file_size_8mb],
+    )
+    quadro_avisos = RichTextField(verbose_name='Quadro de Avisos da Liga / Subevento')
 
     class Meta:
         verbose_name = "Subevento (Liga)"
@@ -198,11 +230,90 @@ class ConfiguracaoGlobal(models.Model):
 class UserProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     estado = models.CharField(max_length=2, choices=Regiao.choices, blank=True, null=True)
-    ligas = models.JSONField(default=list, blank=True)
-    grupo_extra = models.CharField(max_length=50, blank=True)   # opcional: "content-admin", etc.
+
+    ligas = models.ManyToManyField('Subevento', blank=True)
+
+    GRUPO_CHOICES = [
+        ('', '—'),
+        ('SUPER', 'Superusuário'),
+        ('SECRETARIA', 'Secretaria'),
+        ('COORD', 'Coordenador de Subevento'),
+        ('REPRESENTANTE', 'Representante Local'),
+        ('MARKETING', 'Marketing'),
+    ]
+    grupo_extra = models.CharField(max_length=20, choices=GRUPO_CHOICES, blank=True, verbose_name='Grupo de permissão')
+
+    class Meta:
+        verbose_name = "Dados Adicionais"
+        verbose_name_plural = "Dados Extras do Usuário"
 
     def __str__(self):
-        return f"Perfil de {self.user.username}"
+        return f"Dados Adicionais de \"{self.user.username}\""
+
+    def clean(self):
+        from django.core.exceptions import ValidationError
+        from django.contrib.auth.models import User as DjangoUser
+
+        if self.grupo_extra == 'SUPER':
+            if self.user_id is not None:
+                existing = DjangoUser.objects.filter(is_superuser=True).exclude(pk=self.user_id)
+            else:
+                existing = DjangoUser.objects.filter(is_superuser=True)
+
+            if existing.exists():
+                raise ValidationError({'grupo_extra': "Já existe um Superusuário. Só pode haver um."})
+
+    def save(self, *args, **kwargs):
+        try:
+            self.full_clean()
+        except Exception:
+            raise
+
+        super().save(*args, **kwargs)
+
+        from django.contrib.auth.models import Group, User as DjangoUser
+        role_name_map = {
+            'SECRETARIA': 'Secretaria',
+            'COORD': 'Coordenador de Subevento',
+            'REPRESENTANTE': 'Representante Local',
+            'MARKETING': 'Marketing',
+        }
+
+        managed_group_names = set(role_name_map.values())
+
+        if self.user_id is None:
+            return
+
+        user = self.user
+
+        user.groups.remove(*Group.objects.filter(name__in=managed_group_names))
+
+        if self.grupo_extra in role_name_map:
+            group_name = role_name_map[self.grupo_extra]
+            group, _ = Group.objects.get_or_create(name=group_name)
+            user.groups.add(group)
+
+        if self.grupo_extra == 'SUPER':
+            DjangoUser.objects.filter(pk=user.pk).update(is_superuser=True)
+        else:
+            if DjangoUser.objects.filter(pk=user.pk, is_superuser=True).exists():
+                DjangoUser.objects.filter(pk=user.pk).update(is_superuser=False)
+
+    @property
+    def is_secretaria(self):
+        return self.grupo_extra == 'SECRETARIA'
+
+    @property
+    def is_coordenador(self):
+        return self.grupo_extra == 'COORD'
+
+    @property
+    def is_representante(self):
+        return self.grupo_extra == 'REPRESENTANTE'
+
+    @property
+    def is_marketing(self):
+        return self.grupo_extra == 'MARKETING'
 
 class Pagina(models.Model):
     nome = models.CharField(max_length=200, help_text="Nome visível da página (ex: 'Notícias OBR')")
@@ -210,6 +321,7 @@ class Pagina(models.Model):
         max_length=100,
         unique=True,
         blank=True,
+        verbose_name='Link',
         help_text="Link único, sem espaços (ex: 'noticias-obr'). Deixe vazio para a página inicial (/)"
     )
     parent = models.ForeignKey(
@@ -218,7 +330,8 @@ class Pagina(models.Model):
         null=True,
         blank=True,
         related_name='children',
-        help_text="Página pai/origem (para hierarquia)"
+        verbose_name='Página-mãe',
+        help_text="Página mãe ou de origem (para hierarquia: pagina-de-origem/sua-pagina)"
     )
     header_type = models.CharField(
         max_length=50,
@@ -228,8 +341,7 @@ class Pagina(models.Model):
             ('CBR', 'Header CBR'),
             ('MNR', 'Header MNR'),
         ],
-        default='RCB',
-        help_text="Tipo de header para a página"
+        default='RCB',        verbose_name="Cabeçalho da Página",        help_text="Tipo de cabeçalho para a página"
     )
     componentes = models.JSONField(
         default=list,
@@ -283,7 +395,13 @@ class Sede(models.Model):
     ano = models.CharField(max_length=4, help_text="Ano (ex: 2026)")
     cidade = models.CharField(max_length=200)
     estado = models.CharField(max_length=2, choices=Regiao.choices)
-    imagem = models.ImageField(upload_to='sedes/', blank=True)
+    imagem = models.ImageField(
+        upload_to='sedes/',
+        blank=True,
+        verbose_name='Imagem (16:9, tam. ideal 1920x1080)',
+        help_text='Tamanho máximo: 16MB',
+        validators=[validate_file_size_16mb],
+    )
 
     class Meta:
         ordering = ['ano']
@@ -320,8 +438,11 @@ class PaginaEstado(models.Model):
 @receiver(post_save, sender=User)
 def create_user_profile(sender, instance, created, **kwargs):
     if created:
-        UserProfile.objects.create(user=instance)
+        UserProfile.objects.get_or_create(user=instance)
 
 @receiver(post_save, sender=User)
 def save_user_profile(sender, instance, **kwargs):
-    instance.userprofile.save()
+    try:
+        instance.userprofile.save()
+    except UserProfile.DoesNotExist:
+        pass

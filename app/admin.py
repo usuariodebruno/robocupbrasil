@@ -158,10 +158,9 @@ class TagFuncionarioAdmin(admin.ModelAdmin):
 
 @admin.register(Funcionario)
 class FuncionarioAdmin(admin.ModelAdmin):
-    list_display = ['nome', 'cargo', 'user']
+    list_display = ['nome', 'cargo']
     list_filter = ['tags']
-    search_fields = ['nome', 'cargo', 'user__username', 'user__email']
-    raw_id_fields = ['user']
+    search_fields = ['nome', 'cargo']
     list_per_page = 50
 
 @admin.register(TagNoticia)

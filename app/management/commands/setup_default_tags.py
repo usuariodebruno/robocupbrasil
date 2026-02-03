@@ -224,6 +224,5 @@ class Command(BaseCommand):
                 'nome': ch['nome'], 'parent': parent, 'header_type': ch['header_type'],
                 'componentes': [], 'mostrar_no_menu': ch['mostrar_no_menu'], 'privada': ch['privada'], 'evento_associado': ch['evento_associado']
             }
-            Pagina.objects.update_or_create(slug=ch['slug'] + '-' + (ch['parent_slug'] or ''), defaults=defaults)  # avoid slug dupes by combining parent
 
         self.stdout.write(self.style.SUCCESS("Páginas dinâmicas ensured."))

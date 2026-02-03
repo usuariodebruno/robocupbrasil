@@ -52,6 +52,16 @@ def pagina_dinamica_view(request, path):
 
     rendered_components = []
     for comp in pagina.componentes:
+        try:
+            if comp['type'] == 'equipe':
+                funcionario_ids = comp.get('funcionarios', []) 
+    
+                rendered_components.append(render(request, 'components/equipe.html', {
+                    'titulo': comp.get('titulo', 'Equipe'),
+                    'funcionarios': Funcionario.objects.filter(id__in=funcionario_ids)
+                }).content.decode())
+        except Exception as e:
+            rendered_components.append(f"<p>Erro ao renderizar componente: {e}</p>")
         pass
 
     context = {

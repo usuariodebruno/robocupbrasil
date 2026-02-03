@@ -4,8 +4,9 @@
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="icon" href="{% static 'favicon_rcb.png' %}" type="image/png"/>
 
-        <title>Olimpo - Oh no! It seems this page either doesn&#039;t exist or isn&#039;t visible for your user. Try another address or return to the homepage.</title>
+        <title>Eita! | RoboCup Brasil</title>
 
         <style>
             * {
@@ -142,13 +143,13 @@
         <img class="robot" style="position: absolute; z-index: 6;" src="{% static 'robot.png' %}" alt="Robô"/>
         <div class="half-big" style="position: relative; z-index: 10">
             <div style="padding: 2.5rem;">
-                <img style="display: block;" class="margin-small logo-img" src="{% static 'logo-white.png' %}" alt="RoboCup Brasil"/>
+                <a href="/"><img style="display: block;" class="margin-small logo-img" src="{% static 'logo-white.png' %}" alt="RoboCup Brasil"/></a>
             </div>
             <div class="center-small" style="padding: 0 2.5rem; text-shadow: 0px 0px 10px #008AC3;">
                 <p class="main-error" style="font-weight: 500">
-                    Oh no! It seems this page either doesn&#039;t exist or isn&#039;t visible for your user. Try another address or return to the homepage.                </p>
+                    Eita! Parece que essa página não existe ou não está visível para o seu usuário. Tente outro endereço ou retorne à página anterior.
                 <div>
-                    <button style="background: white; padding: 0.3rem 0.6rem; border-radius: 10px; margin-top: 1rem; font-size: 11pt; border: none; cursor: pointer;" onclick="history.back()">
+                    <button style="background: white; padding: 0.75rem 1.75rem; border-radius: 10px; margin-top: 1rem; font-size: 11pt; border: none; cursor: pointer;" onclick="history.back()">
                         Voltar
                     </button>
                 </div>

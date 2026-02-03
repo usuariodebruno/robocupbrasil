@@ -105,7 +105,8 @@ class TagFuncionario(models.Model):
         return self.nome
 
 class Funcionario(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    nome = models.CharField(max_length=200)
+    cargo = models.CharField(max_length=200)
     tags = models.ManyToManyField(TagFuncionario)
     bio = models.TextField(blank=True)
     foto = models.ImageField(
@@ -115,8 +116,6 @@ class Funcionario(models.Model):
         help_text='Tamanho máximo: 8MB',
         validators=[validate_file_size_8mb],
     )
-    nome = models.CharField(max_length=200)
-    cargo = models.CharField(max_length=200)
 
     def __str__(self):
         return self.nome or f"Funcionário {self.id}"
@@ -319,7 +318,7 @@ class Pagina(models.Model):
         unique=True,
         blank=True,
         verbose_name='Link',
-        help_text="Link único, sem espaços (ex: 'noticias-obr'). Deixe vazio para a página inicial (/)"
+        help_text="Link único, sem espaços (ex: 'noticias-obr'). Deixe vazio para a página inicial (/)<br><strong>Atenção:</strong> editar este campo pode quebrar links existentes!"
     )
     parent = models.ForeignKey(
         'self',
@@ -338,27 +337,28 @@ class Pagina(models.Model):
             ('CBR', 'Header CBR'),
             ('MNR', 'Header MNR'),
         ],
-        default='RCB',        verbose_name="Cabeçalho da Página",        help_text="Tipo de cabeçalho para a página"
+        default='RCB',
+        verbose_name="Cabeçalho da Página"
     )
     componentes = models.JSONField(
         default=list,
         blank=True,
-        help_text="Lista ordenada de componentes: [{'type': 'equipe', 'tags': ['obr'], 'title': 'Equipe'}, ...]. A ordem aqui define a exibição."
+        verbose_name="🧩 Componentes",
     )
     mostrar_no_menu = models.BooleanField(
         default=False,
-        help_text="Mostrar esta página no menu correspondente ao header_type (apenas páginas de 1º nível)"
+        verbose_name="🔍 Mostrar no Menu?",
+        help_text="Mostrar esta página no menu correspondente ao cabeçalho escolhido"
     )
     evento_associado = models.CharField(
         max_length=50,
         choices=Evento.choices,
         blank=True,
         null=True,
-        help_text="Evento ligado (para filtros automáticos)"
     )
     privada = models.BooleanField(
         default=False,
-        verbose_name="Privada",
+        verbose_name="🔒 Página Privada?",
         help_text="Se verdadeiro, a página só é visível para quem tiver o link de acesso."
     )
 
@@ -410,12 +410,11 @@ class PaginaEstado(models.Model):
     estado = models.CharField(
         max_length=2,
         choices=Regiao.choices,
-        unique=True,
-        help_text="Selecione o estado (único por página)"
+        unique=True
     )
     texto = RichTextField(
         blank=True,
-        help_text="Conteúdo da página do estado (use CKEditor para HTML rico)"
+        verbose_name = "Conteúdo da Página",
     )
 
     class Meta:

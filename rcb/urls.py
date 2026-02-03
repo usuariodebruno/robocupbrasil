@@ -13,8 +13,8 @@ urlpatterns = [
     path('admin/app/', RedirectView.as_view(url='/admin/')),
     path('admin/admin/', RedirectView.as_view(url='/admin/')),
     path('admin/', admin.site.urls),
-    path('estados/<str:sigla>', views.estado_view, name='estado'),
-    path('noticias/<int:pk>', views.noticia_detail, name='noticia_detail'),
+    path('estado/<str:sigla>', views.estado_view, name='estado'),
+    path('noticia/<int:pk>', views.noticia_detail, name='noticia_detail'),
 
     re_path(r'^(?!(media|static|admin)/)(?P<path>.*)/?$', views.pagina_dinamica_view, name='pagina_dinamica'),
 ]

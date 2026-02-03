@@ -106,7 +106,6 @@ class TagFuncionario(models.Model):
 
 class Funcionario(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    evento = models.CharField(max_length=50, choices=Evento.choices)
     tags = models.ManyToManyField(TagFuncionario)
     bio = models.TextField(blank=True)
     foto = models.ImageField(
@@ -143,7 +142,6 @@ class Noticia(models.Model):
         verbose_name="Cabeçalho da Página",
         help_text="Qual cabeçalho usar nesta notícia (como se fosse uma página)"
     )
-    evento = models.CharField(max_length=50, choices=Evento.choices, verbose_name='Evento associado')
     tags = models.ManyToManyField(TagNoticia, verbose_name='Tag(s) da Notícia')
     data = models.DateTimeField(auto_now_add=True)
 
@@ -186,7 +184,6 @@ class Arquivo(models.Model):
         help_text='Tamanho máximo: 64MB',
         validators=[validate_file_size_64mb],
     )
-    evento = models.CharField(max_length=50, choices=Evento.choices)
     tags = models.ManyToManyField(TagArquivo)
 
     def __str__(self):
@@ -383,7 +380,7 @@ class Pagina(models.Model):
     def clean(self):
         from django.core.exceptions import ValidationError
 
-        prohibited_slugs = ['noticias', 'estados', 'static', 'media', 'admin']
+        prohibited_slugs = ['noticia', 'estado', 'static', 'media', 'admin']
         if self.slug in prohibited_slugs:
             raise ValidationError(f"Slug '{self.slug}' é reservado e não pode ser usado.")
 

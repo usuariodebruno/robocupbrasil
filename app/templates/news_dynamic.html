@@ -41,7 +41,7 @@
 {% block content %}
     <article>
         <h1>{{ noticia.titulo }}</h1>
-        <p class="meta">Publicado em {{ noticia.data|date:"d/m/Y" }} • {{ noticia.evento }}</p>
+        <p class="meta">Publicado em {{ noticia.data|date:"d/m/Y" }}</p>
 
         <div class="conteudo">
             {{ noticia.conteudo|safe }}

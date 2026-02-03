@@ -158,8 +158,8 @@ class TagFuncionarioAdmin(admin.ModelAdmin):
 
 @admin.register(Funcionario)
 class FuncionarioAdmin(admin.ModelAdmin):
-    list_display = ['nome', 'cargo', 'evento', 'user']
-    list_filter = ['evento', 'tags']
+    list_display = ['nome', 'cargo', 'user']
+    list_filter = ['tags']
     search_fields = ['nome', 'cargo', 'user__username', 'user__email']
     raw_id_fields = ['user']
     list_per_page = 50
@@ -172,8 +172,8 @@ class TagNoticiaAdmin(admin.ModelAdmin):
 
 @admin.register(Noticia)
 class NoticiaAdmin(admin.ModelAdmin):
-    list_display = ['titulo', 'evento', 'data', 'get_tags', 'header_type']
-    list_filter = ['header_type', 'evento', 'tags']
+    list_display = ['titulo', 'data', 'get_tags', 'header_type']
+    list_filter = ['header_type', 'tags']
     search_fields = ['titulo', 'conteudo']
     date_hierarchy = 'data'
     list_per_page = 50
@@ -248,8 +248,8 @@ class TagArquivoAdmin(RolePermissionMixin, admin.ModelAdmin):
 
 @admin.register(Arquivo)
 class ArquivoAdmin(RolePermissionMixin, admin.ModelAdmin):
-    list_display = ['nome', 'evento', 'arquivo', 'get_tags']
-    list_filter = ['evento', 'tags']
+    list_display = ['nome', 'arquivo', 'get_tags']
+    list_filter = ['tags']
     search_fields = ['nome']
     filter_horizontal = ['tags']
     list_per_page = 50
@@ -353,7 +353,7 @@ class PaginaAdmin(admin.ModelAdmin):
 @admin.register(Sede)
 class SedeAdmin(RolePermissionMixin, admin.ModelAdmin):
     list_display = ['ano', 'cidade', 'estado']
-    ordering = ['ano']
+    ordering = ['-ano']
     list_per_page = 50
 
     def has_delete_permission(self, request, obj=None):

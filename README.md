@@ -64,7 +64,7 @@ Generate a secure key with:
 python -c "import secrets; print(secrets.token_urlsafe(50))"
 ```
 
-### 5. Apply migrations and set up role-based permissions
+### 5. Apply migrations and set up permissions and basic structure
 
 ```bash
 # Apply database migrations
@@ -73,16 +73,21 @@ python manage.py migrate
 # Create default role groups and assign permissions
 python manage.py setup_role_permissions
 
+# Create default tags and basic site structure
+python manage.py setup_default_tags
+
 # Create an admin user (if none exists)
 python manage.py createsuperuser
 # Suggested: Username: admin
-# Email: (optional)
-# Password: (your choice)
 ```
 
 ### 6. Start the development server
 
 ```bash
+# Collectsatatic for production
+python manage.py collectstatic
+
+# Runserver command
 python manage.py runserver
 ```
 
@@ -91,4 +96,4 @@ Open in your browser:
 http://127.0.0.1:8000/ → home page
 http://127.0.0.1:8000/admin/ → admin panel (login with admin / your password)
 
-Built with care by @llucmou ⚙️
+Built with care by @llucmou 🌲

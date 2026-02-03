@@ -31,6 +31,9 @@ msgstr "Sim, tenho certeza"
 msgid "Empty Result"
 msgstr "Sem Resultados"
 
+msgid "Theme"
+msgstr "Tema"
+
 msgid "No data available"
 msgstr "Sem dados disponíveis"
 
@@ -94,6 +97,12 @@ msgstr "Nenhuma alteração recente encontrada"
 
 msgid "Log entry"
 msgstr "Entrada de log"
+
+msgid "Logged Out"
+msgstr "Desconectado"
+
+msgid "Thanks for spending some quality time with the Web site today."
+msgstr "Obrigado por usar nossa plataforma ^^"
 
 msgid "Are you sure you want to delete the %s"
 msgstr "Tem certeza de que deseja deletar %s"

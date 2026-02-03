@@ -20,7 +20,7 @@ _original_get_app_list = admin.sites.AdminSite.get_app_list
 
 def _get_app_list_with_avancado(self, request):
     app_list = _original_get_app_list(self, request)
-    target_names = {'TagArquivo', 'TagData', 'TagFuncionario', 'TagNoticia', 'Subevento'}
+    target_names = {'TagArquivo', 'TagData', 'TagFuncionario', 'TagNoticia', 'Subevento', 'Sede'}
     advanced_models = []
     for app in list(app_list):
         models = app.get('models', [])

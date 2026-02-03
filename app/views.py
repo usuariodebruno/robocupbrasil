@@ -2,10 +2,23 @@ from django.shortcuts import render, get_object_or_404
 from django.http import Http404
 from .models import Regiao, Pagina, Funcionario, Arquivo, Data, Noticia, PaginaEstado
 
-def custom_404(request, exception):
-    return render(request, '404.html', {
+def error_view(request, exception=None):
+    path = request.path
+    
+    if exception:
+        import django.core.exceptions
+        if isinstance(exception, django.core.exceptions.PermissionDenied):
+            status_code = 403
+        else:
+            status_code = 404
+    else:
+        status_code = 500
+
+    return render(request, 'error.html', {
+        'status_code': status_code,
+        'path': path,
         'exception': exception,
-    }, status=404)
+    }, status=status_code)
 
 def estado_view(request, sigla):
     sigla_upper = sigla.upper()

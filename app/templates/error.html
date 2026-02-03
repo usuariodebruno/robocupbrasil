@@ -1,0 +1,158 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <title>Olimpo - Oh no! It seems this page either doesn&#039;t exist or isn&#039;t visible for your user. Try another address or return to the homepage.</title>
+
+        <style>
+            * {
+                margin: 0;
+                font-family: ui-sans-serif,system-ui,sans-serif;
+            }
+
+            .margin-small {
+                margin: 0 auto;
+            }
+
+            .logo-img {
+                height: 40px;
+            }
+
+            .center-small {
+                text-align: center;
+            }
+
+            .top-cloud {
+                bottom: 75px;
+                z-index: 8;
+                transform: translateX(-50%);
+            }
+
+            .robot {
+                height: 200px;
+                left: 50%;
+                transform: translateX(-50%);
+                bottom: 25px;
+            }
+
+            .left-cloud {
+                z-index: 4;
+            }
+
+            .right-cloud {
+                z-index: 9;
+            }
+
+            .main-error {
+                font-size: 14.5pt;
+            }
+
+            .main-code {
+                margin-top: 1rem;
+                font-size: 11pt;
+            }
+
+            /* Small devices (landscape phones, 576px and up) */
+            @media (min-width: 576px) {
+                .main-error {
+                    font-size: 15.5pt;
+                }
+
+                .main-code {
+                    font-size: 13pt;
+                }
+            }
+
+            /* Medium devices (tablets, 768px and up) */
+            @media (min-width: 768px) {
+                .margin-small {
+                    margin: 0;
+                }
+
+                .center-small {
+                    text-align: start;
+                    padding: 2.5rem;
+                }
+
+                .half-big {
+                    width: 50vw;
+                }
+
+                .top-cloud {
+                    z-index: 3;
+                    bottom: unset;
+                    top: 0;
+                    transform: unset;
+                }
+
+                .robot {
+                    transform: unset;
+                    left: unset;
+                    bottom: unset;
+                    height: 90vh;
+                    right: 25px;
+                }
+
+                .left-cloud {
+                    z-index: 4;
+                }
+
+                .right-cloud {
+                    z-index: 5;
+                }
+
+                .main-error {
+                    font-size: 18.5pt;
+                }
+
+                .main-code {
+                    margin-top: 2rem;
+                    font-size: 15pt;
+                }
+            }
+
+            /* Large devices (desktops, 992px and up) */
+            @media (min-width: 992px) {
+
+            }
+
+            /* X-Large devices (large desktops, 1200px and up) */
+            @media (min-width: 1200px) {
+                .main-error {
+                    font-size: 20pt;
+                }
+
+                .main-code {
+                    font-size: 15.5pt;
+                }
+
+                .logo-img {
+                    height: 45px;
+                }
+            }
+        </style>
+    </head>
+    <body class="antialiased relative" style="overflow-x: hidden; min-height: 100vh; color: white; letter-spacing: 0.025em; background: rgb(0,138,195); background: linear-gradient(180deg, rgba(0,138,195,1) 0%, rgba(0,125,179,1) 100%);">
+        <img class="top-cloud" style="position: absolute; left: 50%; height: 200px" src="{% static 'cloud-top.png' %}" alt="Nuvem"/>
+        <img class="left-cloud" style="position: absolute;  bottom: 0; left: 0; height: 200px" src="{% static 'cloud-left.png' %}" alt="Nuvem"/>
+        <img class="right-cloud" style="position: absolute; bottom: 0; right: 0; height: 200px" src="{% static 'cloud-right.png' %}" alt="Nuvem"/>
+        <img class="robot" style="position: absolute; z-index: 6;" src="{% static 'robot.png' %}" alt="Robô"/>
+        <div class="half-big" style="position: relative; z-index: 10">
+            <div style="padding: 2.5rem;">
+                <img style="display: block;" class="margin-small logo-img" src="{% static 'logo-white.png' %}" alt="RoboCup Brasil"/>
+            </div>
+            <div class="center-small" style="padding: 0 2.5rem; text-shadow: 0px 0px 10px #008AC3;">
+                <p class="main-error" style="font-weight: 500">
+                    Oh no! It seems this page either doesn&#039;t exist or isn&#039;t visible for your user. Try another address or return to the homepage.                </p>
+                <div>
+                    <button style="background: white; padding: 0.3rem 0.6rem; border-radius: 10px; margin-top: 1rem; font-size: 11pt; border: none; cursor: pointer;" onclick="history.back()">
+                        Voltar
+                    </button>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>

@@ -208,9 +208,10 @@ class Subevento(models.Model):
         return self.nome
 
 class ConfiguracaoGlobal(models.Model):
+    descricao = models.TextField(blank=True, verbose_name="Descrição da Página (para o Google e Rodapé)")
     patrocinio_imagem = models.ImageField(upload_to='patrocinio/', blank=True)
-    patrocinio_link = models.URLField(blank=True)
-    email_contato = models.EmailField(blank=True)
+    email_contato = models.EmailField(blank=True, verbose_name="Email Principal")
+    outros_emails = models.TextField(blank=True, verbose_name="Outros Emails de Contato", help_text="Separe os e-mails por espaço (ex: contato@exemplo.com suporte@exemplo.com)")
     instagram = models.URLField(blank=True)
     facebook = models.URLField(blank=True)
     youtube = models.URLField(blank=True)
@@ -222,6 +223,15 @@ class ConfiguracaoGlobal(models.Model):
 
     def __str__(self):
         return "Configurações Globais do Site"
+
+class AtalhoGlobal(models.Model):
+    config = models.ForeignKey(ConfiguracaoGlobal, on_delete=models.CASCADE, related_name='atalhos')
+    nome = models.CharField(max_length=100, help_text="Texto do link (ex: 'Material de Divulgação')")
+    link = models.CharField(max_length=200, help_text="URL externa (https://...) ou caminho interno (ex: /sobre)")
+
+    class Meta:
+        verbose_name = "Atalho de Rodapé"
+        verbose_name_plural = "Atalhos de Rodapé"
 
 class UserProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)

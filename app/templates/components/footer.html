@@ -1,12 +1,64 @@
 {% load static %}
 <footer>
     <div class="base">
-        <div class="socials">
-        </div>
-        <div class="shortcuts">
-        </div>
-        <div class="contact">
-        </div>
+        <section class="socials">
+            <a href="/"><img class="logo" alt="Logo" src="{% static 'logo-white.png' %}"/></a>
+            {% if config_global and config_global.descricao %}
+                <p>{{ config_global.descricao }}</p>
+            {% endif %}
+            <div class="links">
+                {% if config_global %}
+                    {% if config_global.youtube %}
+                        <a href="{{ config_global.youtube }}" target="_blank">
+                            <img alt="youtube" src="{% static 'images/socials/youtube.png' %}"/>
+                        </a>
+                    {% endif %}
+                    {% if config_global.linkedin %}
+                        <a href="{{ config_global.linkedin }}" target="_blank">
+                            <img alt="linkedin" src="{% static 'images/socials/linkedin.png' %}"/>
+                        </a>
+                    {% endif %}
+                    {% if config_global.facebook %}
+                        <a href="{{ config_global.facebook }}" target="_blank">
+                            <img alt="facebook" src="{% static 'images/socials/facebook.png' %}"/>
+                        </a>
+                    {% endif %}
+                    {% if config_global.instagram %}
+                        <a href="{{ config_global.instagram }}" target="_blank">
+                            <img alt="instagram" src="{% static 'images/socials/instagram.png' %}"/>
+                        </a>
+                    {% endif %}
+                {% endif %}
+            </div>
+            <a class="return" href="#">
+                VOLTAR AO TOPO
+            </a>
+        </section>
+        <section class="shortcuts">
+            {% if config_global.atalhos.all %}
+                <strong>Atalhos</strong>
+                <div class="link-content">
+                    {% for atalho in config_global.atalhos.all %}
+                        <a href="{{ atalho.link }}">{{ atalho.nome }}</a>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        </section>
+        <section class="contact">
+            {% if config_global.email_contato or config_global.outros_emails %}
+                <strong>Contato</strong>
+                {% if config_global.email_contato %}
+                    <a class="main-email" href="mailto:{{ config_global.email_contato }}">{{ config_global.email_contato }}</a>
+                {% endif %}
+                <div class="link-content">
+                    {% if config_global.outros_emails %}
+                        {% for email in config_global.outros_emails.split %}
+                            <a href="mailto:{{ email }}">{{ email }}</a>
+                        {% endfor %}
+                    {% endif %}
+                </div>
+            {% endif %}
+        </section>
     </div>
-    <div class="copyright">&copy; {% now "Y" %} RoboCup Brasil. Todos os direitos reservados.</div>
+    <div class="copyright">&copy; {% now "Y" %} <a style="text-decoration: none; color: var(--yang);" href="/"><strong>RoboCup Brasil</strong></a>. Todos os direitos reservados.</div>
 </footer>

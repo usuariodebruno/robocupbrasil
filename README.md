@@ -88,7 +88,7 @@ python manage.py createsuperuser
 
 ```bash
 # Collectsatatic for production
-python manage.py collectstatic
+python manage.py collectstatic --no-input
 
 # Runserver command
 python manage.py runserver

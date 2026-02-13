@@ -9,6 +9,7 @@ from .models import (
     TagArquivo, Arquivo,
     Subevento,
     ConfiguracaoGlobal,
+    AtalhoGlobal,
     UserProfile,
     Pagina,
     Sede,
@@ -294,9 +295,16 @@ class SubeventoAdmin(RolePermissionMixin, admin.ModelAdmin):
             return False
         return super().has_delete_permission(request, obj)
 
+class AtalhoGlobalInline(admin.TabularInline):
+    model = AtalhoGlobal
+    extra = 1
+    verbose_name = "Atalho de Rodapé"
+    verbose_name_plural = "Atalhos de Rodapé (Links Rápidos)"
+
 @admin.register(ConfiguracaoGlobal)
 class ConfiguracaoGlobalAdmin(RolePermissionMixin, admin.ModelAdmin):
-    list_display = ['__str__', 'patrocinio_imagem']
+    list_display = ['__str__', 'email_contato']
+    inlines = [AtalhoGlobalInline]
 
 from django.contrib.admin.models import LogEntry
 

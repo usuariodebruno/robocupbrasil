@@ -7,7 +7,7 @@ from django.core.management.base import BaseCommand
 from django.db import transaction
 from app.models import (
     Sede, Subevento, TagArquivo, TagData, TagFuncionario, TagNoticia,
-    PaginaEstado, ConfiguracaoGlobal, Pagina,
+    PaginaEstado, ConfiguracaoGlobal, Pagina, AtalhoGlobal, ItemMenu,
 )
 from django.conf import settings
 from django.utils.text import slugify
@@ -24,6 +24,7 @@ class Command(BaseCommand):
             self.create_paginas_estados()
             self.create_configuracao_global()
             self.create_paginas_dinamicas()
+            self.create_menus()
 
         self.stdout.write(self.style.SUCCESS("Default data setup completed successfully!"))
 
@@ -138,33 +139,60 @@ class Command(BaseCommand):
         self.stdout.write(self.style.SUCCESS(f"Páginas de estados ensured ({created} created)."))
 
     def create_configuracao_global(self):
-        obj, created = ConfiguracaoGlobal.objects.get_or_create()
+        defaults = {
+            'descricao': "Principal associação e maior produtora de eventos de robótica e inteligência artificial do país. Inclui desde o famoso futebol de robôs à simulações de resgate e robôs domésticos, capacitando estudantes do ensino fundamental à pós-graduação.",
+            'instagram': "https://www.instagram.com/robocupbrasil/",
+            'facebook': "https://www.facebook.com/robocupbrasil/",
+            'youtube': "https://www.youtube.com/robocupbrasil",
+            'linkedin': "https://www.linkedin.com/company/robocupbrasil/",
+            'email_contato': "contato@robocup.org.br",
+            'outros_emails': "obr@robocup.org.br cbr@robocup.org.br mnr@robocup.org.br",
+            'logo_link_rcb': "/",
+            'logo_link_cbr': "/cbr",
+            'logo_link_mnr': "/mnr",
+            'logo_link_obr': "/obr",
+        }
+        
+        obj, created = ConfiguracaoGlobal.objects.update_or_create(defaults=defaults)
+        
+        atalhos = [
+            ('Página Inicial', '/'),
+            ('Identidade Visual', '/material-de-divulgacao'),
+            ('Associados', '/associados'),
+            ('OBR', '/obr'),
+            ('CBR', '/cbr'),
+            ('MNR', '/mnr'),
+        ]
+        
+        for nome, link in atalhos:
+            AtalhoGlobal.objects.get_or_create(config=obj, nome=nome, defaults={'link': link})
+
         if created:
             self.stdout.write(self.style.SUCCESS("Configuração global created."))
         else:
             self.stdout.write(self.style.SUCCESS("Configuração global exists."))
 
     def create_paginas_dinamicas(self):
-        # Top-level pages
+        # Top-level pages RCB
         pages = [
-            {'nome': 'Índice', 'slug': '', 'header_type': 'RCB', 'privada': False, 'mostrar_no_menu': False, 'evento_associado': 'Todos'},
-            {'nome': 'Sobre', 'slug': 'sobre', 'header_type': 'RCB', 'privada': False, 'mostrar_no_menu': True, 'evento_associado': 'Todos'},
-            {'nome': 'Associados', 'slug': 'associados', 'header_type': 'RCB', 'privada': False, 'mostrar_no_menu': True, 'evento_associado': 'Todos'},
-            {'nome': 'Contato', 'slug': 'contato', 'header_type': 'RCB', 'privada': False, 'mostrar_no_menu': True, 'evento_associado': 'Todos'},
-            {'nome': 'Invista', 'slug': 'invista', 'header_type': 'RCB', 'privada': False, 'mostrar_no_menu': True, 'evento_associado': 'Todos'},
-            {'nome': 'Notícias', 'slug': 'noticias', 'header_type': 'RCB', 'privada': False, 'mostrar_no_menu': True, 'evento_associado': 'Todos'},
-            {'nome': 'Participe', 'slug': 'participe', 'header_type': 'RCB', 'privada': False, 'mostrar_no_menu': True, 'evento_associado': 'Todos'},
-            {'nome': 'Voluntários', 'slug': 'voluntarios', 'header_type': 'RCB', 'privada': False, 'mostrar_no_menu': True, 'evento_associado': 'Todos'},
-            {'nome': 'Material de Divulgação', 'slug': 'material-de-divulgacao', 'header_type': 'RCB', 'privada': False, 'mostrar_no_menu': False, 'evento_associado': 'Todos'},
-            {'nome': 'Organização Regional', 'slug': 'organizacao-regional', 'header_type': 'RCB', 'privada': True, 'mostrar_no_menu': False, 'evento_associado': 'Todos'},
-            {'nome': 'Organização Nacional', 'slug': 'organizacao-nacional', 'header_type': 'RCB', 'privada': True, 'mostrar_no_menu': False, 'evento_associado': 'Todos'},
+            {'nome': 'Índice', 'slug': '', 'header_type': 'RCB', 'privada': False, 'evento_associado': 'Todos'},
+            {'nome': 'Sobre', 'slug': 'sobre', 'header_type': 'RCB', 'privada': False, 'evento_associado': 'Todos'},
+            {'nome': 'Notícias', 'slug': 'noticias', 'header_type': 'RCB', 'privada': False, 'evento_associado': 'Todos'},
+            {'nome': 'Associados', 'slug': 'associados', 'header_type': 'RCB', 'privada': False, 'evento_associado': 'Todos'},
+            {'nome': 'Participe', 'slug': 'participe', 'header_type': 'RCB', 'privada': False, 'evento_associado': 'Todos'},
+            {'nome': 'Invista', 'slug': 'invista', 'header_type': 'RCB', 'privada': False, 'evento_associado': 'Todos'},
+            {'nome': 'Contato', 'slug': 'contato', 'header_type': 'RCB', 'privada': False, 'evento_associado': 'Todos'},
+            {'nome': 'Voluntários', 'slug': 'voluntarios', 'header_type': 'RCB', 'privada': False, 'evento_associado': 'Todos'},
+            {'nome': 'Material de Divulgação', 'slug': 'material-de-divulgacao', 'header_type': 'RCB', 'privada': False, 'evento_associado': 'Todos'},
+            {'nome': 'Organização Regional', 'slug': 'organizacao-regional', 'header_type': 'RCB', 'privada': True, 'evento_associado': 'Todos'},
+            {'nome': 'Organização Nacional', 'slug': 'organizacao-nacional', 'header_type': 'RCB', 'privada': True, 'evento_associado': 'Todos'},
         ]
 
         for p in pages:
             try:
                 obj, c = Pagina.objects.update_or_create(slug=p['slug'], defaults={
                     'nome': p['nome'], 'parent': None, 'header_type': p['header_type'],
-                    'componentes': [], 'mostrar_no_menu': p['mostrar_no_menu'], 'privada': p['privada'], 'evento_associado': p['evento_associado']
+                    'componentes': [], 'privada': p['privada'], 'evento_associado': p['evento_associado']
                 })
             except Exception as e:
                 self.stdout.write(self.style.WARNING(f"Skipping page with slug '{p['slug']}' - {e}"))
@@ -181,7 +209,7 @@ class Command(BaseCommand):
             try:
                 obj, c = Pagina.objects.update_or_create(slug=p['slug'], defaults={
                     'nome': p['nome'], 'parent': None, 'header_type': p['header_type'],
-                    'componentes': [], 'mostrar_no_menu': False, 'privada': False, 'evento_associado': p['evento_associado']
+                    'componentes': [], 'privada': False, 'evento_associado': p['evento_associado']
                 })
             except Exception as e:
                 self.stdout.write(self.style.WARNING(f"Skipping parent page with slug '{p['slug']}' - {e}"))
@@ -189,30 +217,30 @@ class Command(BaseCommand):
         # Child pages mapping
         children = [
             # OBR children
-            {'slug': 'faq', 'parent_slug': 'obr', 'nome': 'Perguntas Frequentes', 'header_type': 'OBR', 'mostrar_no_menu': True, 'privada': False, 'evento_associado': 'OBR'},
-            {'slug': 'manuais', 'parent_slug': 'obr', 'nome': 'Manuais', 'header_type': 'OBR', 'mostrar_no_menu': True, 'privada': False, 'evento_associado': 'OBR'},
-            {'slug': 'modalidade-teorica', 'parent_slug': 'obr', 'nome': 'Modalidade Teórica', 'header_type': 'OBR', 'mostrar_no_menu': True, 'privada': False, 'evento_associado': 'OBR'},
-            {'slug': 'modalidades-praticas', 'parent_slug': 'obr', 'nome': 'Modalidades Práticas', 'header_type': 'OBR', 'mostrar_no_menu': True, 'privada': False, 'evento_associado': 'OBR'},
-            {'slug': 'mundo-robotica', 'parent_slug': 'obr', 'nome': 'Mundo Robótica', 'header_type': 'OBR', 'mostrar_no_menu': True, 'privada': False, 'evento_associado': 'OBR'},
-            {'slug': 'noticias', 'parent_slug': 'obr', 'nome': 'Notícias', 'header_type': 'OBR', 'mostrar_no_menu': True, 'privada': False, 'evento_associado': 'OBR'},
-            {'slug': 'participante', 'parent_slug': 'obr', 'nome': 'Participante', 'header_type': 'OBR', 'mostrar_no_menu': True, 'privada': False, 'evento_associado': 'OBR'},
-            {'slug': 'sobre', 'parent_slug': 'obr', 'nome': 'Sobre', 'header_type': 'OBR', 'mostrar_no_menu': True, 'privada': False, 'evento_associado': 'OBR'},
+            {'slug': 'sobre', 'parent_slug': 'obr', 'nome': 'Sobre', 'header_type': 'OBR', 'privada': False, 'evento_associado': 'OBR'},
+            {'slug': 'manuais', 'parent_slug': 'obr', 'nome': 'Manuais', 'header_type': 'OBR', 'privada': False, 'evento_associado': 'OBR'},
+            {'slug': 'participante', 'parent_slug': 'obr', 'nome': 'Participante', 'header_type': 'OBR', 'privada': False, 'evento_associado': 'OBR'},
+            {'slug': 'noticias', 'parent_slug': 'obr', 'nome': 'Notícias', 'header_type': 'OBR', 'privada': False, 'evento_associado': 'OBR'},
+            {'slug': 'modalidade-teorica', 'parent_slug': 'obr', 'nome': 'Modalidade Teórica', 'header_type': 'OBR', 'privada': False, 'evento_associado': 'OBR'},
+            {'slug': 'modalidades-praticas', 'parent_slug': 'obr', 'nome': 'Modalidades Práticas', 'header_type': 'OBR', 'privada': False, 'evento_associado': 'OBR'},
+            {'slug': 'faq', 'parent_slug': 'obr', 'nome': 'Perguntas Frequentes', 'header_type': 'OBR', 'privada': False, 'evento_associado': 'OBR'},
+            {'slug': 'mundo-robotica', 'parent_slug': 'obr', 'nome': 'Mundo Robótica', 'header_type': 'OBR', 'privada': False, 'evento_associado': 'OBR'},
             # CBR children
-            {'slug': 'ligas', 'parent_slug': 'cbr', 'nome': 'Ligas', 'header_type': 'CBR', 'mostrar_no_menu': True, 'privada': False, 'evento_associado': 'CBR'},
-            {'slug': 'noticias', 'parent_slug': 'cbr', 'nome': 'Notícias', 'header_type': 'CBR', 'mostrar_no_menu': True, 'privada': False, 'evento_associado': 'CBR'},
-            {'slug': 'pagamentos', 'parent_slug': 'cbr', 'nome': 'Pagamentos', 'header_type': 'CBR', 'mostrar_no_menu': True, 'privada': False, 'evento_associado': 'CBR'},
-            {'slug': 'sobre', 'parent_slug': 'cbr', 'nome': 'Sobre', 'header_type': 'CBR', 'mostrar_no_menu': True, 'privada': False, 'evento_associado': 'CBR'},
-            {'slug': 'tdp', 'parent_slug': 'cbr', 'nome': 'TDP', 'header_type': 'CBR', 'mostrar_no_menu': True, 'privada': False, 'evento_associado': 'CBR'},
+            {'slug': 'sobre', 'parent_slug': 'cbr', 'nome': 'Sobre', 'header_type': 'CBR', 'privada': False, 'evento_associado': 'CBR'},
+            {'slug': 'ligas', 'parent_slug': 'cbr', 'nome': 'Ligas', 'header_type': 'CBR', 'privada': False, 'evento_associado': 'CBR'},
+            {'slug': 'noticias', 'parent_slug': 'cbr', 'nome': 'Notícias', 'header_type': 'CBR', 'privada': False, 'evento_associado': 'CBR'},
+            {'slug': 'pagamentos', 'parent_slug': 'cbr', 'nome': 'Pagamentos', 'header_type': 'CBR', 'privada': False, 'evento_associado': 'CBR'},
+            {'slug': 'tdp', 'parent_slug': 'cbr', 'nome': 'TDP', 'header_type': 'CBR', 'privada': False, 'evento_associado': 'CBR'},
             # MNR children
-            {'slug': 'anais', 'parent_slug': 'mnr', 'nome': 'Anais', 'header_type': 'MNR', 'mostrar_no_menu': True, 'privada': False, 'evento_associado': 'MNR'},
-            {'slug': 'avaliador', 'parent_slug': 'mnr', 'nome': 'Avaliador', 'header_type': 'MNR', 'mostrar_no_menu': True, 'privada': False, 'evento_associado': 'MNR'},
-            {'slug': 'bolsista', 'parent_slug': 'mnr', 'nome': 'Bolsista', 'header_type': 'MNR', 'mostrar_no_menu': True, 'privada': False, 'evento_associado': 'MNR'},
-            {'slug': 'documentos', 'parent_slug': 'mnr', 'nome': 'Documentos', 'header_type': 'MNR', 'mostrar_no_menu': True, 'privada': False, 'evento_associado': 'MNR'},
-            {'slug': 'noticias', 'parent_slug': 'mnr', 'nome': 'Notícias', 'header_type': 'MNR', 'mostrar_no_menu': True, 'privada': False, 'evento_associado': 'MNR'},
-            {'slug': 'sobre', 'parent_slug': 'mnr', 'nome': 'Sobre', 'header_type': 'MNR', 'mostrar_no_menu': True, 'privada': False, 'evento_associado': 'MNR'},
+            {'slug': 'sobre', 'parent_slug': 'mnr', 'nome': 'Sobre', 'header_type': 'MNR', 'privada': False, 'evento_associado': 'MNR'},
+            {'slug': 'documentos', 'parent_slug': 'mnr', 'nome': 'Documentos', 'header_type': 'MNR', 'privada': False, 'evento_associado': 'MNR'},
+            {'slug': 'anais', 'parent_slug': 'mnr', 'nome': 'Anais', 'header_type': 'MNR', 'privada': False, 'evento_associado': 'MNR'},
+            {'slug': 'noticias', 'parent_slug': 'mnr', 'nome': 'Notícias', 'header_type': 'MNR', 'privada': False, 'evento_associado': 'MNR'},
+            {'slug': 'avaliador', 'parent_slug': 'mnr', 'nome': 'Avaliador', 'header_type': 'MNR', 'privada': False, 'evento_associado': 'MNR'},
+            {'slug': 'bolsista', 'parent_slug': 'mnr', 'nome': 'Bolsista', 'header_type': 'MNR', 'privada': False, 'evento_associado': 'MNR'},
             # Evento Robótica children
-            {'slug': 'edicoes', 'parent_slug': 'robotica', 'nome': 'Edições', 'header_type': 'RCB', 'mostrar_no_menu': True, 'privada': False, 'evento_associado': 'Todos'},
-            {'slug': 'participantes', 'parent_slug': 'robotica', 'nome': 'Página do Participante', 'header_type': 'RCB', 'mostrar_no_menu': True, 'privada': False, 'evento_associado': 'Todos'},
+            {'slug': 'edicoes', 'parent_slug': 'robotica', 'nome': 'Edições', 'header_type': 'RCB', 'privada': False, 'evento_associado': 'Todos'},
+            {'slug': 'participantes', 'parent_slug': 'robotica', 'nome': 'Página do Participante', 'header_type': 'RCB', 'privada': False, 'evento_associado': 'Todos'},
         ]
 
         for ch in children:
@@ -222,7 +250,66 @@ class Command(BaseCommand):
                 parent = None
             defaults = {
                 'nome': ch['nome'], 'parent': parent, 'header_type': ch['header_type'],
-                'componentes': [], 'mostrar_no_menu': ch['mostrar_no_menu'], 'privada': ch['privada'], 'evento_associado': ch['evento_associado']
+                'componentes': [], 'privada': ch['privada'], 'evento_associado': ch['evento_associado']
             }
+            
+            try:
+                obj, c = Pagina.objects.update_or_create(slug=ch['slug'], parent=parent, defaults=defaults)
+            except Exception as e:
+                self.stdout.write(self.style.WARNING(f"Skipping child page with slug '{ch['slug']}' - {e}"))
 
         self.stdout.write(self.style.SUCCESS("Páginas dinâmicas ensured."))
+
+    def create_menus(self):
+        config = ConfiguracaoGlobal.objects.first()
+        if not config:
+            return
+
+        # RCB Menu
+        pages_rcb = [
+            {'nome': 'Sobre', 'slug': 'sobre'},
+            {'nome': 'Evento Robótica', 'slug': 'robotica'},
+            {'nome': 'Notícias', 'slug': 'noticias'},
+            {'nome': 'Associados', 'slug': 'associados'},
+            {'nome': 'Participe', 'slug': 'participe'},
+            {'nome': 'Invista', 'slug': 'invista'},
+            {'nome': 'Contato', 'slug': 'contato'},
+            {'nome': 'Voluntários', 'slug': 'voluntarios'},
+            {'nome': 'Material de Divulgação', 'slug': 'material-de-divulgacao'},
+        ]
+        
+        for p in pages_rcb:
+            link = f"/{p['slug']}" if p['slug'] else "/"
+            ItemMenu.objects.get_or_create(config=config, header_type='RCB', nome=p['nome'], defaults={'link': link, 'grupo': ''})
+
+        # Children Menus
+        children_data = [
+            # OBR
+            {'slug': 'sobre', 'parent_slug': 'obr', 'nome': 'Sobre', 'header_type': 'OBR'},
+            {'slug': 'manuais', 'parent_slug': 'obr', 'nome': 'Manuais', 'header_type': 'OBR'},
+            {'slug': 'participante', 'parent_slug': 'obr', 'nome': 'Participante', 'header_type': 'OBR'},
+            {'slug': 'noticias', 'parent_slug': 'obr', 'nome': 'Notícias', 'header_type': 'OBR'},
+            {'slug': 'modalidade-teorica', 'parent_slug': 'obr', 'nome': 'Modalidade Teórica', 'header_type': 'OBR'},
+            {'slug': 'modalidades-praticas', 'parent_slug': 'obr', 'nome': 'Modalidades Práticas', 'header_type': 'OBR'},
+            {'slug': 'faq', 'parent_slug': 'obr', 'nome': 'Perguntas Frequentes', 'header_type': 'OBR'},
+            {'slug': 'mundo-robotica', 'parent_slug': 'obr', 'nome': 'Mundo Robótica', 'header_type': 'OBR'},
+            # CBR
+            {'slug': 'sobre', 'parent_slug': 'cbr', 'nome': 'Sobre', 'header_type': 'CBR'},
+            {'slug': 'ligas', 'parent_slug': 'cbr', 'nome': 'Ligas', 'header_type': 'CBR'},
+            {'slug': 'noticias', 'parent_slug': 'cbr', 'nome': 'Notícias', 'header_type': 'CBR'},
+            {'slug': 'pagamentos', 'parent_slug': 'cbr', 'nome': 'Pagamentos', 'header_type': 'CBR'},
+            {'slug': 'tdp', 'parent_slug': 'cbr', 'nome': 'TDP', 'header_type': 'CBR'},
+            # MNR
+            {'slug': 'sobre', 'parent_slug': 'mnr', 'nome': 'Sobre', 'header_type': 'MNR'},
+            {'slug': 'documentos', 'parent_slug': 'mnr', 'nome': 'Documentos', 'header_type': 'MNR'},
+            {'slug': 'anais', 'parent_slug': 'mnr', 'nome': 'Anais', 'header_type': 'MNR'},
+            {'slug': 'noticias', 'parent_slug': 'mnr', 'nome': 'Notícias', 'header_type': 'MNR'},
+            {'slug': 'avaliador', 'parent_slug': 'mnr', 'nome': 'Avaliador', 'header_type': 'MNR'},
+            {'slug': 'bolsista', 'parent_slug': 'mnr', 'nome': 'Bolsista', 'header_type': 'MNR'},
+        ]
+        
+        for item in children_data:
+            link = f"/{item['parent_slug']}/{item['slug']}"
+            ItemMenu.objects.get_or_create(config=config, header_type=item['header_type'], nome=item['nome'], defaults={'link': link, 'grupo': ''})
+            
+        self.stdout.write(self.style.SUCCESS("Menus ensured."))

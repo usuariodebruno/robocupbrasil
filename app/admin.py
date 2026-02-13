@@ -10,6 +10,7 @@ from .models import (
     Subevento,
     ConfiguracaoGlobal,
     AtalhoGlobal,
+    ItemMenu, ItemMenuRCB, ItemMenuCBR, ItemMenuMNR, ItemMenuOBR,
     UserProfile,
     Pagina,
     Sede,
@@ -299,12 +300,65 @@ class AtalhoGlobalInline(admin.TabularInline):
     model = AtalhoGlobal
     extra = 1
     verbose_name = "Atalho de Rodapé"
-    verbose_name_plural = "Atalhos de Rodapé (Links Rápidos)"
+    verbose_name_plural = "Rodapé: Atalhos (Links Rápidos)"
+    fields = ('nome', 'link')
+
+class ItemMenuInlineBase(admin.TabularInline):
+    extra = 0
+    fields = ('header_type', 'nome', 'link', 'grupo')
+    
+    def get_formset(self, request, obj=None, **kwargs):
+        formset = super().get_formset(request, obj, **kwargs)
+        # Define o valor inicial e esconde o widget para não poluir a UI
+        formset.form.base_fields['header_type'].initial = self.header_type_value
+        formset.form.base_fields['header_type'].widget = forms.HiddenInput()
+        return formset
+
+class ItemMenuRCBInline(ItemMenuInlineBase):
+    model = ItemMenuRCB
+    header_type_value = 'RCB'
+    verbose_name = "Item de Menu (RCB)"
+    verbose_name_plural = "Menu Padrão: Itens"
+    def get_queryset(self, request):
+        return super().get_queryset(request).filter(header_type='RCB')
+
+class ItemMenuCBRInline(ItemMenuInlineBase):
+    model = ItemMenuCBR
+    header_type_value = 'CBR'
+    verbose_name = "Item de Menu (CBR)"
+    verbose_name_plural = "Menu CBR: Itens"
+    def get_queryset(self, request):
+        return super().get_queryset(request).filter(header_type='CBR')
+
+class ItemMenuMNRInline(ItemMenuInlineBase):
+    model = ItemMenuMNR
+    header_type_value = 'MNR'
+    verbose_name = "Item de Menu (MNR)"
+    verbose_name_plural = "Menu MNR: Itens"
+    def get_queryset(self, request):
+        return super().get_queryset(request).filter(header_type='MNR')
+
+class ItemMenuOBRInline(ItemMenuInlineBase):
+    model = ItemMenuOBR
+    header_type_value = 'OBR'
+    verbose_name = "Item de Menu (OBR)"
+    verbose_name_plural = "Menu OBR: Itens"
+    def get_queryset(self, request):
+        return super().get_queryset(request).filter(header_type='OBR')
 
 @admin.register(ConfiguracaoGlobal)
 class ConfiguracaoGlobalAdmin(RolePermissionMixin, admin.ModelAdmin):
     list_display = ['__str__', 'email_contato']
-    inlines = [AtalhoGlobalInline]
+    fieldsets = (
+        ('Configurações Gerais', {
+            'fields': ('descricao', 'email_contato', 'outros_emails', 'instagram', 'facebook', 'youtube', 'linkedin', 'patrocinio_vertical', 'patrocinio_horizontal')
+        }),
+        ('Links das Logos (Headers)', {
+            'fields': ('logo_link_rcb', 'logo_link_cbr', 'logo_link_mnr', 'logo_link_obr'),
+            'description': 'Defina para onde o usuário será redirecionado ao clicar na logo em cada cabeçalho.'
+        }),
+    )
+    inlines = [AtalhoGlobalInline, ItemMenuRCBInline, ItemMenuCBRInline, ItemMenuMNRInline, ItemMenuOBRInline]
 
 from django.contrib.admin.models import LogEntry
 
@@ -335,13 +389,13 @@ class LogEntryAdmin(admin.ModelAdmin):
 
 @admin.register(Pagina)
 class PaginaAdmin(admin.ModelAdmin):
-    list_display = ['nome', 'slug', 'parent', 'header_type', 'mostrar_no_menu', 'privada', 'evento_associado']
-    list_filter = ['header_type', 'mostrar_no_menu', 'privada', 'evento_associado']
+    list_display = ['nome', 'slug', 'parent', 'header_type', 'privada', 'evento_associado']
+    list_filter = ['header_type', 'privada', 'evento_associado']
     search_fields = ['nome', 'slug']
     list_per_page = 50
     fieldsets = (
         (None, {
-            'fields': ('nome', 'slug', 'parent', 'header_type', 'mostrar_no_menu', 'privada', 'evento_associado'),
+            'fields': ('nome', 'slug', 'parent', 'header_type', 'privada', 'evento_associado'),
         }),
         ('Componentes (ordem importa!)', {
             'fields': ('componentes',),

@@ -117,7 +117,7 @@ CKEDITOR_CONFIGS = {
 }
 
 DAISY_SETTINGS = {
-    "SITE_LOGO": "/static/logo.png",
+    "SITE_LOGO": "/static/images/header/rcb.png",
     "SITE_TITLE": "Site RoboCup Brasil",
     "SITE_HEADER": "Site RoboCup Brasil",
     "APPS_REORDER": {

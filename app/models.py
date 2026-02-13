@@ -209,13 +209,19 @@ class Subevento(models.Model):
 
 class ConfiguracaoGlobal(models.Model):
     descricao = models.TextField(blank=True, verbose_name="Descrição da Página (para o Google e Rodapé)")
-    patrocinio_imagem = models.ImageField(upload_to='patrocinio/', blank=True)
+    patrocinio_vertical = models.ImageField(upload_to='patrocinio/', verbose_name="Patrocínio Vertical (Celular)", blank=True)
+    patrocinio_horizontal = models.ImageField(upload_to='patrocinio/', verbose_name="Patrocínio Horizontal (Computador)", blank=True)
     email_contato = models.EmailField(blank=True, verbose_name="Email Principal")
     outros_emails = models.TextField(blank=True, verbose_name="Outros Emails de Contato", help_text="Separe os e-mails por espaço (ex: contato@exemplo.com suporte@exemplo.com)")
     instagram = models.URLField(blank=True)
     facebook = models.URLField(blank=True)
     youtube = models.URLField(blank=True)
     linkedin = models.URLField(blank=True)
+
+    logo_link_rcb = models.CharField(blank=True, verbose_name="Link da Logo (RCB)", help_text="Link ao clicar na logo no header RCB")
+    logo_link_cbr = models.CharField(blank=True, verbose_name="Link da Logo (CBR)", help_text="Link ao clicar na logo no header CBR")
+    logo_link_mnr = models.CharField(blank=True, verbose_name="Link da Logo (MNR)", help_text="Link ao clicar na logo no header MNR")
+    logo_link_obr = models.CharField(blank=True, verbose_name="Link da Logo (OBR)", help_text="Link ao clicar na logo no header OBR")
 
     class Meta:
         verbose_name = "Config. e Patrocínio"
@@ -232,6 +238,50 @@ class AtalhoGlobal(models.Model):
     class Meta:
         verbose_name = "Atalho de Rodapé"
         verbose_name_plural = "Atalhos de Rodapé"
+
+class ItemMenu(models.Model):
+    config = models.ForeignKey(ConfiguracaoGlobal, on_delete=models.CASCADE, related_name='itens_menu')
+    header_type = models.CharField(
+        max_length=50,
+        choices=[
+            ('RCB', 'Header Padrão RCB'),
+            ('OBR', 'Header OBR'),
+            ('CBR', 'Header CBR'),
+            ('MNR', 'Header MNR'),
+        ],
+        default='RCB'
+    )
+    nome = models.CharField(max_length=100, help_text="Texto do link")
+    link = models.CharField(max_length=200, help_text="URL externa ou caminho interno")
+    grupo = models.CharField(max_length=100, blank=True, help_text="Agrupador para dropdown (opcional). Itens com o mesmo grupo ficarão juntos.")
+
+    class Meta:
+        verbose_name = "Item do Menu"
+        verbose_name_plural = "Itens do Menu"
+
+class ItemMenuRCB(ItemMenu):
+    class Meta:
+        proxy = True
+        verbose_name = "Item do Menu RCB"
+        verbose_name_plural = "Itens do Menu RCB"
+
+class ItemMenuCBR(ItemMenu):
+    class Meta:
+        proxy = True
+        verbose_name = "Item do Menu CBR"
+        verbose_name_plural = "Itens do Menu CBR"
+
+class ItemMenuMNR(ItemMenu):
+    class Meta:
+        proxy = True
+        verbose_name = "Item do Menu MNR"
+        verbose_name_plural = "Itens do Menu MNR"
+
+class ItemMenuOBR(ItemMenu):
+    class Meta:
+        proxy = True
+        verbose_name = "Item do Menu OBR"
+        verbose_name_plural = "Itens do Menu OBR"
 
 class UserProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
@@ -357,11 +407,6 @@ class Pagina(models.Model):
         default=list,
         blank=True,
         verbose_name="🧩 Componentes",
-    )
-    mostrar_no_menu = models.BooleanField(
-        default=False,
-        verbose_name="🔍 Mostrar no Menu?",
-        help_text="Mostrar esta página no menu correspondente ao cabeçalho escolhido"
     )
     evento_associado = models.CharField(
         max_length=50,

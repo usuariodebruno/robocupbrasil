@@ -1,0 +1,30 @@
+{% load static %}
+
+<header class="floating">
+    <div class="{{ header_type_lower }}"></div>
+</header>
+<header class="main">
+    <main>
+        {% with image_src='images/header/'|add:header_type_lower|add:'.png' %}
+            {% if header_type_lower == 'obr' and config_global.logo_link_obr %}
+                <a href="{{ config_global.logo_link_obr }}">
+                    <img alt="Logo" class="logo" src="{% static image_src %}"/>
+                </a>
+            {% elif header_type_lower == 'cbr' and config_global.logo_link_cbr %}
+                <a href="{{ config_global.logo_link_cbr }}">
+                    <img alt="Logo" class="logo" src="{% static image_src %}"/>
+                </a>
+            {% elif header_type_lower == 'mnr' and config_global.logo_link_mnr %}
+                <a href="{{ config_global.logo_link_mnr }}">
+                    <img alt="Logo" class="logo" src="{% static image_src %}"/>
+                </a>
+            {% elif header_type_lower == 'rcb' and config_global.logo_link_rcb %}
+                <a href="{{ config_global.logo_link_rcb }}">
+                    <img alt="Logo" class="logo" src="{% static image_src %}"/>
+                </a>
+            {% else %}
+                <img alt="Logo" class="logo" src="{% static image_src %}"/>
+            {% endif %}
+        {% endwith %}
+    </main>
+</header>

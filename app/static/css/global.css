@@ -10,15 +10,15 @@
     /* Important */
     --yang: #f4fcfc;
     --yin: #2c2e35;
-    --default-margin: 1rem;
-    --border-radius: 1rem;
+    --default-measure: 1rem;
     --box-shadow: 0 0 4px rgba(0, 0, 0, 0.1);
     --box-shadow-hover: 0 0 6px rgba(0, 0, 0, 0.15);
     --transition: all 0.3s ease-in-out;
-    --container: 1300px;
+    --container: 1200px;
+    --header-logo: 3.75rem;
 
     /* Containers */
-    --header-footer-border: 5px solid #ffffffcb;
+    --header-footer-border: color-mix(in srgb, var(--yang), transparent 30%);
 
     /* Text-Sizes */
     --text-size-small: 0.875rem;
@@ -67,9 +67,9 @@ body {
 /* Footer Styles */
 footer {
     color: var(--yang);
-    margin: var(--default-margin);
-    border-radius: var(--border-radius);
-    border: var(--header-footer-border);
+    margin: var(--default-measure);
+    border-radius: var(--default-measure);
+    border: 5px solid var(--header-footer-border);
     overflow: hidden;
     box-shadow: var(--box-shadow);
 }
@@ -79,9 +79,9 @@ footer:hover {
 }
 
 footer .base {
-    padding: calc(var(--default-margin) * 2);
+    padding: calc(var(--default-measure) * 2);
     background-color: var(--blue-secondary);
-    background-image: url('../images/footer-image.png');
+    background-image: url('../images/watermark.png');
     background-position: center center;
     background-repeat: no-repeat;
 }
@@ -93,7 +93,7 @@ footer .logo {
 }
 
 footer .copyright {
-    padding: calc(var(--default-margin) * 0.4) var(--default-margin);
+    padding: calc(var(--default-measure) * 0.4) var(--default-measure);
     background-color: var(--blue);
     font-size: var(--text-size-small);
     text-align: center;
@@ -105,14 +105,14 @@ footer .socials {
 }
 
 footer .socials p {
-    margin: calc(var(--default-margin) * 2) auto;
+    margin: calc(var(--default-measure) * 2) auto;
     font-size: var(--text-size-medium);
-    max-width: 410px;
+    max-width: 450px;
 }
 
 footer .socials .links {
     display: flex;
-    gap: var(--default-margin);
+    gap: var(--default-measure);
     justify-content: center;
 }
 
@@ -130,10 +130,10 @@ footer .socials .links img:hover {
 }
 
 footer .socials .return {
-    margin-top: calc(var(--default-margin) * 2);
+    margin-top: calc(var(--default-measure) * 2);
     font-weight: 300;
     text-decoration: none;
-    padding: calc( var(--default-margin) * 0.5) var(--default-margin);
+    padding: calc( var(--default-measure) * 0.5) var(--default-measure);
     display: block;
     border: 1px solid var(--yang);
     width: fit-content;
@@ -154,12 +154,12 @@ footer .shortcuts, footer .contact {
 
 footer .shortcuts strong, footer .contact strong {
     display: block;
-    margin: calc(var(--default-margin) * 2.5) 0 var(--default-margin) 0;
+    margin: calc(var(--default-measure) * 2.5) 0 var(--default-measure) 0;
 }
 
 footer .link-content {
     display: flex;
-    gap: var(--default-margin);
+    gap: var(--default-measure);
     flex-wrap: wrap;
     justify-content: center;
 }
@@ -181,8 +181,75 @@ footer .link-content a:hover, footer .shortcuts .link-content a:first-child:hove
 }
 
 footer .main-email {
-    margin-bottom: calc(var(--default-margin) * 1.25);
+    margin-bottom: calc(var(--default-measure) * 1.25);
     font-size: var(--text-size-large);
+}
+
+header.floating {
+    width: 100%;
+    position: fixed;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    background: transparent;
+    height: auto;
+    overflow: hidden;
+}
+
+header main {
+    margin: calc(var(--default-measure) * 0.5);
+    padding: calc(var(--default-measure) * 0.75);
+}
+
+header.floating.scrolled {
+    max-width: var(--container);
+    box-shadow: var(--box-shadow);
+    background: var(--header-footer-border);
+    backdrop-filter: blur(4px);
+}
+
+header.floating.scrolled main {
+    display: flex;
+    background-color: var(--yang);
+    border-radius: var(--default-measure);
+}
+
+header.main {
+    padding-top: calc(var(--default-measure) * 0.5);
+    max-width: var(--container);
+    margin-left: auto;
+    margin-right: auto;
+    min-height: calc(calc(var(--default-measure) * 0.5) + calc(var(--header-logo) + calc(var(--default-measure) * 3)));
+}
+
+header.floating .rcb, header.floating .obr, header.floating .cbr, header.floating .mnr {
+    width: 100%;
+    height: calc(var(--default-measure) * 0.5);
+    background-color: var(--blue-secondary);
+}
+
+header.floating .obr {
+    background: linear-gradient(
+        to right, 
+        var(--red) 0%, var(--red) 16.66%, 
+        var(--orange) 16.66%, var(--orange) 33.33%, 
+        var(--yellow) 33.33%, var(--yellow) 50%, 
+        var(--gray) 50%, var(--gray) 66.66%, 
+        var(--green) 66.66%, var(--green) 83.33%, 
+        var(--blue) 83.33%, var(--blue) 100%
+    );
+}
+
+header.floating .cbr {
+    background-color: var(--gray-secondary);
+}
+
+header.floating .mnr {
+    background-color: var(--yellow-secondary);
+}
+
+header main .logo {
+    height: var(--header-logo);
 }
 
 @media (min-width: 768px) {
@@ -194,7 +261,7 @@ footer .main-email {
 
     footer .base {
         display: flex;
-        padding: calc(var(--default-margin) * 3);
+        padding: calc(var(--default-measure) * 3);
         background-position: center right;
         background-size: 65%;
     }
@@ -226,7 +293,7 @@ footer .main-email {
     }
 
     footer .shortcuts strong, footer .contact strong {
-        margin: calc(var(--default-margin) * 0.25) 0 calc(var(--default-margin) * 0.8) 0;
+        margin: calc(var(--default-measure) * 0.25) 0 calc(var(--default-measure) * 0.8) 0;
     }
 
     footer .link-content {
@@ -234,11 +301,20 @@ footer .main-email {
     }
 
     footer .link-content a {
-        margin: calc(var(--default-margin) * 0.5) auto;
+        margin: calc(var(--default-measure) * 0.5) auto;
     }
 
     footer .main-email {
-        margin-bottom: calc(var(--default-margin) * 0.75);
+        margin-bottom: calc(var(--default-measure) * 0.75);
         font-size: var(--text-size-medium);
+    }
+
+    header main {
+        padding: var(--default-measure);
+    }
+
+    header.floating.scrolled {
+        margin-top: var(--default-measure);
+        border-radius: 0 0 var(--default-measure) var(--default-measure);
     }
 }

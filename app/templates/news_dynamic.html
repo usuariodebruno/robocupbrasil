@@ -15,27 +15,13 @@
 {% endblock %}
 
 {% block extra_head %}
-    {% if header_type == 'OBR' %}
-        <link rel="icon" href="{% static 'images/favicon/favicon-obr.png' %}" type="image/png"/>
-    {% elif header_type == 'CBR' %}
-        <link rel="icon" href="{% static 'images/favicon/favicon-cbr.png' %}" type="image/png"/>
-    {% elif header_type == 'MNR' %}
-        <link rel="icon" href="{% static 'images/favicon/favicon-mnr.png' %}" type="image/png"/>
-    {% else %}
-        <link rel="icon" href="{% static 'images/favicon/favicon-rcb.png' %}" type="image/png"/>
-    {% endif %}
+    {% with header_type_lower=header_type|lower %}
+        <link rel="icon" href="{% static 'images/favicon/'|add:header_type_lower|add:'.png' %}" type="image/png"/>
+    {% endwith %}
 {% endblock %}
 
 {% block header %}
-    {% if header_type == 'OBR' %}
-        {% include "components/header_obr.html" %}
-    {% elif header_type == 'CBR' %}
-        {% include "components/header_cbr.html" %}
-    {% elif header_type == 'MNR' %}
-        {% include "components/header_mnr.html" %}
-    {% else %}
-        {% include "components/header_rcb.html" %}
-    {% endif %}
+    {% include "components/header.html" with header_type_lower=header_type|lower %}
 {% endblock %}
 
 {% block content %}

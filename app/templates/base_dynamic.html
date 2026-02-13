@@ -19,13 +19,13 @@
         <meta name="robots" content="noindex">
     {% endif %}
     {% if header_type == 'OBR' %}
-        <link rel="icon" href="{% static 'favicon_obr.png' %}" type="image/png"/>
+        <link rel="icon" href="{% static 'images/favicon/favicon-obr.png' %}" type="image/png"/>
     {% elif header_type == 'CBR' %}
-        <link rel="icon" href="{% static 'favicon_cbr.png' %}" type="image/png"/>
+        <link rel="icon" href="{% static 'favicon-cbr.png' %}" type="image/png"/>
     {% elif header_type == 'MNR' %}
-        <link rel="icon" href="{% static 'favicon_mnr.png' %}" type="image/png"/>
+        <link rel="icon" href="{% static 'favicon-mnr.png' %}" type="image/png"/>
     {% else %}
-        <link rel="icon" href="{% static 'favicon_rcb.png' %}" type="image/png"/>
+        <link rel="icon" href="{% static 'favicon-rcb.png' %}" type="image/png"/>
     {% endif %}
 {% endblock %}
 

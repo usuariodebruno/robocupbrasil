@@ -1,0 +1,99 @@
+@font-face {
+    font-family: "Nunito";
+    src: url('../fonts/Nunito-VariableFont_wght.ttf');
+    font-style: normal;
+    font-weight: 200 1000;
+    font-display: swap;
+}
+
+:root {
+    /* Important */
+    --yang: #f4fcfc;
+    --yin: #2c2e35;
+    --default-padding: 1rem;
+    --default-margin: 1rem;
+    --border-radius: 1rem;
+    --box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    --box-shadow-hover: 0 3px 6px rgba(0, 0, 0, 0.15);
+    --transition: all 0.3s ease-in-out;
+    
+    /* Containers */
+    --header-footer-border: 5px solid #ffffffcb;
+
+    /* Text-Sizes */
+    --text-size-small: 0.875rem;
+    --text-size-medium: 1rem;
+    --text-size-large: 1.25rem;
+    --text-size-xlarge: 1.5rem;
+    --text-size-xxlarge: 2rem;
+
+    /* Colors */
+    --red: #EB6047;
+    --red-secondary: #D7523A;
+    --orange: #F5821F;
+    --orange-secondary: #E07B25;
+    --yellow: #E8C347;
+    --yellow-secondary: #DAB439;
+    --gray: #939598;
+    --gray-secondary: #828282;
+    --green: #84C54F;
+    --green-secondary: #71B13C;
+    --blue: #5F95CF;
+    --blue-secondary: #5688BE;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+* {
+    box-sizing: border-box;
+    transition: var(--transition);
+}
+
+body {
+    font-family: "Nunito", sans-serif;
+    font-optical-sizing: auto;
+    font-weight: 400;
+    font-style: normal;
+    background-color: var(--yang);
+    color: var(--yin);
+    margin: 0;
+    padding: 0;
+}
+
+/* Footer Styles */
+footer {
+    color: var(--yang);
+    text-align: center;
+    margin: var(--default-margin);
+    border-radius: var(--border-radius);
+    border: var(--header-footer-border);
+    overflow: hidden;
+    box-shadow: var(--box-shadow);
+}
+
+footer:hover {
+    box-shadow: var(--box-shadow-hover);
+}
+
+footer .base {
+    padding: var(--default-padding);
+    background-color: var(--blue-secondary);
+    background-image: url('../images/footer-image.png');
+    background-position: center left;
+    background-repeat: no-repeat;
+}
+
+footer .copyright {
+    padding: calc(var(--default-padding) * 0.4) var(--default-padding);
+    background-color: var(--blue);
+    font-size: var(--text-size-small);
+}
+
+@media (min-width: 768px) {
+    footer .base {
+        min-height: 500px;
+        background-position: center right;
+    }
+}

@@ -292,7 +292,10 @@ class UserProfile(models.Model):
         if self.grupo_extra == 'SUPER':
             DjangoUser.objects.filter(pk=user.pk).update(is_superuser=True)
         else:
-            if DjangoUser.objects.filter(pk=user.pk, is_superuser=True).exists():
+            if self.grupo_extra == '' and DjangoUser.objects.filter(pk=user.pk, is_superuser=True).exists():
+                self.grupo_extra = 'SUPER'
+                UserProfile.objects.filter(pk=self.pk).update(grupo_extra='SUPER')
+            elif DjangoUser.objects.filter(pk=user.pk, is_superuser=True).exists():
                 DjangoUser.objects.filter(pk=user.pk).update(is_superuser=False)
 
     @property

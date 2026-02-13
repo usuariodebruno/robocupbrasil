@@ -15,8 +15,8 @@ Follow these steps to clone, set up, and run the website on your machine.
 ### 1. Clone the repository
 
 ```bash
-git clone https://github.com/lluckymou/robocup-brasil.git
-cd robocup-brasil
+git clone https://github.com/lluckymou/robocupbrasil.git
+cd robocupbrasil
 ```
 
 ### 2. Create and activate the virtual environment
@@ -40,13 +40,13 @@ You should see `(venv)` at the beginning of your terminal prompt.
 pip install -r requirements.txt
 ```
 
-If `requirements.txt` is missing or outdated, install the core packages and regenerate it:
+<!-- If `requirements.txt` is missing or outdated, install the core packages and regenerate it:
 Bash
 
 ```bash
 pip install django django-ckeditor python-dotenv
 pip freeze > requirements.txt
-```
+``` -->
 
 ### 4. Set up the `.env` file (recommended)
 
@@ -54,7 +54,7 @@ Create a `.env` file in the project root with:
 
 ```bash
 DJANGO_SECRET_KEY=insert-secure-key
-DJANGO_DEBUG=True
+DJANGO_DEBUG=False
 ALLOWED_HOSTS=127.0.0.1,localhost,robocup.org.br,*.robocup.org.br
 ```
 
@@ -76,7 +76,10 @@ python manage.py setup_role_permissions
 # Create default tags and basic site structure
 python manage.py setup_default_tags
 
-# Create an admin user (if none exists)
+# Compile Translations
+python manage.py compilemessages
+
+# Create an admin user
 python manage.py createsuperuser
 # Suggested: Username: admin
 ```

@@ -56,7 +56,7 @@ def pagina_dinamica_view(request, path):
             if comp['type'] == 'equipe':
                 funcionario_ids = comp.get('funcionarios', []) 
     
-                rendered_components.append(render(request, 'components/equipe.html', {
+                rendered_components.append(render(request, 'components/dynamic/equipe.html', {
                     'titulo': comp.get('titulo', 'Equipe'),
                     'funcionarios': Funcionario.objects.filter(id__in=funcionario_ids)
                 }).content.decode())

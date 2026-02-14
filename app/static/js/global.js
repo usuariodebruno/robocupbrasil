@@ -15,3 +15,28 @@ window.addEventListener('scroll', function() {
         }
     }
 });
+
+function toggleMenu() {
+    const menu = document.getElementById('menu');
+    const icon = document.getElementById('icon');
+    
+    menu.classList.toggle('active');
+
+    
+
+    icon.style.opacity = '0';
+    setTimeout(() => {
+        icon.classList.toggle('active');
+        icon.style.opacity = '1';
+    }, 100);
+
+    setTimeout(() => {
+        if(menu.classList.contains('active')) {
+        const style = window.getComputedStyle(menu);
+        const height = menu.offsetHeight + parseFloat(style.marginTop) + parseFloat(style.marginBottom);
+        document.querySelector(':root').style.setProperty('--header-js', `${height}px`);
+    } else {
+        document.querySelector(':root').style.setProperty('--header-js', '0px');
+    }
+    }, 240);
+}

@@ -26,5 +26,47 @@
                 <img alt="Logo" class="logo" src="{% static image_src %}"/>
             {% endif %}
         {% endwith %}
+
+        <div class="link-outer">
+            <div class="desktop-links">
+                {% if config_global %}
+                    {% for item in config_global.itens_menu.all %}
+                        {% if item.header_type|lower == header_type_lower and not item.escondido %}
+                            <a href="{{ item.link }}">{{ item.nome }}</a>
+                        {% endif %}
+                    {% endfor %}
+                {% endif %}
+            </div>
+
+            <div class="button-outer" onclick="toggleMenu()">
+                <div class="button">
+                    <div id="icon"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="links" id="menu">
+            {% if config_global %}
+                {% if header_type_lower != 'rcb' %}
+                    <div class="olimpo-plug flex-center">
+                        <div class="flex-center">
+                            <a href="/"><img style="height: var(--text-size-medium);" src="{% static 'images/favicon/rcb.png' %}"></a><span>Uma iniciativa <a href="/">Robocup Brasil</a></span>
+                        </div>
+                        <a href="https://olimpo.robocup.org.br"><img class="olimpo" src="{% static 'images/header/olimpo.png' %}" alt="Logo Olimpo"/></a>
+                    </div>
+                {% endif %}
+                {% for item in config_global.itens_menu.all %}
+                    {% if item.header_type|lower == header_type_lower %}
+                        {% if item.escondido %}
+                            <a href="{{ item.link }}">{{ item.nome }}</a>
+                        {% else %}
+                            <div class="mobile-only">
+                                <a href="{{ item.link }}">{{ item.nome }}</a>
+                            </div>
+                        {% endif %}
+                    {% endif %}
+                {% endfor %}
+            {% endif %}
+        </div>
     </main>
 </header>

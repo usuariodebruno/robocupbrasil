@@ -305,7 +305,7 @@ class AtalhoGlobalInline(admin.TabularInline):
 
 class ItemMenuInlineBase(admin.TabularInline):
     extra = 0
-    fields = ('header_type', 'nome', 'link', 'grupo')
+    fields = ('header_type', 'nome', 'link', 'grupo', 'escondido')
     
     def get_formset(self, request, obj=None, **kwargs):
         formset = super().get_formset(request, obj, **kwargs)

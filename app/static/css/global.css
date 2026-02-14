@@ -15,7 +15,8 @@
     --box-shadow-hover: 0 0 6px rgba(0, 0, 0, 0.15);
     --transition: all 0.3s ease-in-out;
     --container: 1200px;
-    --header-logo: 3.75rem;
+    --header-logo: 3.5rem;
+    --header-js: 0px;
 
     /* Containers */
     --header-footer-border: color-mix(in srgb, var(--yang), transparent 30%);
@@ -122,7 +123,7 @@ footer .socials .links * {
 }
 
 footer .socials .links img {
-    height: 28px;
+    height: calc(var(--default-measure) * 1.8);
 }
 
 footer .socials .links img:hover {
@@ -191,12 +192,17 @@ header.floating {
     top: 0;
     left: 50%;
     transform: translateX(-50%);
+    z-index: 10;
     background: transparent;
     height: auto;
     overflow: hidden;
 }
 
 header main {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
     margin: calc(var(--default-measure) * 0.5);
     padding: calc(var(--default-measure) * 0.75);
 }
@@ -219,7 +225,7 @@ header.main {
     max-width: var(--container);
     margin-left: auto;
     margin-right: auto;
-    min-height: calc(calc(var(--default-measure) * 0.5) + calc(var(--header-logo) + calc(var(--default-measure) * 3)));
+    min-height: calc(calc(calc(var(--default-measure) * 0.5) + calc(var(--header-logo) + calc(var(--default-measure) * 3))) + var(--header-js));
 }
 
 header.floating .rcb, header.floating .obr, header.floating .cbr, header.floating .mnr {
@@ -250,6 +256,82 @@ header.floating .mnr {
 
 header main .logo {
     height: var(--header-logo);
+}
+
+header .button-outer {
+    padding: calc(var(--default-measure) * 0.5);
+    border: 1px solid color-mix(in srgb, var(--yin), transparent 90%);
+    border-radius: calc(var(--default-measure) * 0.5);
+    cursor: pointer;
+}
+
+header .button {
+    position: relative;
+    height: calc(var(--header-logo) * 0.5);
+    width: calc(var(--header-logo) * 0.5);
+    transition: transform 0.1s ease;
+}
+
+header .button-outer:hover #icon {
+    transform: scale(1.1);
+}
+
+header .button #icon {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: var(--yin);
+    mask-image: url('../images/header/open.png');
+    mask-size: 100%;
+    transition: all 0.1s ease;
+}
+
+header .button #icon.active {
+    mask-image: url('../images/header/close.png');
+}
+
+.desktop-links {
+    display: none;
+}
+
+header #menu {
+    padding: 0;
+    max-height: 0;
+    opacity: 0;
+    width: 100%;
+    visibility: hidden;
+    overflow: hidden;
+}
+
+header #menu.active {
+    visibility: visible;
+    opacity: 1;
+    margin: calc(var(--default-measure) * 0.5) 0;
+    max-height: 1000px;
+}
+
+.flex-center {
+    gap: calc(var(--default-measure) * 0.35);
+    display: flex;
+    align-items: center;
+}
+
+.olimpo-plug {
+    color: var(--gray-secondary);
+    justify-content: space-between;
+    line-height: 0.9;
+}
+
+.olimpo-plug a {
+    text-decoration: none;
+    color: var(--gray-secondary);
+    font-weight: 600;
+}
+
+.olimpo {
+    height: calc(var(--header-logo) * 0.5);
 }
 
 @media (min-width: 768px) {
@@ -316,5 +398,41 @@ header main .logo {
     header.floating.scrolled {
         margin-top: var(--default-measure);
         border-radius: 0 0 var(--default-measure) var(--default-measure);
+    }
+
+    .desktop-links {
+        display: flex;
+        gap: calc(var(--default-measure) * 3.25);
+        align-items: center;
+    }
+
+    header .link-outer {
+        display: flex;
+        gap: calc(var(--default-measure) * 3.25);
+        align-items: center;
+    }
+
+    .desktop-links a {
+        text-decoration: none;
+        color: var(--yin);
+        font-weight: 400;
+    }
+
+    .desktop-links a:hover {
+        opacity: 0.65;
+    }
+
+    .mobile-only {
+        display: none;    
+    }
+
+    .olimpo {
+        filter: contrast(0%);
+        opacity: 65%;
+    }
+
+    .olimpo:hover {
+        filter: contrast(100%);
+        opacity: 100%;
     }
 }

@@ -254,6 +254,7 @@ class ItemMenu(models.Model):
     nome = models.CharField(max_length=100, help_text="Texto do link")
     link = models.CharField(max_length=200, help_text="URL externa ou caminho interno")
     grupo = models.CharField(max_length=100, blank=True, help_text="Agrupador para dropdown (opcional). Itens com o mesmo grupo ficarão juntos.")
+    escondido = models.BooleanField(default=False, verbose_name="Escondido no Desktop?", help_text="Se marcado, aparece apenas no menu hamburger no Desktop. No mobile, todos aparecem no hamburger.")
 
     class Meta:
         verbose_name = "Item do Menu"

@@ -178,8 +178,8 @@ class Command(BaseCommand):
             {'nome': 'Índice', 'slug': '', 'header_type': 'RCB', 'privada': False, 'evento_associado': 'Todos'},
             {'nome': 'Sobre', 'slug': 'sobre', 'header_type': 'RCB', 'privada': False, 'evento_associado': 'Todos'},
             {'nome': 'Notícias', 'slug': 'noticias', 'header_type': 'RCB', 'privada': False, 'evento_associado': 'Todos'},
-            {'nome': 'Associados', 'slug': 'associados', 'header_type': 'RCB', 'privada': False, 'evento_associado': 'Todos'},
             {'nome': 'Participe', 'slug': 'participe', 'header_type': 'RCB', 'privada': False, 'evento_associado': 'Todos'},
+            {'nome': 'Associados', 'slug': 'associados', 'header_type': 'RCB', 'privada': False, 'evento_associado': 'Todos'},
             {'nome': 'Invista', 'slug': 'invista', 'header_type': 'RCB', 'privada': False, 'evento_associado': 'Todos'},
             {'nome': 'Contato', 'slug': 'contato', 'header_type': 'RCB', 'privada': False, 'evento_associado': 'Todos'},
             {'nome': 'Voluntários', 'slug': 'voluntarios', 'header_type': 'RCB', 'privada': False, 'evento_associado': 'Todos'},
@@ -202,7 +202,7 @@ class Command(BaseCommand):
             {'nome': 'Olimpíada Brasileira de Robótica', 'slug': 'obr', 'header_type': 'OBR', 'evento_associado': 'OBR'},
             {'nome': 'Competição Brasileira de Robótica', 'slug': 'cbr', 'header_type': 'CBR', 'evento_associado': 'CBR'},
             {'nome': 'Mostra Nacional de Robótica', 'slug': 'mnr', 'header_type': 'MNR', 'evento_associado': 'MNR'},
-            {'nome': 'Evento Robótica', 'slug': 'robotica', 'header_type': 'RCB', 'evento_associado': 'Todos'},
+            {'nome': 'Robótica', 'slug': 'robotica', 'header_type': 'RCB', 'evento_associado': 'Todos'},
         ]
 
         for p in parents:
@@ -238,7 +238,7 @@ class Command(BaseCommand):
             {'slug': 'noticias', 'parent_slug': 'mnr', 'nome': 'Notícias', 'header_type': 'MNR', 'privada': False, 'evento_associado': 'MNR'},
             {'slug': 'avaliador', 'parent_slug': 'mnr', 'nome': 'Avaliador', 'header_type': 'MNR', 'privada': False, 'evento_associado': 'MNR'},
             {'slug': 'bolsista', 'parent_slug': 'mnr', 'nome': 'Bolsista', 'header_type': 'MNR', 'privada': False, 'evento_associado': 'MNR'},
-            # Evento Robótica children
+            # Robótica children
             {'slug': 'edicoes', 'parent_slug': 'robotica', 'nome': 'Edições', 'header_type': 'RCB', 'privada': False, 'evento_associado': 'Todos'},
             {'slug': 'participantes', 'parent_slug': 'robotica', 'nome': 'Página do Participante', 'header_type': 'RCB', 'privada': False, 'evento_associado': 'Todos'},
         ]
@@ -265,10 +265,15 @@ class Command(BaseCommand):
         if not config:
             return
 
+        escondidos = [
+            'Modalidade Teórica', 'Modalidades Práticas', 'Perguntas Frequentes', 'Mundo Robótica',
+            'Associados', 'Invista', 'Contato', 'Voluntários', 'Material de Divulgação', 'Avaliador', 'Bolsista'
+        ]
+
         # RCB Menu
         pages_rcb = [
             {'nome': 'Sobre', 'slug': 'sobre'},
-            {'nome': 'Evento Robótica', 'slug': 'robotica'},
+            {'nome': 'Robótica', 'slug': 'robotica'},
             {'nome': 'Notícias', 'slug': 'noticias'},
             {'nome': 'Associados', 'slug': 'associados'},
             {'nome': 'Participe', 'slug': 'participe'},
@@ -280,7 +285,8 @@ class Command(BaseCommand):
         
         for p in pages_rcb:
             link = f"/{p['slug']}" if p['slug'] else "/"
-            ItemMenu.objects.get_or_create(config=config, header_type='RCB', nome=p['nome'], defaults={'link': link, 'grupo': ''})
+            is_hidden = p['nome'] in escondidos
+            ItemMenu.objects.get_or_create(config=config, header_type='RCB', nome=p['nome'], defaults={'link': link, 'grupo': '', 'escondido': is_hidden})
 
         # Children Menus
         children_data = [
@@ -310,6 +316,7 @@ class Command(BaseCommand):
         
         for item in children_data:
             link = f"/{item['parent_slug']}/{item['slug']}"
-            ItemMenu.objects.get_or_create(config=config, header_type=item['header_type'], nome=item['nome'], defaults={'link': link, 'grupo': ''})
+            is_hidden = item['nome'] in escondidos
+            ItemMenu.objects.get_or_create(config=config, header_type=item['header_type'], nome=item['nome'], defaults={'link': link, 'grupo': '', 'escondido': is_hidden})
             
         self.stdout.write(self.style.SUCCESS("Menus ensured."))

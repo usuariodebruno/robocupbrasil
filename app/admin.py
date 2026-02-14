@@ -305,11 +305,10 @@ class AtalhoGlobalInline(admin.TabularInline):
 
 class ItemMenuInlineBase(admin.TabularInline):
     extra = 0
-    fields = ('header_type', 'nome', 'link', 'grupo', 'escondido')
+    fields = ('header_type', 'nome', 'link', 'escondido')
     
     def get_formset(self, request, obj=None, **kwargs):
         formset = super().get_formset(request, obj, **kwargs)
-        # Define o valor inicial e esconde o widget para não poluir a UI
         formset.form.base_fields['header_type'].initial = self.header_type_value
         formset.form.base_fields['header_type'].widget = forms.HiddenInput()
         return formset

@@ -22,8 +22,6 @@ function toggleMenu() {
     
     menu.classList.toggle('active');
 
-    
-
     icon.style.opacity = '0';
     setTimeout(() => {
         icon.classList.toggle('active');

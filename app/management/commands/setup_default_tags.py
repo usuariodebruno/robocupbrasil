@@ -286,7 +286,7 @@ class Command(BaseCommand):
         for p in pages_rcb:
             link = f"/{p['slug']}" if p['slug'] else "/"
             is_hidden = p['nome'] in escondidos
-            ItemMenu.objects.get_or_create(config=config, header_type='RCB', nome=p['nome'], defaults={'link': link, 'grupo': '', 'escondido': is_hidden})
+            ItemMenu.objects.get_or_create(config=config, header_type='RCB', nome=p['nome'], defaults={'link': link, 'escondido': is_hidden})
 
         # Children Menus
         children_data = [
@@ -317,6 +317,6 @@ class Command(BaseCommand):
         for item in children_data:
             link = f"/{item['parent_slug']}/{item['slug']}"
             is_hidden = item['nome'] in escondidos
-            ItemMenu.objects.get_or_create(config=config, header_type=item['header_type'], nome=item['nome'], defaults={'link': link, 'grupo': '', 'escondido': is_hidden})
+            ItemMenu.objects.get_or_create(config=config, header_type=item['header_type'], nome=item['nome'], defaults={'link': link, 'escondido': is_hidden})
             
         self.stdout.write(self.style.SUCCESS("Menus ensured."))

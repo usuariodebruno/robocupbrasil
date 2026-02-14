@@ -66,37 +66,6 @@ class Regiao(models.TextChoices):
     SP = 'SP', 'São Paulo'
     SE = 'SE', 'Sergipe'
     TO = 'TO', 'Tocantins'
-    def bandeira(self):
-        bandeiras = {
-            'AC': '/media/bandeiras/ac.png',
-            'AL': '/media/bandeiras/al.png',
-            'AP': '/media/bandeiras/ap.png',
-            'AM': '/media/bandeiras/am.png',
-            'BA': '/media/bandeiras/ba.png',
-            'CE': '/media/bandeiras/ce.png',
-            'DF': '/media/bandeiras/df.png',
-            'ES': '/media/bandeiras/es.png',
-            'GO': '/media/bandeiras/go.png',
-            'MA': '/media/bandeiras/ma.png',
-            'MT': '/media/bandeiras/mt.png',
-            'MS': '/media/bandeiras/ms.png',
-            'MG': '/media/bandeiras/mg.png',
-            'PA': '/media/bandeiras/pa.png',
-            'PB': '/media/bandeiras/pb.png',
-            'PR': '/media/bandeiras/pr.png',
-            'PE': '/media/bandeiras/pe.png',
-            'PI': '/media/bandeiras/pi.png',
-            'RJ': '/media/bandeiras/rj.png',
-            'RN': '/media/bandeiras/rn.png',
-            'RS': '/media/bandeiras/rs.png',
-            'RO': '/media/bandeiras/ro.png',
-            'RR': '/media/bandeiras/rr.png',
-            'SC': '/media/bandeiras/sc.png',
-            'SP': '/media/bandeiras/sp.png',
-            'SE': '/media/bandeiras/se.png',
-            'TO': '/media/bandeiras/to.png',
-        }
-        return bandeiras.get(self.value, '')
 
 class TagFuncionario(models.Model):
     nome = models.CharField(max_length=100)
@@ -253,7 +222,6 @@ class ItemMenu(models.Model):
     )
     nome = models.CharField(max_length=100, help_text="Texto do link")
     link = models.CharField(max_length=200, help_text="URL externa ou caminho interno")
-    grupo = models.CharField(max_length=100, blank=True, help_text="Agrupador para dropdown (opcional). Itens com o mesmo grupo ficarão juntos.")
     escondido = models.BooleanField(default=False, verbose_name="Escondido no Desktop?", help_text="Se marcado, aparece apenas no menu hamburger no Desktop. No mobile, todos aparecem no hamburger.")
 
     class Meta:
@@ -485,10 +453,6 @@ class PaginaEstado(models.Model):
 
     def get_absolute_url(self):
         return f"/{self.estado.lower()}/"
-
-    @property
-    def bandeira(self):
-        return Regiao[self.estado].bandeira
 
 @receiver(post_save, sender=User)
 def create_user_profile(sender, instance, created, **kwargs):

@@ -30,7 +30,6 @@ def estado_view(request, sigla):
     context = {
         'sigla': sigla_upper,
         'nome_estado': pagina.get_estado_display(),
-        'bandeira': pagina.bandeira,
         'texto': pagina.texto,
     }
     return render(request, 'estado.html', context)

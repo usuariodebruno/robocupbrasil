@@ -50,22 +50,51 @@
                 {% if header_type_lower != 'rcb' %}
                     <div class="olimpo-plug flex-center">
                         <div class="flex-center">
-                            <a href="/"><img style="height: var(--text-size-medium);" src="{% static 'images/favicon/rcb.png' %}"></a><span>Uma iniciativa <a href="/">Robocup Brasil</a></span>
+                            <a href="/"><img style="height: var(--text-size-medium);" src="{% static 'images/favicon/rcb.png' %}"></a><span>Uma iniciativa <br class="mobile-only"><a href="/">Robocup Brasil</a></span>
                         </div>
                         <a href="https://olimpo.robocup.org.br"><img class="olimpo" src="{% static 'images/header/olimpo.png' %}" alt="Logo Olimpo"/></a>
                     </div>
                 {% endif %}
-                {% for item in config_global.itens_menu.all %}
-                    {% if item.header_type|lower == header_type_lower %}
-                        {% if item.escondido %}
-                            <a href="{{ item.link }}">{{ item.nome }}</a>
-                        {% else %}
-                            <div class="mobile-only">
+                <div class="center-block">
+                    <div style="flex-grow: 1">
+                        {% for item in config_global.itens_menu.all %}
+                            {% if item.header_type|lower == header_type_lower %}
+                                {% if item.escondido %}
+                                    <a class="menu-link" href="{{ item.link }}">{{ item.nome }}</a>
+                                {% else %}
+                                    <div class="mobile-only">
+                                        <a class="menu-link" href="{{ item.link }}">{{ item.nome }}</a>
+                                    </div>
+                                {% endif %}
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                    <div class="local-representation">
+                        <div style="line-height: 1.1">
+                            <strong>Representações locais:</strong>
+                            <br><span class="text-small">Organizam eventos RoboCup no seu estado.</span>
+                        </div>
+                        <div class="uf-list">
+                            {% for sigla, nome in Regiao.choices %}
+                                <a class="uf" href="/estado/{{ sigla }}" title="{{ nome }}">
+                                    {% with image_path='images/bandeiras/'|add:sigla|lower|add:'.png' %}
+                                        <img alt="{{ sigla }}" src="{% static image_path %}"/>
+                                    {% endwith %}
+                                    <div>{{ sigla }}</div>
+                                </a>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+                {% if header_type_lower != 'rcb' %}
+                    <div class="rcb-links">
+                        {% for item in config_global.itens_menu.all %}
+                            {% if item.header_type|lower == 'rcb' and item.escondido %}
                                 <a href="{{ item.link }}">{{ item.nome }}</a>
-                            </div>
-                        {% endif %}
-                    {% endif %}
-                {% endfor %}
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                {% endif %}
             {% endif %}
         </div>
     </main>

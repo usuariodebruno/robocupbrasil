@@ -10,12 +10,14 @@
 {% endblock %}
 
 {% block header %}
-    {% include "components/header_rcb.html" %}
+    {% include "components/header.html" with header_type_lower="rcb" %}
 {% endblock %}
 
 {% block content %}
     <h1>{{ nome_estado }} ({{ sigla }})</h1>
-    <img src="{{ bandeira }}" alt="Bandeira de {{ nome_estado }}" width="300" height="180">
+    {% with "images/bandeiras/"|add:sigla|lower|add:".png" as image_path %}
+        <img src="{% static image_path %}" alt="Bandeira {{ sigla }}">
+    {% endwith %}
 
     <div class="conteudo-estado">
         {{ texto | safe }}  <!-- CKEditor HTML -->

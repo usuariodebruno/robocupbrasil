@@ -353,7 +353,7 @@ class ConfiguracaoGlobalAdmin(RolePermissionMixin, admin.ModelAdmin):
             'fields': ('descricao', 'email_contato', 'outros_emails', 'instagram', 'facebook', 'youtube', 'linkedin', 'patrocinio_vertical', 'patrocinio_horizontal')
         }),
         ('Links das Logos (Headers)', {
-            'fields': ('logo_link_rcb', 'logo_link_cbr', 'logo_link_mnr', 'logo_link_obr'),
+            'fields': ('logo_link_cbr', 'logo_link_mnr', 'logo_link_obr'),
             'description': 'Defina para onde o usuário será redirecionado ao clicar na logo em cada cabeçalho.'
         }),
     )

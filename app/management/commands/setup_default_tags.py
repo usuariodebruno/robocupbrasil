@@ -147,7 +147,6 @@ class Command(BaseCommand):
             'linkedin': "https://www.linkedin.com/company/robocupbrasil/",
             'email_contato': "contato@robocup.org.br",
             'outros_emails': "obr@robocup.org.br cbr@robocup.org.br mnr@robocup.org.br",
-            'logo_link_rcb': "/",
             'logo_link_cbr': "/cbr",
             'logo_link_mnr': "/mnr",
             'logo_link_obr': "/obr",

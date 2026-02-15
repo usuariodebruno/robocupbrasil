@@ -18,12 +18,10 @@
                 <a href="{{ config_global.logo_link_mnr }}">
                     <img alt="Logo" class="logo" src="{% static image_src %}"/>
                 </a>
-            {% elif header_type_lower == 'rcb' and config_global.logo_link_rcb %}
-                <a href="{{ config_global.logo_link_rcb }}">
+            {% else %}
+                <a href="/">
                     <img alt="Logo" class="logo" src="{% static image_src %}"/>
                 </a>
-            {% else %}
-                <img alt="Logo" class="logo" src="{% static image_src %}"/>
             {% endif %}
         {% endwith %}
 
@@ -52,10 +50,10 @@
                         <div class="flex-center">
                             <a href="/"><img style="height: var(--text-size-medium);" src="{% static 'images/favicon/rcb.png' %}"></a><span>Uma iniciativa <br class="mobile-only"><a href="/">Robocup Brasil</a></span>
                         </div>
-                        <a href="https://olimpo.robocup.org.br"><img class="olimpo" src="{% static 'images/header/olimpo.png' %}" alt="Logo Olimpo"/></a>
+                        <a href="https://olimpo.robocup.org.br"><img class="rcb-product" src="{% static 'images/header/olimpo.png' %}" alt="Logo Olimpo"/></a>
                     </div>
                 {% endif %}
-                <div class="center-block">
+                <div class="center-block{% if header_type_lower not in config_global.headers_with_hidden_items %} empty{% endif %}">
                     <div style="flex-grow: 1">
                         {% for item in config_global.itens_menu.all %}
                             {% if item.header_type|lower == header_type_lower %}
@@ -70,7 +68,7 @@
                         {% endfor %}
                     </div>
                     <div class="local-representation">
-                        <div style="line-height: 1.1">
+                        <div class="header">
                             <strong>Representações locais:</strong>
                             <br><span class="text-small">Organizam eventos RoboCup no seu estado.</span>
                         </div>
@@ -93,6 +91,13 @@
                                 <a href="{{ item.link }}">{{ item.nome }}</a>
                             {% endif %}
                         {% endfor %}
+                    </div>
+                {% else %}
+                    <div class="rcb-links images">
+                        <a href="{{ config_global.logo_link_obr }}"><img class="rcb-product" src="{% static 'images/header/obr.png' %}" alt="Logo OBR"/></a>
+                        <a href="{{ config_global.logo_link_cbr }}"><img class="rcb-product" src="{% static 'images/header/cbr.png' %}" alt="Logo CBR"/></a>
+                        <a href="{{ config_global.logo_link_mnr }}"><img class="rcb-product" src="{% static 'images/header/mnr.png' %}" alt="Logo MNR"/></a>
+                        <a href="https://olimpo.robocup.org.br"><img class="rcb-product" src="{% static 'images/header/olimpo.png' %}" alt="Logo Olimpo"/></a>
                     </div>
                 {% endif %}
             {% endif %}

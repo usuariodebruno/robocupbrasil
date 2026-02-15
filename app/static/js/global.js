@@ -1,18 +1,44 @@
+let isTransferring = false;
+let threshold = 100;
+
+// Easter egg
+window.addEventListener('load', function() {
+    console.log('Site "RoboCup Brasil" por\n\n ████  ████                     \n░░███ ░░███                     \n ░███  ░███  █████ ████  ██████ \n ░███  ░███ ░░███ ░███  ███░░███\n ░███  ░███  ░███ ░███ ░███ ░░░ \n ░███  ░███  ░███ ░███ ░███  ███\n █████ █████ ░░████████░░██████ \n░░░░░ ░░░░░   ░░░░░░░░  ░░░░░░  \n                                \n █████████████    ██████  █████ ████\n░░███░░███░░███  ███░░███░░███ ░███ \n ░███ ░███ ░███ ░███ ░███ ░███ ░███ \n ░███ ░███ ░███ ░███ ░███ ░███ ░███ \n █████░███ █████░░██████  ░░████████\n░░░░░ ░░░ ░░░░░  ░░░░░░    ░░░░░░░░ \n\nhttps://lluc.dev | https://github.com/lluckymou\n');
+    console.log('%cAgora, o que você faz aqui? Sai fora hacker', "color: #ff0000;");
+});
+
 window.addEventListener('scroll', function() {
+    if (isTransferring) return;
+
     const floatingHeader = document.querySelector('header.floating');
     const mainHeader = document.querySelector('header.main');
-    const mainContent = document.querySelector('main');
+    const mainContent = document.querySelector('header main');
 
-    if (window.scrollY > 100) {
-        if (!floatingHeader.contains(mainContent)) {
-            floatingHeader.appendChild(mainContent);
-            floatingHeader.classList.add('scrolled');
-        }
-    } else {
-        if (!mainHeader.contains(mainContent)) {
-            mainHeader.appendChild(mainContent);
-            floatingHeader.classList.remove('scrolled');
-        }
+    if (!mainContent) return;
+
+    const scrollY = window.scrollY;
+    const targetParent = scrollY > threshold ? floatingHeader : mainHeader;
+
+    if (!targetParent.contains(mainContent)) {
+        isTransferring = true;
+        mainContent.classList.add('transferring');
+
+        setTimeout(() => {
+            targetParent.appendChild(mainContent);
+            
+            if (targetParent === floatingHeader) {
+                floatingHeader.classList.add('scrolled');
+            } else {
+                floatingHeader.classList.remove('scrolled');
+            }
+
+            requestAnimationFrame(() => {
+                mainContent.classList.remove('transferring');
+                setTimeout(() => {
+                    isTransferring = false;
+                }, 70);
+            });
+        }, 70);
     }
 });
 

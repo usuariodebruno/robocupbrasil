@@ -68,7 +68,7 @@ body {
 /* Footer Styles */
 footer {
     color: var(--yang);
-    margin: var(--default-measure);
+    margin: calc(var(--default-measure) * 0.5);
     border-radius: var(--default-measure);
     border: 5px solid var(--header-footer-border);
     overflow: hidden;
@@ -205,6 +205,8 @@ header main {
     align-items: center;
     margin: calc(var(--default-measure) * 0.5);
     padding: calc(var(--default-measure) * 0.75);
+    transition: opacity 70ms ease-in-out;
+    opacity: 1;
 }
 
 header.floating.scrolled {
@@ -315,16 +317,17 @@ header #menu.active {
 header #menu .menu-link {
     text-decoration: none;
     color: var(--gray-secondary);
-    font-weight: 500;
+    font-weight: 550;
     margin: calc(var(--default-measure) * 0.65) 0;
     display: block;
     font-size: var(--text-size-medium);
     padding: calc(var(--default-measure) * 0.35) var(--default-measure);
-    border-left: 2px solid var(--gray-secondary);
+    border-left: 2px solid var(--blue);
 }
 
 header #menu .menu-link:hover {
-    background-color: var(--gray-secondary);
+    text-shadow:  0 0 6px var(--yin);
+    background-color: color-mix(in srgb, var(--gray-secondary), transparent 70%);
     color: var(--yang);
 }
 
@@ -348,20 +351,34 @@ header .olimpo-plug a {
     font-weight: 600;
 }
 
-header .olimpo {
+header .rcb-product{
     height: calc(var(--header-logo) * 0.4);
+}
+
+header .center-block {
+    border-bottom: 1px solid var(--gray);
+    padding-bottom: calc(var(--default-measure) * 0.65);
+}
+
+header .center-block.empty .local-representation {
+    display: none;
 }
 
 header .local-representation {
     border-radius: var(--default-measure);
     color: var(--yang);
     text-shadow: var(--shadow-hover);
-    background-color: color-mix(in srgb, var(--gray-secondary), transparent 20%);
+    background-color: color-mix(in srgb, var(--blue), transparent 20%);
     padding: var(--default-measure);
     gap: var(--default-measure);
 }
 
-.uf-list {
+header .local-representation .header {
+    line-height: 1.1;
+    margin-bottom: var(--default-measure);
+}
+
+header .uf-list {
     margin-top: calc(var(--default-measure) * 0.5);
     display: flex;
     flex-wrap: wrap;
@@ -371,11 +388,23 @@ header .local-representation {
 
 header .uf-list img {
     height: var(--default-measure);
+    aspect-ratio: 3/2;
 }
 
 header .uf {
     color: var(--yang);
     text-decoration: none;
+    text-align: center;
+    opacity: 50%;
+}
+
+header .uf:hover {
+    filter: unset;
+    opacity: 1;
+}
+
+header .uf * {
+    font-weight: 700;
 }
 
 header .rcb-links {
@@ -384,9 +413,12 @@ header .rcb-links {
     justify-content: center;
     gap: calc(var(--default-measure) * 0.5) calc(var(--default-measure) * 2);
     padding-top: calc(var(--default-measure) * 0.5);
-    border-top: 1px solid var(--gray);
     flex-wrap: wrap;
     margin-top: calc(var(--default-measure) * 0.65);
+}
+
+header .rcb-links.images {
+    gap: calc(var(--default-measure) * 1.25) calc(var(--default-measure) * 2);
 }
 
 header .rcb-links a {
@@ -406,6 +438,7 @@ header .rcb-links a:hover {
 
 @media (min-width: 768px) {
     footer {
+        margin: var(--default-measure);
         max-width: var(--container);
         margin-left: auto;
         margin-right: auto;
@@ -465,11 +498,20 @@ header .rcb-links a:hover {
         padding: var(--default-measure);
     }
 
+    header main.transferring {
+        opacity: 0;
+        pointer-events: none;
+    }
+
     header.floating.scrolled {
         margin-top: var(--default-measure);
         border-radius: 0 0 var(--default-measure) var(--default-measure);
     }
 
+    header.floating.scrolled:hover {
+        box-shadow: var(--shadow-hover);
+    }
+    
     header .desktop-links {
         display: flex;
         gap: calc(var(--default-measure) * 3.25);
@@ -504,14 +546,14 @@ header .rcb-links a:hover {
         display: none;    
     }
 
-    header .olimpo {
+    header .rcb-product{
         height: calc(var(--header-logo) * 0.5);
-        filter: contrast(0%);
+        filter: grayscale(1);
         opacity: 65%;
     }
 
-    header .olimpo:hover {
-        filter: contrast(100%);
+    header .rcb-product:hover {
+        filter: unset;
         opacity: 100%;
     }
 
@@ -527,12 +569,21 @@ header .rcb-links a:hover {
         gap: var(--default-measure);
     }
 
+    header .center-block.empty {
+        display: none;
+    }
+
     header .local-representation {
-        max-width: 33%;
+        max-width: 380px;
     }
     
+    header .uf {
+        filter: grayscale(1);
+        opacity: 40%;
+    }
+
     header .rcb-links  {
-        justify-content: space-between;
+        justify-content: space-evenly;
         padding-top: var(--default-measure);
     }
 }

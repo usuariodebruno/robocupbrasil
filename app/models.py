@@ -97,6 +97,13 @@ class TagNoticia(models.Model):
 
 class Noticia(models.Model):
     titulo = models.CharField(max_length=200)
+    imagem = models.ImageField(
+        upload_to='noticias/',
+        blank=True,
+        verbose_name='Imagem da Notícia (prop. ideal 16:9)',
+        help_text='Tamanho máximo: 8MB',
+        validators=[validate_file_size_8mb],
+    )
     conteudo = RichTextField()
     header_type = models.CharField(
         max_length=50,
@@ -178,8 +185,20 @@ class Subevento(models.Model):
 
 class ConfiguracaoGlobal(models.Model):
     descricao = models.TextField(blank=True, verbose_name="Descrição da Página (para o Google e Rodapé)")
-    patrocinio_vertical = models.ImageField(upload_to='patrocinio/', verbose_name="Patrocínio Vertical (Celular)", blank=True)
-    patrocinio_horizontal = models.ImageField(upload_to='patrocinio/', verbose_name="Patrocínio Horizontal (Computador)", blank=True)
+    patrocinio_vertical = models.ImageField(
+        upload_to='patrocinio/',
+        blank=True,
+        verbose_name='Patrocínio Vertical (Celular) (prop. ideal 9:16)',
+        help_text='Tamanho máximo: 8MB',
+        validators=[validate_file_size_8mb],
+    )
+    patrocinio_horizontal = models.ImageField(
+        upload_to='patrocinio/',
+        blank=True,
+        verbose_name='Patrocínio Horizontal (Computador) (prop. ideal 16:9)',
+        help_text='Tamanho máximo: 8MB',
+        validators=[validate_file_size_8mb],
+    )
     email_contato = models.EmailField(blank=True, verbose_name="Email Principal")
     outros_emails = models.TextField(blank=True, verbose_name="Outros Emails de Contato", help_text="Separe os e-mails por espaço (ex: contato@exemplo.com suporte@exemplo.com)")
     instagram = models.URLField(blank=True)
@@ -187,10 +206,16 @@ class ConfiguracaoGlobal(models.Model):
     youtube = models.URLField(blank=True)
     linkedin = models.URLField(blank=True)
 
-    logo_link_rcb = models.CharField(blank=True, verbose_name="Link da Logo (RCB)", help_text="Link ao clicar na logo no header RCB")
     logo_link_cbr = models.CharField(blank=True, verbose_name="Link da Logo (CBR)", help_text="Link ao clicar na logo no header CBR")
     logo_link_mnr = models.CharField(blank=True, verbose_name="Link da Logo (MNR)", help_text="Link ao clicar na logo no header MNR")
     logo_link_obr = models.CharField(blank=True, verbose_name="Link da Logo (OBR)", help_text="Link ao clicar na logo no header OBR")
+
+    @property
+    def headers_with_hidden_items(self):
+        return [
+            t.lower()
+            for t in self.itens_menu.filter(escondido=True).values_list('header_type', flat=True).distinct()
+        ]
 
     class Meta:
         verbose_name = "Config. e Patrocínio"
@@ -350,7 +375,7 @@ class Pagina(models.Model):
         unique=True,
         blank=True,
         verbose_name='Link',
-        help_text="Link único, sem espaços (ex: 'noticias-obr'). Deixe vazio para a página inicial (/)<br><strong>Atenção:</strong> editar este campo pode quebrar links existentes!"
+        help_text="Link único, sem espaços (ex: 'material-divulgacao'). Deixe vazio para a página inicial (/)<br><strong>Atenção:</strong> editar este campo pode quebrar links existentes!"
     )
     parent = models.ForeignKey(
         'self',

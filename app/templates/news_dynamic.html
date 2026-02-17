@@ -47,8 +47,10 @@
             <p class="margin-0 text-gray-secondary">Publicado em {{ noticia.data|date:"d/m/Y" }}</p>
             <p class="margin-y-1/">{{ noticia.chamada }}</p>
             <div class="flex flex-between flex-reverse desktop:flex-row">
-                <a class="square-button" href="#conteudo">Ler Mais</a>
-                <div class="desktop:text-align-right">
+                {% if noticia.imagem %}
+                    <a class="square-button" href="#conteudo">Ler Mais</a>
+                {% endif %}
+                <div class="{% if noticia.imagem %} desktop:text-align-right {% endif %}">
                     {% if noticia.tags.exists %}
                         <p><strong>Tags:</strong><br/>{{ noticia.tags.all|join:", " }}</p>
                     {% endif %}
@@ -56,11 +58,13 @@
             </div>
         </div>
 
-        <div class="post-header border-radius">
-            <img alt="Imagem de Fundo da Publicação" class="background" src="/media/{{ noticia.imagem }}"/>
-            <img alt="Imagem da Publicação" class="foreground" src="/media/{{ noticia.imagem }}"/>
-            <div class="box-shadow"></div>
-        </div>
+        {% if noticia.imagem %}
+            <div class="post-header border-radius">
+                <img alt="Imagem de Fundo da Publicação" class="background" src="/media/{{ noticia.imagem }}"/>
+                <img alt="Imagem da Publicação" class="foreground" src="/media/{{ noticia.imagem }}"/>
+                <div class="box-shadow"></div>
+            </div>
+        {% endif %}
 
         <div id="conteudo">
             {{ noticia.conteudo|safe }}

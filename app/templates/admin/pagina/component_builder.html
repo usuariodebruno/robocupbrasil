@@ -1,0 +1,28 @@
+<div id="component-builder-ui" data-source-id="{{ widget.attrs.id }}">
+    builder wip <button><b>manipulate JSON</b></button>
+</div>
+
+<div style="margin-top: 1rem;">
+    <p><strong>JSON:</strong></p>
+    {% include "django/forms/widgets/textarea.html" %}
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+        const uiContainer = document.getElementById('component-builder-ui');
+        
+        const textareaId = uiContainer.dataset.sourceId;
+        const jsonTextarea = document.getElementById(textareaId);
+
+        if (!jsonTextarea) {
+            console.error("Textarea original não encontrado!");
+            return;
+        }
+
+        const button = uiContainer.querySelector('button');
+        button.addEventListener('click', (e) => {
+            e.preventDefault();
+            jsonTextarea.value += "Lorem ipsum ";
+        });
+    });
+</script>

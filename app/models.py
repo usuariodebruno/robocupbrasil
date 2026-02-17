@@ -3,6 +3,7 @@ from django.contrib.auth.models import User
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 from django.core.exceptions import ValidationError
+from django.utils.text import slugify
 from ckeditor.fields import RichTextField
 import jsonfield
 
@@ -132,6 +133,22 @@ class Noticia(models.Model):
     )
     tags = models.ManyToManyField(TagNoticia, verbose_name='Tag(s) da Notícia')
     data = models.DateTimeField(auto_now_add=True)
+    permalink = models.SlugField(unique=True, max_length=255, editable=False, allow_unicode=True, blank=True)
+
+    def save(self, *args, **kwargs):
+        if not self.permalink:
+            base_slug = slugify(self.titulo, allow_unicode=True)
+            slug = base_slug
+            counter = 1
+
+            while Noticia.objects.filter(permalink=slug).exists():
+                slug = f"{base_slug}-{counter}"
+                counter += 1
+            self.permalink = slug
+        super().save(*args, **kwargs)
+
+    def get_absolute_url(self):
+        return f"/noticia/{self.permalink}"
 
     class Meta:
         verbose_name = "Notícia"
@@ -252,6 +269,14 @@ class ConfiguracaoGlobal(models.Model):
 
     def __str__(self):
         return "Configurações Globais do Site"
+
+    def clean(self):
+        if not self.pk and ConfiguracaoGlobal.objects.exists():
+            raise ValidationError("Já existe uma configuração global criada. Edite a existente em vez de criar uma nova.")
+
+    def save(self, *args, **kwargs):
+        self.full_clean()
+        super().save(*args, **kwargs)
 
 class AtalhoGlobal(models.Model):
     config = models.ForeignKey(ConfiguracaoGlobal, on_delete=models.CASCADE, related_name='atalhos')
@@ -523,7 +548,7 @@ class PaginaEstado(models.Model):
         return f"Página de {self.get_estado_display()} ({self.estado})"
 
     def get_absolute_url(self):
-        return f"/{self.estado.lower()}/"
+        return f"/estado/{self.estado.lower()}"
 
 @receiver(post_save, sender=User)
 def create_user_profile(sender, instance, created, **kwargs):

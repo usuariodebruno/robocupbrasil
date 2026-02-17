@@ -107,8 +107,11 @@ msgstr "Obrigado por usar nossa plataforma ^^"
 msgid "Are you sure you want to delete the %s"
 msgstr "Tem certeza de que deseja deletar %s"
 
-msgid "Sem permissão para acessar este objeto."
+msgid "You do not have permission to view this object."
 msgstr "Sem permissão para acessar este objeto."
 
-msgid "Você não tem permissão para criar neste formulário."
+msgid "You do not have permission to add this object."
 msgstr "Você não tem permissão para criar neste formulário."
+
+msgid "Search along"
+msgstr "Pesquisar em"

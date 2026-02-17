@@ -3,9 +3,102 @@
 
 {% block extrahead %}
     <style>
+        html { scroll-behavior: smooth; }
         body { zoom: 1.15; overflow-x: hidden; }
-        a.flex.flex-row.h-16.items-center { background: #fafafa !important; box-shadow: inset -5px -5px 15px -9px rgba(0,0,0,0.05); }    
+        * { transition: all 0.3s ease-in-out; }
+        a.flex.flex-row.h-16.items-center img { filter: drop-shadow(1px 0 0 white) drop-shadow(-1px 0 0 white) drop-shadow(0 1px 0 white) drop-shadow(0 -1px 0 white) drop-shadow(4px 0 0 white) drop-shadow(-4px 0 0 white) drop-shadow(0 4px 0 white) drop-shadow(0 -4px 0 white); }
+        a.flex.flex-row.h-16.items-center:hover { background: #5f95cf; } 
+        .hidden-by-search { display: none !important; }
+        .breadcrumbs { padding-bottom: 0 !important; padding-top: 16px !important; line-height: 1.25; overflow-y: hidden; }
+        tr:hover { background-color: var(--color-base-200); }
+
+        #sidebar-search-label:focus-within { outline: none !important; box-shadow: none !important; }
+        .alert.alert-error.mb-5.rounded .menu { display: flex; padding: 0 .75rem !important; }
+        a.indicator.tab.tab-active { gap: calc(var(--spacing) * 2); padding-right: calc(var(--spacing) * 5); }
+        a.indicator.tab.tab-active i { margin: 0 !important; padding: 0 !important; order: -1; }
+        a.indicator.tab.tab-active::before { width: 100%; right: 0; margin-right: -8px; }
+
+        table.table-responsive th.original, table.table-responsive td.original { width: 0px; font-size: 0px; padding: 0 !important; visibility: hidden; }
+
+        a.indicator.tab.tab-active span {
+            translate: none !important;
+            left: 90%;
+            top: 50%;
+            border-radius: 999px;
+            aspect-ratio: 1 / 1;
+            height: 30px;
+        }
+
+        .action-checkbox, .action-checkbox-column { width: 0; }
+
+        @media (min-width: 768px) {
+            #smartToggle {
+                position: fixed;
+                top: 0;
+                left: 0;
+                background: #5688be80;
+                height: 100vh;
+                width: 6px;
+                cursor: w-resize;
+            }
+        }
+
+        @media (min-width: 1536px) {
+            #smartToggle:hover { background: #5688be; }
+
+            .grid.grid-cols-1.\32 xl\:grid-cols-4.gap-3.auto-rows-auto { display: flex !important; }
+            .save-col { width: 296px; }
+        }
     </style>
     <link rel="icon" href="{% static 'images/favicon/rcb.png' %}" type="image/png"/>
     {{ block.super }}
+{% endblock %}
+
+{% block scripts %}
+    {{ block.super }}
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const fieldsets = document.querySelectorAll("form fieldset");
+            if (fieldsets.length > 2) {
+                document.querySelectorAll("form fieldset input").forEach(input => input.click());
+            }
+
+            const searchInput = document.getElementById("sidebar-search");
+            const sidebar = document.getElementById("sidebar");
+            
+            if (!searchInput || !sidebar) return;
+
+            searchInput.addEventListener("input", function() {
+                const term = this.value.toLowerCase().trim();
+                const allLis = sidebar.querySelectorAll("li");
+                
+                if (term === "") {
+                    allLis.forEach(el => el.classList.remove("hidden-by-search"));
+                    return;
+                }
+
+                // Oculta tudo inicialmente para depois mostrar apenas os matches
+                allLis.forEach(el => el.classList.add("hidden-by-search"));
+
+                // Filter links
+                const links = sidebar.querySelectorAll("ul.menu a");
+                links.forEach(link => {
+                    const text = link.innerText.toLowerCase();
+                    if (text.includes(term)) {
+                        // Mostra o LI do link
+                        const li = link.closest("li");
+                        if (li) li.classList.remove("hidden-by-search");
+
+                        // Se estiver dentro de um details, abre ele e mostra o pai
+                        const parentDetails = link.closest("details");
+                        if (parentDetails) {
+                            parentDetails.open = true;
+                            const detailsLi = parentDetails.closest("li");
+                            if (detailsLi) detailsLi.classList.remove("hidden-by-search");
+                        }
+                    }
+                });
+            });
+        });
+    </script>
 {% endblock %}

@@ -5,7 +5,7 @@ from django.conf import settings
 from django.conf.urls.static import static
 from app import views
 
-admin.site.site_header = "Painel Administrativo | RoboCup Brasil"
+admin.site.site_header = "Painel Administrativo"
 admin.site.site_title = "Histórico | RoboCup Brasil"
 admin.site.index_title = "Painel de Controle - RoboCup Brasil"
 
@@ -14,7 +14,7 @@ urlpatterns = [
     path('admin/admin/', RedirectView.as_view(url='/admin/')),
     path('admin/', admin.site.urls), path('admin', admin.site.urls),
     path('estado/<str:sigla>', views.estado_view, name='estado'),
-    path('noticia/<int:pk>', views.noticia_detail, name='noticia_detail'),
+    path('noticia/<str:permalink>', views.noticia_detail, name='noticia_detail'),
 
     re_path(r'^(?!(media|static|admin)/)(?P<path>.*)/?$', views.pagina_dinamica_view, name='pagina_dinamica'),
 ]

@@ -2,6 +2,8 @@ from django.contrib import admin
 from django.contrib.auth.models import User, Group, Permission
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.core.exceptions import ValidationError
+from django import forms
+from django.contrib.admin.models import LogEntry
 from .models import (
     TagFuncionario, Funcionario,
     TagNoticia, Noticia,
@@ -359,12 +361,13 @@ class ConfiguracaoGlobalAdmin(RolePermissionMixin, admin.ModelAdmin):
     )
     inlines = [AtalhoGlobalInline, ItemMenuRCBInline, ItemMenuCBRInline, ItemMenuMNRInline, ItemMenuOBRInline]
 
-from django.contrib.admin.models import LogEntry
+    def has_add_permission(self, request):
+        if ConfiguracaoGlobal.objects.exists():
+            return False
+        return super().has_add_permission(request)
 
-try:
+if admin.site.is_registered(LogEntry):
     admin.site.unregister(LogEntry)
-except admin.sites.NotRegistered:
-    pass
 
 @admin.register(LogEntry)
 class LogEntryAdmin(admin.ModelAdmin):
@@ -386,6 +389,16 @@ class LogEntryAdmin(admin.ModelAdmin):
         return request.user.is_superuser
 
 
+class ComponentesWidget(forms.Textarea):
+    template_name = 'admin/pagina/component_builder.html'
+
+    class Media:
+        js = ('js/component_builder.js',)
+        css = {
+            'all': ('css/component_builder.css',)
+        }
+
+
 @admin.register(Pagina)
 class PaginaAdmin(admin.ModelAdmin):
     list_display = ['nome', 'slug', 'parent', 'header_type', 'privada', 'evento_associado']
@@ -396,11 +409,26 @@ class PaginaAdmin(admin.ModelAdmin):
         (None, {
             'fields': ('nome', 'slug', 'parent', 'header_type', 'privada', 'evento_associado'),
         }),
-        ('Componentes (ordem importa!)', {
+        ('Componentes', {
             'fields': ('componentes',),
             'description': 'Lista JSON ordenada. A ordem dos itens define a sequência na página.'
         }),
     )
+
+    def formfield_for_dbfield(self, db_field, request, **kwargs):
+        if db_field.name == 'componentes':
+            kwargs['widget'] = ComponentesWidget()
+        return super().formfield_for_dbfield(db_field, request, **kwargs)
+
+    def get_form(self, request, obj=None, **kwargs):
+        form = super().get_form(request, obj, **kwargs)
+        if 'parent' in form.base_fields:
+            widget = form.base_fields['parent'].widget
+            widget.can_add_related = False
+            widget.can_change_related = False
+            widget.can_delete_related = False
+            widget.can_view_related = False
+        return form
 
     def has_module_permission(self, request):
         role = None
@@ -421,10 +449,6 @@ class SedeAdmin(RolePermissionMixin, admin.ModelAdmin):
         if role == 'MARKETING':
             return False
         return super().has_delete_permission(request, obj)
-
-from django import forms
-from django.core.exceptions import ValidationError as DjangoValidationError
-
 
 @admin.register(PaginaEstado)
 class PaginaEstadoAdmin(RolePermissionMixin, admin.ModelAdmin):
@@ -453,7 +477,7 @@ class PaginaEstadoAdmin(RolePermissionMixin, admin.ModelAdmin):
                 if role == 'REPRESENTANTE':
                     user_estado = self.request.user.userprofile.estado
                     if estado != user_estado:
-                        raise DjangoValidationError("Representante só pode criar/editar páginas do seu próprio estado.")
+                        raise forms.ValidationError("Representante só pode criar/editar páginas do seu próprio estado.")
             return estado
 
     def get_form(self, request, obj=None, **kwargs):

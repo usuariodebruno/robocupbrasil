@@ -70,8 +70,8 @@ def pagina_dinamica_view(request, path):
     }
     return render(request, 'base_dynamic.html', context)
 
-def noticia_detail(request, pk):
-    noticia = get_object_or_404(Noticia, pk=pk)
+def noticia_detail(request, permalink):
+    noticia = get_object_or_404(Noticia, permalink=permalink)
 
     context = {
         'noticia': noticia,

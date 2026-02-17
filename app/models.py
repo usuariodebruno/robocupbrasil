@@ -70,6 +70,10 @@ class Regiao(models.TextChoices):
 class TagFuncionario(models.Model):
     nome = models.CharField(max_length=100)
 
+    class Meta:
+        verbose_name = "Tag de Funcionário"
+        verbose_name_plural = "Tags de Funcionários"
+
     def __str__(self):
         return self.nome
 
@@ -86,17 +90,26 @@ class Funcionario(models.Model):
         validators=[validate_file_size_8mb],
     )
 
+    class Meta:
+        verbose_name = "Funcionário"
+        verbose_name_plural = "Funcionários"
+
     def __str__(self):
         return self.nome or f"Funcionário {self.id}"
 
 class TagNoticia(models.Model):
     nome = models.CharField(max_length=100)
 
+    class Meta:
+        verbose_name = "Tag de Notícia"
+        verbose_name_plural = "Tags de Notícias"
+
     def __str__(self):
         return self.nome
 
 class Noticia(models.Model):
     titulo = models.CharField(max_length=200)
+    chamada = models.CharField(max_length=200, default="Insira uma curta chamada ou introdução para sua notícia aqui...")
     imagem = models.ImageField(
         upload_to='noticias/',
         blank=True,
@@ -120,11 +133,19 @@ class Noticia(models.Model):
     tags = models.ManyToManyField(TagNoticia, verbose_name='Tag(s) da Notícia')
     data = models.DateTimeField(auto_now_add=True)
 
+    class Meta:
+        verbose_name = "Notícia"
+        verbose_name_plural = "Notícias"
+
     def __str__(self):
         return self.titulo
 
 class TagData(models.Model):
     nome = models.CharField(max_length=100)
+
+    class Meta:
+        verbose_name = "Tag de Data"
+        verbose_name_plural = "Tags de Datas"
 
     def __str__(self):
         return self.nome
@@ -148,6 +169,10 @@ class Data(models.Model):
 class TagArquivo(models.Model):
     nome = models.CharField(max_length=100)
 
+    class Meta:
+        verbose_name = "Tag de Arquivo"
+        verbose_name_plural = "Tags de Arquivos"
+
     def __str__(self):
         return self.nome
 
@@ -160,6 +185,10 @@ class Arquivo(models.Model):
         validators=[validate_file_size_64mb],
     )
     tags = models.ManyToManyField(TagArquivo)
+
+    class Meta:
+        verbose_name = "Arquivo"
+        verbose_name_plural = "Arquivos"
 
     def __str__(self):
         return self.nome
@@ -233,6 +262,9 @@ class AtalhoGlobal(models.Model):
         verbose_name = "Atalho de Rodapé"
         verbose_name_plural = "Atalhos de Rodapé"
 
+    def __str__(self):
+        return 'Atalho no Rodapé:'
+
 class ItemMenu(models.Model):
     config = models.ForeignKey(ConfiguracaoGlobal, on_delete=models.CASCADE, related_name='itens_menu')
     header_type = models.CharField(
@@ -247,11 +279,23 @@ class ItemMenu(models.Model):
     )
     nome = models.CharField(max_length=100, help_text="Texto do link")
     link = models.CharField(max_length=200, help_text="URL externa ou caminho interno")
-    escondido = models.BooleanField(default=False, verbose_name="Escondido no Desktop?", help_text="Se marcado, aparece apenas no menu hamburger no Desktop. No mobile, todos aparecem no hamburger.")
+    escondido = models.BooleanField(default=False, verbose_name="Escondido no Desktop?", help_text="Se marcado, o link aparece fora do menu \"≡\" no computador. Para o menu padrão RCB, manter um item escondido fará o mesmo aparecer em todas as páginas.")
 
     class Meta:
         verbose_name = "Item do Menu"
         verbose_name_plural = "Itens do Menu"
+
+    def __str__(self):
+        if(self.header_type == 'CBR'):
+            return 'Atalho no Menu CBR:'
+        if(self.header_type == 'MNR'):
+            return 'Atalho no Menu MNR:'
+        if(self.header_type == 'OBR'):
+            return 'Atalho no Menu OBR:'
+        if(self.escondido):
+            return 'Atalho Global:'
+
+        return 'Atalho no Menu RoboCup:'
 
 class ItemMenuRCB(ItemMenu):
     class Meta:
@@ -454,6 +498,8 @@ class Sede(models.Model):
 
     class Meta:
         ordering = ['ano']
+        verbose_name = "Sede"
+        verbose_name_plural = "Sedes"
 
     def __str__(self):
         return f"{self.ano} - {self.cidade}, {self.estado}"

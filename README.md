@@ -50,18 +50,18 @@ pip freeze > requirements.txt
 
 ### 4. Set up the `.env` file (recommended)
 
+Generate a secure key with:
+
+```bash
+python -c "import secrets; print(secrets.token_urlsafe(50))"
+```
+
 Create a `.env` file in the project root with:
 
 ```bash
 DJANGO_SECRET_KEY=insert-secure-key
 DJANGO_DEBUG=False
 ALLOWED_HOSTS=127.0.0.1,localhost,robocup.org.br,*.robocup.org.br
-```
-
-Generate a secure key with:
-
-```bash
-python -c "import secrets; print(secrets.token_urlsafe(50))"
 ```
 
 ### 5. Apply migrations and set up permissions and basic structure

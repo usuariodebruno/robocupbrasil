@@ -317,7 +317,7 @@ class ItemMenuRCBInline(ItemMenuInlineBase):
     model = ItemMenuRCB
     header_type_value = 'RCB'
     verbose_name = "Item de Menu (RCB)"
-    verbose_name_plural = "Menu Padrão: Itens"
+    verbose_name_plural = "Menu Padrão RCB: Itens"
     def get_queryset(self, request):
         return super().get_queryset(request).filter(header_type='RCB')
 

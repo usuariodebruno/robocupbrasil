@@ -1,0 +1,74 @@
+/* 
+    Extra CSS for important one-of-a-kind components
+
+    (Won't affect headers and footers)
+*/
+.square-button {
+    width: fit-content;
+    font-weight: 300;
+    text-decoration: none;
+    padding: calc(var(--default-measure) * 0.5) var(--default-measure);
+    display: block;
+    border: 1px solid var(--blue-secondary);
+    color: var(--blue-secondary);
+    flex-shrink: 0;
+}
+
+.square-button:hover {
+    background-color: var(--blue-secondary);
+    color: var(--yang);
+}
+
+.post-header {
+    display: flex;
+    overflow: hidden;
+    position: relative;
+}
+
+.post-header .foreground {
+    max-width: 100%;
+    max-height: 9999px;
+}
+
+
+.post-header .background {
+    display: none;
+}
+
+#conteudo {
+    overflow: auto;
+}
+
+/* Desktop */
+@media (min-width: 768px) {
+    .post-header {
+        aspect-ratio: 16 / 9;
+        overflow: hidden;
+    }
+
+    .post-header .background {
+        display: block;
+        max-width: 100%;
+        filter: blur(1rem);
+    }
+
+    .post-header .background, .post-header .foreground {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        translate: -50% -50%;
+    }
+
+    .post-header:hover .foreground {
+        max-height: 100%;
+    }
+
+    .post-header:hover .box-shadow {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        box-shadow: inset 0px 0px 4rem 1rem color-mix(in srgb, var(--yin), transparent 60%);
+    }
+}

@@ -12,7 +12,7 @@ admin.site.index_title = "Painel de Controle - RoboCup Brasil"
 urlpatterns = [
     path('admin/app/', RedirectView.as_view(url='/admin/')),
     path('admin/admin/', RedirectView.as_view(url='/admin/')),
-    path('admin/', admin.site.urls),
+    path('admin/', admin.site.urls), path('admin', admin.site.urls),
     path('estado/<str:sigla>', views.estado_view, name='estado'),
     path('noticia/<int:pk>', views.noticia_detail, name='noticia_detail'),
 

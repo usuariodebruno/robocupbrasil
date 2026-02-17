@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load admin_icons %}
 {% load static %}
 
 {% block title %}
@@ -10,16 +11,74 @@
 {% endblock %}
 
 {% block header %}
-    {% include "components/header.html" with header_type_lower="rcb" %}
+    {% include "components/header.html" with header_type_lower=reference %}
 {% endblock %}
 
 {% block content %}
-    <h1>{{ nome_estado }} ({{ sigla }})</h1>
-    {% with "images/bandeiras/"|add:sigla|lower|add:".png" as image_path %}
-        <img src="{% static image_path %}" alt="Bandeira {{ sigla }}">
-    {% endwith %}
+    <section class="mobile-only flex flex-center{% if reference|lower != 'mnr' %} padding-b-3{% endif %}">
+        <h1 class="margin-0 header-line ribbon-{{reference|lower}} padding-1 state-header text-align-center">
+            {{ nome_estado }}
+        </h1>
+    </section>
+    <section class="margin-t-4 desktop:margin-t-3">
+        <section class="container flex flex-center desktop:flex-start">
+            <div class="padding-0/ border-radius large bg-blue w-fit inside-bottom">
+                {% if reference|lower == 'obr' %}
+                    <border-detail class="container obr blue top small spin desktop:hidden margin-t-1/"></border-detail>
+                {% elif reference|lower == 'cbr' %}
+                    <border-detail class="container cbr blue top left small desktop:hidden margin-t-1/"></border-detail>
+                {% elif reference|lower == 'mnr' %}
+                    <border-detail class="container mnr blue top small desktop:hidden"></border-detail>
+                {% else %}
+                    <border-detail class="container rcb blue top small desktop:hidden margin-t-0/"></border-detail>
+                {% endif %}
+                {% with flag_path="images/bandeiras/"|add:sigla|lower|add:".png" state_path="images/estados/"|add:sigla|lower|add:".png" %}
+                    <div style="background-image: url('{% static flag_path %}')" class="border-radius large inner state-flag">
+                        <img src="{% static state_path %}" alt="{{ sigla }}" class="border-radius large inner w-4/ desktop:w-5 block state-image"/>
+                    </div>
+                {% endwith %}
+            </div>
+            <h1 class="desktop-only margin-0 header-line ribbon-{{reference|lower}} padding-x-1 padding-y-0/ state-header">{{ nome_estado }}</h1>
+        </section>
+        <section class="bg-blue">
+            {% if reference|lower == 'obr' %}
+                <border-detail class="container obr blue top right big hidden spin desktop:shown margin-t-1/"></border-detail>
+            {% elif reference|lower == 'cbr' %}
+                <border-detail class="container cbr blue top right big hidden desktop:shown margin-t-2/"></border-detail>
+            {% elif reference|lower == 'mnr' %}
+                <border-detail class="container mnr blue top right big hidden desktop:shown"></border-detail>
+            {% else %}
+                <border-detail class="container rcb blue top right big hidden desktop:shown margin-t-0/"></border-detail>
+            {% endif %}
+            <div class="container padding-t-5 padding-b-2">
+                <!-- Tab section -->
+                <section class="border-radius tabs yin blue-secondary">
+                    <div class="tab-buttons">
+                        <button data-tab="voluntarios">Auxilie</button>
+                        <button data-tab="invista">Contato</button>
+                    </div>
+                    <div class="tab-content">
+                        <div id="voluntarios" class="tab-pane">
+                            <h3 class="margin-0 margin-b-0/ text-xlarge">Programa de voluntariado</h3>
+                            <p class="margin-0 text-large">Deseja ser um voluntário em algum evento regional ou estadual? <strong>Entre em contato</strong> com um representante e ajude-nos a democratizar a robótica!</p>
+                        </div>
+                        <div id="invista" class="tab-pane">
+                            <h3 class="margin-0 margin-b-0/ text-xlarge">Invista nos eventos de robótica do seu estado!</h3>
+                            <p class="margin-0 text-large">
+                                Deseja investir em uma Regional ou Estadual de algum evento RoboCup Brasil?
+                                Entre em contato com um <strong>representante</strong> e ajude-nos a democratizar a robótica!
+                            </p>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </section>
+    </section>
 
-    <div class="conteudo-estado">
-        {{ texto | safe }}  <!-- CKEditor HTML -->
-    </div>
+    <section class="container margin-t-1">
+        {% if texto is None %}
+            aaaaaaaaaa
+        {% endif %}
+        {{ texto | safe }}
+    </section>
 {% endblock %}

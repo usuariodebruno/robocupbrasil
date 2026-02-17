@@ -3,8 +3,9 @@ let threshold = 100;
 
 // Easter egg
 window.addEventListener('load', function() {
-    console.log('Site "RoboCup Brasil" por\n\n ████  ████                     \n░░███ ░░███                     \n ░███  ░███  █████ ████  ██████ \n ░███  ░███ ░░███ ░███  ███░░███\n ░███  ░███  ░███ ░███ ░███ ░░░ \n ░███  ░███  ░███ ░███ ░███  ███\n █████ █████ ░░████████░░██████ \n░░░░░ ░░░░░   ░░░░░░░░  ░░░░░░  \n                                \n █████████████    ██████  █████ ████\n░░███░░███░░███  ███░░███░░███ ░███ \n ░███ ░███ ░███ ░███ ░███ ░███ ░███ \n ░███ ░███ ░███ ░███ ░███ ░███ ░███ \n █████░███ █████░░██████  ░░████████\n░░░░░ ░░░ ░░░░░  ░░░░░░    ░░░░░░░░ \n\nhttps://lluc.dev | https://github.com/lluckymou\n');
-    console.log('%cAgora, o que você faz aqui? Sai fora hacker', "color: #ff0000;");
+    console.log('CMS RoboCup Brasil por\n\n ████  ████                     \n░░███ ░░███                     \n ░███  ░███  █████ ████  ██████ \n ░███  ░███ ░░███ ░███  ███░░███\n ░███  ░███  ░███ ░███ ░███ ░░░ \n ░███  ░███  ░███ ░███ ░███  ███\n █████ █████ ░░████████░░██████ \n░░░░░ ░░░░░   ░░░░░░░░  ░░░░░░  \n                                \n █████████████    ██████  █████ ████\n░░███░░███░░███  ███░░███░░███ ░███ \n ░███ ░███ ░███ ░███ ░███ ░███ ░███ \n ░███ ░███ ░███ ░███ ░███ ░███ ░███ \n █████░███ █████░░██████  ░░████████\n░░░░░ ░░░ ░░░░░  ░░░░░░    ░░░░░░░░ \n\nhttps://lluc.dev | https://github.com/lluckymou\n');
+    console.log('%cAgora, o que você faz aqui? Sai fora hacker\n', "color: #ff0000;");
+    setupTabs();
 });
 
 window.addEventListener('scroll', function() {
@@ -63,4 +64,41 @@ function toggleMenu() {
         document.querySelector(':root').style.setProperty('--header-js', '0px');
     }
     }, 240);
+}
+
+function setupTabs() {
+    document.querySelectorAll('.tabs').forEach(tabsContainer => {
+        const buttons = Array.from(tabsContainer.querySelectorAll('[data-tab]'))
+                             .filter(btn => btn.closest('.tabs') === tabsContainer);
+        
+        if (buttons.length === 0) return;
+
+        const contentContainer = tabsContainer.querySelector('.tab-content');
+        const panes = contentContainer 
+            ? Array.from(contentContainer.querySelectorAll('.tab-pane'))
+                   .filter(pane => pane.closest('.tabs') === tabsContainer)
+            : [];
+
+        buttons.forEach(button => {
+            button.addEventListener('click', (e) => {
+                e.preventDefault();
+
+                buttons.forEach(btn => btn.classList.remove('active'));
+                panes.forEach(pane => pane.classList.remove('active'));
+
+                button.classList.add('active');
+                const tabId = button.dataset.tab;
+                const targetPane = panes.find(p => p.id === tabId);
+                if (targetPane) {
+                    targetPane.classList.add('active');
+                }
+            });
+        });
+
+        // Activate first tab if none are active
+        const hasActive = buttons.some(btn => btn.classList.contains('active'));
+        if (!hasActive && buttons.length > 0) {
+            buttons[0].click();
+        }
+    });
 }

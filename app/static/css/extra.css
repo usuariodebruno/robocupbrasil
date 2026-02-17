@@ -3,6 +3,119 @@
 
     (Won't affect headers and footers)
 */
+
+/* JS Components */
+.tabs {
+    --foreground: var(--yin);
+    --background: var(--yang);
+    --secondary-foreground: var(--foreground);
+    --secondary-background: var(--background);
+    text-shadow: var(--shadow-hover);
+    width: 100%;
+}
+.tabs.border-radius, .tabs.desktop\:border-radius { overflow: hidden; }
+.tab-pane { display: none; padding: calc(var(--default-measure) * 2); }
+.tab-pane.active { display: block; }
+
+.tab-buttons {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.tab-buttons button {
+    outline: none;
+    cursor: pointer;
+    line-height: 1;
+    font-family: inherit;
+    font-weight: 600;
+    border: 0;
+    flex-grow: 1;
+    font-size: var(--text-size-medium);
+    padding: var(--default-measure) calc(var(--default-measure) * 1.5);
+}
+
+.tab-buttons button.active { cursor: default; }
+
+.tabs .tab-pane { background-color: var(--foreground); color: var(--background); }
+.tabs .tab-pane.active { background-color: var(--background); color: var(--foreground); }
+.tabs .tab-buttons button { background-color: var(--secondary-foreground); color: var(--secondary-background); }
+.tabs .tab-buttons button:hover { background-color: var(--background); color: var(--foreground); }
+.tabs .tab-buttons button.active { background-color: var(--background); color: var(--foreground); }
+
+.tabs.blue { --background: var(--yang); --foreground: var(--blue); }
+.tabs.green { --background: var(--yang); --foreground: var(--green); }
+.tabs.gray { --background: var(--yang); --foreground: var(--gray); }
+.tabs.yellow { --background: var(--yang); --foreground: var(--yellow); }
+.tabs.orange { --background: var(--yang); --foreground: var(--orange); }
+.tabs.red { --background: var(--yang); --foreground: var(--red); }
+.tabs.blue-secondary { --background: var(--yang); --foreground: var(--blue-secondary); }
+.tabs.green-secondary { --background: var(--yang); --foreground: var(--green-secondary); }
+.tabs.gray-secondary { --background: var(--yang); --foreground: var(--gray-secondary); }
+.tabs.yellow-secondary { --background: var(--yang); --foreground: var(--yellow-secondary); }
+.tabs.orange-secondary { --background: var(--yang); --foreground: var(--orange-secondary); }
+.tabs.red-secondary { --background: var(--yang); --foreground: var(--red-secondary); }
+
+.tabs.yin.blue { --background: var(--blue); --foreground: var(--yang); }
+.tabs.yin.green { --background: var(--green); --foreground: var(--yang); }
+.tabs.yin.gray { --background: var(--gray); --foreground: var(--yang); }
+.tabs.yin.yellow { --background: var(--yellow); --foreground: var(--yang); }
+.tabs.yin.orange { --background: var(--orange); --foreground: var(--yang); }
+.tabs.yin.red { --background: var(--red); --foreground: var(--yang); }
+.tabs.yin.blue-secondary { --background: var(--blue-secondary); --foreground: var(--yang); --secondary-background: var(--yang); --secondary-foreground: var(--blue); }
+.tabs.yin.green-secondary { --background: var(--green-secondary); --foreground: var(--yang); --secondary-background: var(--yang); --secondary-foreground: var(--green); }
+.tabs.yin.gray-secondary { --background: var(--gray-secondary); --foreground: var(--yang); --secondary-background: var(--yang); --secondary-foreground: var(--gray); }
+.tabs.yin.yellow-secondary { --background: var(--yellow-secondary); --foreground: var(--yang); --secondary-background: var(--yang); --secondary-foreground: var(--yellow); }
+.tabs.yin.orange-secondary { --background: var(--orange-secondary); --foreground: var(--yang); --secondary-background: var(--yang); --secondary-foreground: var(--orange); }
+.tabs.yin.red-secondary { --background: var(--red-secondary); --foreground: var(--yang); --secondary-background: var(--yang); --secondary-foreground: var(--red); }
+
+/* Other Styles */
+.mb-obr { margin-bottom: calc(var(--default-measure) * 1.75); }
+.mb-cbr { margin-bottom: calc(var(--default-measure) * 2); }
+.mb-mnr { margin-bottom: var(--default-measure); }
+
+.state-image { 
+    opacity: 100%;
+    transition: opacity 0.75s linear; 
+    aspect-ratio: 3 / 2;
+}
+
+.state-image:hover { opacity: 0%; }
+
+.state-flag {
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+}
+
+.ribbon-obr {
+    border-image: linear-gradient(
+        to right, 
+        var(--red) 0%, var(--red) 16.66%, 
+        var(--orange) 16.66%, var(--orange) 33.33%, 
+        var(--yellow) 33.33%, var(--yellow) 50%, 
+        var(--gray) 50%, var(--gray) 66.66%, 
+        var(--green) 66.66%, var(--green) 83.33%, 
+        var(--blue) 83.33%, var(--blue) 100%
+    ) 1;
+}
+
+.ribbon-cbr {
+    border-color: var(--gray-secondary);
+}
+
+.ribbon-mnr {
+    border-color: var(--yellow-secondary);
+}
+
+.ribbon-rcb {
+    border-color: var(--blue-secondary);
+}
+
+.state-header {
+    width: calc(var(--default-measure) * 26);
+}
+
 .square-button {
     width: fit-content;
     font-weight: 300;

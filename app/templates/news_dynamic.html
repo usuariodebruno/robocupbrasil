@@ -26,14 +26,14 @@
 
 {% block content %}
     {% if header_type == 'OBR' %}
-        <section class="bg-yellow-secondary">
-            <border-detail class="container obr cut yellow-secondary bottom right"></border-detail>
+        <section class="bg-yellow-secondary mb-obr">
+            <border-detail class="container obr yellow-secondary bottom right cut small desktop:big"></border-detail>
     {% elif header_type == 'CBR' %}
-        <section class="bg-gray">
-            <border-detail class="container cbr gray bottom right"></border-detail>
+        <section class="bg-gray mb-cbr">
+            <border-detail class="container cbr gray bottom right cut small desktop:big"></border-detail>
     {% elif header_type == 'MNR' %}
-        <section class="bg-green-secondary">
-            <border-detail class="container mnr green-secondary bottom right"></border-detail>
+        <section class="bg-green-secondary mb-mnr">
+            <border-detail class="container mnr green-secondary bottom right cut small desktop:big"></border-detail>
     {% else %}
         <section class="bg-blue">
     {% endif %}

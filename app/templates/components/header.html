@@ -74,7 +74,7 @@
                         </div>
                         <div class="uf-list">
                             {% for sigla, nome in Regiao.choices %}
-                                <a class="uf" href="/estado/{{ sigla }}" title="{{ nome }}">
+                                <a class="uf" href="/estado/{{ sigla }}{% if header_type_lower != 'rcb' %}?ref={{ header_type_lower }}{% endif %}" title="{{ nome }}">
                                     {% with image_path='images/bandeiras/'|add:sigla|lower|add:'.png' %}
                                         <img alt="{{ sigla }}" src="{% static image_path %}"/>
                                     {% endwith %}

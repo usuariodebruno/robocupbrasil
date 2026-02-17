@@ -25,12 +25,17 @@ def estado_view(request, sigla):
     if sigla_upper not in [choice[0] for choice in Regiao.choices]:
         raise Http404("Estado não encontrado")
 
+    reference = request.GET.get('ref', 'rcb').lower()
+    if(reference != 'cbr' and reference != 'mnr' and reference != 'obr'):
+        reference = 'rcb'
+
     pagina = get_object_or_404(PaginaEstado, estado=sigla_upper)
 
     context = {
         'sigla': sigla_upper,
         'nome_estado': pagina.get_estado_display(),
         'texto': pagina.texto,
+        'reference': reference,
     }
     return render(request, 'estado.html', context)
 

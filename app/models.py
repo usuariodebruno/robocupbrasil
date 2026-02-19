@@ -4,18 +4,10 @@ from django.db.models.signals import post_save
 from django.dispatch import receiver
 from django.core.exceptions import ValidationError
 from django.utils.text import slugify
+from django_resized import ResizedImageField
 from ckeditor.fields import RichTextField
-import jsonfield
 
-def validate_file_size_8mb(f):
-    if f and getattr(f, 'size', 0) > 8 * 1024 * 1024:
-        raise ValidationError("Tamanho máximo do arquivo: 8MB.")
-
-def validate_file_size_16mb(f):
-    if f and getattr(f, 'size', 0) > 16 * 1024 * 1024:
-        raise ValidationError("Tamanho máximo do arquivo: 16MB.")
-
-def validate_file_size_64mb(f):
+def validate_file_size(f):
     if f and getattr(f, 'size', 0) > 64 * 1024 * 1024:
         raise ValidationError("Tamanho máximo do arquivo: 64MB.")
 
@@ -83,12 +75,13 @@ class Funcionario(models.Model):
     cargo = models.CharField(max_length=200)
     tags = models.ManyToManyField(TagFuncionario)
     bio = models.TextField(blank=True)
-    foto = models.ImageField(
+    foto = ResizedImageField(
+        size=[3000, 3000],
+        quality=75,
         upload_to='fotos_funcionarios/',
         blank=True,
         verbose_name='Foto (tam. ideal 512x512)',
-        help_text='Tamanho máximo: 8MB',
-        validators=[validate_file_size_8mb],
+        help_text='A imagem será redimensionada para no máximo 3000x3000 pixels.',
     )
 
     class Meta:
@@ -111,12 +104,13 @@ class TagNoticia(models.Model):
 class Noticia(models.Model):
     titulo = models.CharField(max_length=200)
     chamada = models.CharField(max_length=200, default="Insira uma curta chamada ou introdução para sua notícia aqui...")
-    imagem = models.ImageField(
+    imagem = ResizedImageField(
+        size=[3000, 3000],
+        quality=75,
         upload_to='noticias/',
         blank=True,
         verbose_name='Imagem da Notícia (prop. ideal 16:9)',
-        help_text='Tamanho máximo: 8MB',
-        validators=[validate_file_size_8mb],
+        help_text='A imagem será redimensionada para no máximo 3000x3000 pixels.',
     )
     conteudo = RichTextField()
     header_type = models.CharField(
@@ -199,7 +193,7 @@ class Arquivo(models.Model):
         upload_to='arquivos/',
         verbose_name='Arquivo (tamanho máximo 64MB)',
         help_text='Tamanho máximo: 64MB',
-        validators=[validate_file_size_64mb],
+        validators=[validate_file_size],
     )
     tags = models.ManyToManyField(TagArquivo)
 
@@ -213,14 +207,19 @@ class Arquivo(models.Model):
 class Subevento(models.Model):
     nome = models.CharField(max_length=200)
     evento = models.CharField(max_length=50, choices=Evento.choices)
-    icone = models.ImageField(
+    icone = ResizedImageField(
+        size=[3000, 3000],
+        quality=75,
         upload_to='icones/',
         blank=True,
         verbose_name='Ícone (tam. ideal 256x256)',
-        help_text='Tamanho máximo: 8MB',
-        validators=[validate_file_size_8mb],
+        help_text='A imagem será redimensionada para no máximo 3000x3000 pixels.',
     )
-    quadro_avisos = RichTextField(verbose_name='Quadro de Avisos da Liga / Subevento')
+    componentes = models.JSONField(
+        default=list,
+        blank=True,
+        verbose_name="🧩 Componentes",
+    )
 
     class Meta:
         verbose_name = "Subevento (Liga)"
@@ -231,19 +230,21 @@ class Subevento(models.Model):
 
 class ConfiguracaoGlobal(models.Model):
     descricao = models.TextField(blank=True, verbose_name="Descrição da Página (para o Google e Rodapé)")
-    patrocinio_vertical = models.ImageField(
+    patrocinio_vertical = ResizedImageField(
+        size=[3000, 3000],
+        quality=75,
         upload_to='patrocinio/',
         blank=True,
         verbose_name='Patrocínio Vertical (Celular) (prop. ideal 9:16)',
-        help_text='Tamanho máximo: 8MB',
-        validators=[validate_file_size_8mb],
+        help_text='A imagem será redimensionada para no máximo 3000x3000 pixels.',
     )
-    patrocinio_horizontal = models.ImageField(
+    patrocinio_horizontal = ResizedImageField(
+        size=[3000, 3000],
+        quality=75,
         upload_to='patrocinio/',
         blank=True,
         verbose_name='Patrocínio Horizontal (Computador) (prop. ideal 16:9)',
-        help_text='Tamanho máximo: 8MB',
-        validators=[validate_file_size_8mb],
+        help_text='A imagem será redimensionada para no máximo 3000x3000 pixels.',
     )
     email_contato = models.EmailField(blank=True, verbose_name="Email Principal")
     outros_emails = models.TextField(blank=True, verbose_name="Outros Emails de Contato", help_text="Separe os e-mails por espaço (ex: contato@exemplo.com suporte@exemplo.com)")
@@ -441,7 +442,6 @@ class Pagina(models.Model):
     nome = models.CharField(max_length=200, help_text="Nome visível da página (ex: 'Notícias OBR')")
     slug = models.SlugField(
         max_length=100,
-        unique=True,
         blank=True,
         verbose_name='Link',
         help_text="Link único, sem espaços (ex: 'material-divulgacao'). Deixe vazio para a página inicial (/)<br><strong>Atenção:</strong> editar este campo pode quebrar links existentes!"
@@ -487,6 +487,10 @@ class Pagina(models.Model):
         ordering = ['nome']
         verbose_name = "Página Dinâmica"
         verbose_name_plural = "Páginas Dinâmicas"
+        constraints = [
+            models.UniqueConstraint(fields=['parent', 'slug'], name='unique_parent_slug'),
+            models.UniqueConstraint(fields=['slug'], condition=models.Q(parent__isnull=True), name='unique_root_slug'),
+        ]
 
     def __str__(self):
         if not self.slug:
@@ -513,12 +517,10 @@ class Sede(models.Model):
     ano = models.CharField(max_length=4, help_text="Ano (ex: 2026)")
     cidade = models.CharField(max_length=200)
     estado = models.CharField(max_length=2, choices=Regiao.choices)
-    imagem = models.ImageField(
-        upload_to='sedes/',
+    componentes = models.JSONField(
+        default=list,
         blank=True,
-        verbose_name='Imagem (16:9, tam. ideal 1920x1080)',
-        help_text='Tamanho máximo: 16MB',
-        validators=[validate_file_size_16mb],
+        verbose_name="🧩 Componentes",
     )
 
     class Meta:
@@ -535,9 +537,10 @@ class PaginaEstado(models.Model):
         choices=Regiao.choices,
         unique=True
     )
-    texto = RichTextField(
+    componentes = models.JSONField(
+        default=list,
         blank=True,
-        verbose_name = "Conteúdo da Página",
+        verbose_name="🧩 Componentes",
     )
 
     class Meta:

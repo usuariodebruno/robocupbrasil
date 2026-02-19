@@ -1,6 +1,6 @@
 # RoboCup Brasil - Official Website
 
-Institutional website for RoboCup Brasil, featuring information about OBR, CBR, MNR, news, calendar, regional representatives, and more.
+Institutional CMS website for RoboCup Brasil using Django and SQLite, featuring information about OBR, CBR, MNR, news, calendar, regional representatives, and more.
 
 ## Requirements
 
@@ -44,7 +44,7 @@ pip install -r requirements.txt
 Bash
 
 ```bash
-pip install django django-ckeditor python-dotenv
+pip install django django-ckeditor python-dotenv django-compressor django-resized
 pip freeze > requirements.txt
 ``` -->
 
@@ -84,13 +84,28 @@ python manage.py createsuperuser
 # Suggested: Username: admin
 ```
 
-### 6. Start the development server
+### 6. Production
 
 ```bash
 # Collectsatatic for production
-python manage.py collectstatic --no-input
+python manage.py collectstatic --noinput && python manage.py compress --force
+```
 
-# Runserver command
+**Nginx configuration:**
+
+```nginx
+location /media/ {
+    alias /PATH/TO/robocupbrasil/media/;
+}
+
+location /static/ {
+    alias /PATH/TO/robocupbrasil/staticfiles/;
+}
+```
+
+### 7. Run the server
+
+```bash
 python manage.py runserver
 ```
 

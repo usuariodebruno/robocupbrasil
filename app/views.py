@@ -58,7 +58,7 @@ def estado_view(request, sigla):
     context = {
         'sigla': sigla_upper,
         'nome_estado': pagina.get_estado_display(),
-        'texto': pagina.texto,
+        'conteudo': pagina.componentes,
         'reference': reference,
         'tabs': tabs,
     }

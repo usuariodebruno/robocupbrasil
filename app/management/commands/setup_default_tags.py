@@ -80,7 +80,7 @@ class Command(BaseCommand):
         ]
         created = 0
         for nome, evento in subeventos:
-            obj, c = Subevento.objects.update_or_create(nome=nome, defaults={'evento': evento, 'quadro_avisos': ''})
+            obj, c = Subevento.objects.update_or_create(nome=nome, defaults={'evento': evento})
             if c:
                 created += 1
         self.stdout.write(self.style.SUCCESS(f"Subeventos ensured ({created} created/updated)."))
@@ -189,7 +189,7 @@ class Command(BaseCommand):
 
         for p in pages:
             try:
-                obj, c = Pagina.objects.update_or_create(slug=p['slug'], defaults={
+                obj, c = Pagina.objects.update_or_create(slug=p['slug'], parent=None, defaults={
                     'nome': p['nome'], 'parent': None, 'header_type': p['header_type'],
                     'componentes': [], 'privada': p['privada'], 'evento_associado': p['evento_associado']
                 })
@@ -206,7 +206,7 @@ class Command(BaseCommand):
 
         for p in parents:
             try:
-                obj, c = Pagina.objects.update_or_create(slug=p['slug'], defaults={
+                obj, c = Pagina.objects.update_or_create(slug=p['slug'], parent=None, defaults={
                     'nome': p['nome'], 'parent': None, 'header_type': p['header_type'],
                     'componentes': [], 'privada': False, 'evento_associado': p['evento_associado']
                 })
@@ -237,14 +237,11 @@ class Command(BaseCommand):
             {'slug': 'noticias', 'parent_slug': 'mnr', 'nome': 'Notícias', 'header_type': 'MNR', 'privada': False, 'evento_associado': 'MNR'},
             {'slug': 'avaliador', 'parent_slug': 'mnr', 'nome': 'Avaliador', 'header_type': 'MNR', 'privada': False, 'evento_associado': 'MNR'},
             {'slug': 'bolsista', 'parent_slug': 'mnr', 'nome': 'Bolsista', 'header_type': 'MNR', 'privada': False, 'evento_associado': 'MNR'},
-            # Robótica children
-            {'slug': 'edicoes', 'parent_slug': 'robotica', 'nome': 'Edições', 'header_type': 'RCB', 'privada': False, 'evento_associado': 'Todos'},
-            {'slug': 'participantes', 'parent_slug': 'robotica', 'nome': 'Página do Participante', 'header_type': 'RCB', 'privada': False, 'evento_associado': 'Todos'},
         ]
 
         for ch in children:
             try:
-                parent = Pagina.objects.get(slug=ch['parent_slug'])
+                parent = Pagina.objects.get(slug=ch['parent_slug'], parent=None)
             except Pagina.DoesNotExist:
                 parent = None
             defaults = {
@@ -272,7 +269,7 @@ class Command(BaseCommand):
         # RCB Menu
         pages_rcb = [
             {'nome': 'Sobre', 'slug': 'sobre'},
-            {'nome': 'Robótica', 'slug': 'robotica'},
+            {'nome': 'Evento Robótica', 'slug': 'robotica'},
             {'nome': 'Notícias', 'slug': 'noticias'},
             {'nome': 'Associados', 'slug': 'associados'},
             {'nome': 'Participe', 'slug': 'participe'},

@@ -24,14 +24,47 @@ _original_get_app_list = admin.sites.AdminSite.get_app_list
 
 def _get_app_list_with_avancado(self, request):
     app_list = _original_get_app_list(self, request)
-    target_names = {'TagArquivo', 'TagData', 'TagFuncionario', 'TagNoticia', 'Subevento', 'Sede'}
-    advanced_models = []
+    
+    groups_def = [
+        {
+            'name': 'Conteúdo',
+            'slug': 'conteudo',
+            'icon': 'fa-solid fa-newspaper',
+            'models': {'Noticia', 'Data'}
+        },
+        {
+            'name': 'Páginas',
+            'slug': 'paginas',
+            'icon': 'fa-solid fa-mouse-pointer',
+            'models': {'PaginaEstado', 'Subevento', 'Pagina'}
+        },
+        {
+            'name': 'Cadastros',
+            'slug': 'cadastros',
+            'icon': 'fa-solid fa-folder-open',
+            'models': {'Arquivo', 'ConfiguracaoGlobal', 'Funcionario', 'Sede'}
+        },
+        {
+            'name': 'Avançado',
+            'slug': 'avancado',
+            'icon': 'fa-solid fa-gear',
+            'models': {'TagArquivo', 'TagData', 'TagFuncionario', 'TagNoticia'}
+        }
+    ]
+    
+    buckets = {g['name']: [] for g in groups_def}
+    model_to_group = {}
+    for g in groups_def:
+        for m in g['models']:
+            model_to_group[m] = g['name']
+
     for app in list(app_list):
         models = app.get('models', [])
         kept = []
         for m in models:
-            if m.get('object_name') in target_names:
-                advanced_models.append(m)
+            obj_name = m.get('object_name')
+            if obj_name in model_to_group:
+                buckets[model_to_group[obj_name]].append(m)
             else:
                 kept.append(m)
         if kept != models:
@@ -39,14 +72,19 @@ def _get_app_list_with_avancado(self, request):
                 app['models'] = kept
             else:
                 app_list.remove(app)
-    if advanced_models:
-        app_list.append({
-            'name': 'Avançado',
-            'app_label': 'avancado',
-            'app_url': advanced_models[0].get('admin_url', ''),
-            'icon': 'fa-solid fa-gear',
-            'models': sorted(advanced_models, key=lambda m: m['name']),
-        })
+
+    for g in groups_def:
+        models = buckets[g['name']]
+        if models:
+            models.sort(key=lambda x: x['name'])
+            app_list.append({
+                'name': g['name'],
+                'app_label': g['slug'],
+                'app_url': models[0].get('admin_url', '') if models else '',
+                'has_module_perms': True,
+                'models': models,
+                'icon': g['icon'],
+            })
 
     return app_list
 

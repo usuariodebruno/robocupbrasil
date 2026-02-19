@@ -5,10 +5,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     {% compress css %}
-        <link rel="stylesheet" href="{% static 'css/global.css' %}">
-        <link rel="stylesheet" href="{% static 'css/rcb.css' %}">
-        <link rel="stylesheet" href="{% static 'css/extra.css' %}">
         <link rel="stylesheet" href="{% static 'css/font-awesome.min.css' %}">
+        <link rel="stylesheet" href="{% static 'css/global.css' %}">
+        <link rel="stylesheet" href="{% static 'css/extra.css' %}">
+        <link rel="stylesheet" href="{% static 'css/rcb.css' %}">
     {% endcompress %}
     <title>{% block title %}RoboCup Brasil{% endblock %}</title>
     {% block extra_head %}

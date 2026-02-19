@@ -1,0 +1,28 @@
+<section class="carousel border-radius {{ style_classes }}" draggable="false" data-duration="{{ duration|default:10000 }}">
+    <div class="carousel-track">
+        {% for tab in tabs %}
+            <div class="carousel-slide" data-id="{{ tab.id }}">
+                {% if tab.image %}
+                    <img src="{{ tab.image }}" alt="{{ tab.label }}" class="carousel-bg-image">
+                    <i class="fa  fa-hand-o-up click-indicator"></i>
+                    <div class="carousel-content has-image">
+                        {{ tab.content|safe }}
+                    </div>
+                {% else %}
+                    <div class="carousel-content">
+                        {{ tab.content|safe }}
+                    </div>
+                {% endif %}
+            </div>
+        {% endfor %}
+    </div>
+
+    <div class="carousel-nav prev" title="Anterior"></div>
+    <div class="carousel-nav next" title="Próximo"></div>
+
+    <div class="carousel-dots">
+        {% for tab in tabs %}
+            <button class="dot{% if forloop.first %} active{% endif %}" aria-label="Slide {{ forloop.counter }}"></button>
+        {% endfor %}
+    </div>
+</section>

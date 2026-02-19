@@ -5,15 +5,15 @@
 */
 
 /* JS Components */
-.tabs, .accordion {
+.tabs, .accordion, .carousel {
     --foreground: var(--yin);
     --background: var(--yang);
     --secondary-foreground: var(--foreground);
     --secondary-background: var(--background);
     width: 100%;
 }
-.tabs.yin, .accordion.yin { text-shadow: var(--shadow-hover); }
-.tabs.border-radius, .tabs.desktop\:border-radius, .accordion.border-radius { overflow: hidden; }
+.tabs.yin, .accordion.yin, .carousel.yin { text-shadow: var(--shadow-hover); }
+.tabs.border-radius, .tabs.desktop\:border-radius, .accordion.border-radius, .carousel.border-radius { overflow: hidden; }
 .tab-pane { display: none; padding: calc(var(--default-measure) * 2); }
 .tab-pane.active { display: block; }
 
@@ -68,31 +68,31 @@
 .accordion .accordion-header:hover { background-color: var(--background); color: var(--foreground); }
 .accordion .accordion-header.active { background-color: var(--background); color: var(--foreground); }
 
-.tabs.blue, .accordion.blue { --background: var(--yang); --foreground: var(--blue); }
-.tabs.green, .accordion.green { --background: var(--yang); --foreground: var(--green); }
-.tabs.gray, .accordion.gray { --background: var(--yang); --foreground: var(--gray); }
-.tabs.yellow, .accordion.yellow { --background: var(--yang); --foreground: var(--yellow); }
-.tabs.orange, .accordion.orange { --background: var(--yang); --foreground: var(--orange); }
-.tabs.red, .accordion.red { --background: var(--yang); --foreground: var(--red); }
-.tabs.blue-secondary, .accordion.blue-secondary { --background: var(--yang); --foreground: var(--blue-secondary); }
-.tabs.green-secondary, .accordion.green-secondary { --background: var(--yang); --foreground: var(--green-secondary); }
-.tabs.gray-secondary, .accordion.gray-secondary { --background: var(--yang); --foreground: var(--gray-secondary); }
-.tabs.yellow-secondary, .accordion.yellow-secondary { --background: var(--yang); --foreground: var(--yellow-secondary); }
-.tabs.orange-secondary, .accordion.orange-secondary { --background: var(--yang); --foreground: var(--orange-secondary); }
-.tabs.red-secondary, .accordion.red-secondary { --background: var(--yang); --foreground: var(--red-secondary); }
+.tabs.blue, .accordion.blue, .carousel.blue { --background: var(--yang); --foreground: var(--blue); }
+.tabs.green, .accordion.green, .carousel.green { --background: var(--yang); --foreground: var(--green); }
+.tabs.gray, .accordion.gray, .carousel.gray { --background: var(--yang); --foreground: var(--gray); }
+.tabs.yellow, .accordion.yellow, .carousel.yellow { --background: var(--yang); --foreground: var(--yellow); }
+.tabs.orange, .accordion.orange, .carousel.orange { --background: var(--yang); --foreground: var(--orange); }
+.tabs.red, .accordion.red, .carousel.red { --background: var(--yang); --foreground: var(--red); }
+.tabs.blue-secondary, .accordion.blue-secondary, .carousel.blue-secondary { --background: var(--yang); --foreground: var(--blue-secondary); }
+.tabs.green-secondary, .accordion.green-secondary, .carousel.green-secondary { --background: var(--yang); --foreground: var(--green-secondary); }
+.tabs.gray-secondary, .accordion.gray-secondary, .carousel.gray-secondary { --background: var(--yang); --foreground: var(--gray-secondary); }
+.tabs.yellow-secondary, .accordion.yellow-secondary, .carousel.yellow-secondary { --background: var(--yang); --foreground: var(--yellow-secondary); }
+.tabs.orange-secondary, .accordion.orange-secondary, .carousel.orange-secondary { --background: var(--yang); --foreground: var(--orange-secondary); }
+.tabs.red-secondary, .accordion.red-secondary, .carousel.red-secondary { --background: var(--yang); --foreground: var(--red-secondary); }
 
-.tabs.yin.blue, .accordion.yin.blue { --background: var(--blue); --foreground: var(--yang); }
-.tabs.yin.green, .accordion.yin.green { --background: var(--green); --foreground: var(--yang); }
-.tabs.yin.gray, .accordion.yin.gray { --background: var(--gray); --foreground: var(--yang); }
-.tabs.yin.yellow, .accordion.yin.yellow { --background: var(--yellow); --foreground: var(--yang); }
-.tabs.yin.orange, .accordion.yin.orange { --background: var(--orange); --foreground: var(--yang); }
-.tabs.yin.red, .accordion.yin.red { --background: var(--red); --foreground: var(--yang); }
-.tabs.yin.blue-secondary, .accordion.yin.blue-secondary { --background: var(--blue-secondary); --foreground: var(--yang); --secondary-background: var(--yang); --secondary-foreground: var(--blue); }
-.tabs.yin.green-secondary, .accordion.yin.green-secondary { --background: var(--green-secondary); --foreground: var(--yang); --secondary-background: var(--yang); --secondary-foreground: var(--green); }
-.tabs.yin.gray-secondary, .accordion.yin.gray-secondary { --background: var(--gray-secondary); --foreground: var(--yang); --secondary-background: var(--yang); --secondary-foreground: var(--gray); }
-.tabs.yin.yellow-secondary, .accordion.yin.yellow-secondary { --background: var(--yellow-secondary); --foreground: var(--yang); --secondary-background: var(--yang); --secondary-foreground: var(--yellow); }
-.tabs.yin.orange-secondary, .accordion.yin.orange-secondary { --background: var(--orange-secondary); --foreground: var(--yang); --secondary-background: var(--yang); --secondary-foreground: var(--orange); }
-.tabs.yin.red-secondary, .accordion.yin.red-secondary { --background: var(--red-secondary); --foreground: var(--yang); --secondary-background: var(--yang); --secondary-foreground: var(--red); }
+.tabs.yin.blue, .accordion.yin.blue, .carousel.yin.blue { --background: var(--blue); --foreground: var(--yang); }
+.tabs.yin.green, .accordion.yin.green, .carousel.yin.green { --background: var(--green); --foreground: var(--yang); }
+.tabs.yin.gray, .accordion.yin.gray, .carousel.yin.gray { --background: var(--gray); --foreground: var(--yang); }
+.tabs.yin.yellow, .accordion.yin.yellow, .carousel.yin.yellow { --background: var(--yellow); --foreground: var(--yang); }
+.tabs.yin.orange, .accordion.yin.orange, .carousel.yin.orange { --background: var(--orange); --foreground: var(--yang); }
+.tabs.yin.red, .accordion.yin.red, .carousel.yin.red { --background: var(--red); --foreground: var(--yang); }
+.tabs.yin.blue-secondary, .accordion.yin.blue-secondary, .carousel.yin.blue-secondary { --background: var(--blue-secondary); --foreground: var(--yang); --secondary-background: var(--yang); --secondary-foreground: var(--blue); }
+.tabs.yin.green-secondary, .accordion.yin.green-secondary, .carousel.yin.green-secondary { --background: var(--green-secondary); --foreground: var(--yang); --secondary-background: var(--yang); --secondary-foreground: var(--green); }
+.tabs.yin.gray-secondary, .accordion.yin.gray-secondary, .carousel.yin.gray-secondary { --background: var(--gray-secondary); --foreground: var(--yang); --secondary-background: var(--yang); --secondary-foreground: var(--gray); }
+.tabs.yin.yellow-secondary, .accordion.yin.yellow-secondary, .carousel.yin.yellow-secondary { --background: var(--yellow-secondary); --foreground: var(--yang); --secondary-background: var(--yang); --secondary-foreground: var(--yellow); }
+.tabs.yin.orange-secondary, .accordion.yin.orange-secondary, .carousel.yin.orange-secondary { --background: var(--orange-secondary); --foreground: var(--yang); --secondary-background: var(--yang); --secondary-foreground: var(--orange); }
+.tabs.yin.red-secondary, .accordion.yin.red-secondary, .carousel.yin.red-secondary { --background: var(--red-secondary); --foreground: var(--yang); --secondary-background: var(--yang); --secondary-foreground: var(--red); }
 
 /* Other Styles */
 .mb-obr { margin-bottom: calc(var(--default-measure) * 1.75); }
@@ -126,15 +126,15 @@
 }
 
 .ribbon-cbr {
-    border-color: var(--gray-secondary);
+    border-color: var(--gray-secondary) !important;
 }
 
 .ribbon-mnr {
-    border-color: var(--yellow-secondary);
+    border-color: var(--yellow-secondary) !important;
 }
 
 .ribbon-rcb {
-    border-color: var(--blue-secondary);
+    border-color: var(--blue-secondary) !important;
 }
 
 .state-header {
@@ -186,6 +186,10 @@ header div:first-child.holding {
     box-shadow: inset 0px 0px 30px 30px var(--yin);
 }
 
+.blur {
+    filter: blur(calc(var(--default-measure) * 0.25));
+}
+
 /* Desktop */
 @media (min-width: 768px) {
     .post-header {
@@ -217,5 +221,145 @@ header div:first-child.holding {
         width: 100%;
         height: 100%;
         box-shadow: inset 0px 0px 4rem 1rem color-mix(in srgb, var(--yin), transparent 60%);
+    }
+}
+
+.carousel {
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    min-height: 20rem;
+}
+
+.carousel-track {
+    display: flex;
+    width: 100%;
+    height: 100%;
+    transition: transform 0.5s ease-in-out;
+    flex-grow: 1;
+    cursor: grab;
+    position: relative;
+}
+.carousel-track:active { cursor: grabbing; }
+
+.carousel-slide {
+    min-width: 100%;
+    position: relative;
+    flex-shrink: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+    max-width: 100%;
+    user-select: none;
+}
+
+.carousel-bg-image {
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    object-fit: cover;
+    z-index: 0;
+}
+
+.carousel-content {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    height: 100%;
+    padding: calc(var(--default-measure) * 2);
+    background-color: var(--background);
+    color: var(--foreground);
+    overflow-y: auto;
+}
+
+.carousel-content.has-image {
+    background-color: color-mix(in srgb, var(--background), transparent 10%);
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s, visibility 0.3s;
+}
+
+.carousel:hover .carousel-content.has-image,
+.carousel.locked .carousel-content.has-image {
+    opacity: 1;
+    visibility: visible;
+}
+
+.carousel-nav {
+    position: absolute;
+    top: 0; bottom: 0;
+    width: 32px;
+    z-index: 10;
+    cursor: pointer;
+}
+.carousel-nav.prev { left: 0; }
+.carousel-nav.next { right: 0; }
+
+.carousel-dots {
+    position: absolute;
+    bottom: var(--default-measure);
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 0.5rem;
+    z-index: 20;
+}
+
+.carousel-dots .dot {
+    width: 12px; height: 12px;
+    border-radius: 50%;
+    background-color: var(--secondary-foreground);
+    border: 2px solid var(--background);
+    padding: 0;
+    cursor: pointer;
+    transition: all 0.3s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.carousel-dots .dot.active {
+    background-color: var(--foreground);
+    transform: scale(1.2);
+}
+.carousel-dots .dot.active:has(i) {
+    background-color: color-mix(in srgb, var(--foreground), transparent 95%);
+}
+
+.carousel-dots .dot i {
+    font-size: 8px;
+    color: var(--foreground);
+}
+
+.carousel .click-indicator {
+    opacity: 0%;
+    position: absolute;
+    top: calc(var(--default-measure) * 2);
+    right: calc(var(--default-measure) * 2);
+    font-size: var(--text-size-xxlarge);
+    text-shadow: var(--shadow);
+    color: var(--foreground);
+    transform-origin: center center;
+}
+
+.carousel:not(.locked) .click-indicator {
+    opacity: 100%;
+    animation: pulse 1.5s infinite alternate;
+}
+
+@keyframes pulse {
+    0% {
+        transform: scale(1);
+        opacity: 0.8;
+    }
+    50% {
+        transform: scale(1.05);
+        opacity: 1;
+    }
+    100% {
+        transform: scale(1);
+        opacity: 0.8;
     }
 }

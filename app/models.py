@@ -257,6 +257,12 @@ class ConfiguracaoGlobal(models.Model):
     logo_link_mnr = models.CharField(blank=True, verbose_name="Link da Logo (MNR)", help_text="Link ao clicar na logo no header MNR")
     logo_link_obr = models.CharField(blank=True, verbose_name="Link da Logo (OBR)", help_text="Link ao clicar na logo no header OBR")
 
+    # cabecalho_admin = models.JSONField(
+    #     default=list,
+    #     blank=True,
+    #     verbose_name="🧩 Componentes",
+    # )
+
     @property
     def headers_with_hidden_items(self):
         return [

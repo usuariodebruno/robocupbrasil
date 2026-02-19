@@ -31,11 +31,36 @@ def estado_view(request, sigla):
 
     pagina = get_object_or_404(PaginaEstado, estado=sigla_upper)
 
+    tabs = [
+        {
+            "id": "voluntarios",
+            "label": "Auxilie",
+            "icon": "group",
+            "content": """
+                <h3 class="margin-0 margin-b-0/ text-xlarge">Programa de voluntariado</h3>
+                <p class="margin-0 text-large">Deseja ser um voluntário em algum evento regional ou estadual? <strong>Entre em contato</strong> com um representante e ajude-nos a democratizar a robótica!</p>
+            """
+        },
+        {
+            "id": "invista",
+            "label": "Invista",
+            "icon": "money",
+            "content": """
+                <h3 class="margin-0 margin-b-0/ text-xlarge">Invista em eventos de robótica do seu estado!</h3>
+                <p class="margin-0 text-large">
+                    Deseja investir em uma Regional ou Estadual de algum evento RoboCup Brasil?
+                    Entre em contato com um <strong>representante</strong> e ajude-nos a democratizar a robótica!
+                </p>
+            """
+        }
+    ]
+
     context = {
         'sigla': sigla_upper,
         'nome_estado': pagina.get_estado_display(),
         'texto': pagina.texto,
         'reference': reference,
+        'tabs': tabs,
     }
     return render(request, 'estado.html', context)
 

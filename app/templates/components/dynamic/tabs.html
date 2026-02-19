@@ -1,0 +1,19 @@
+<section class="border-radius tabs {{ style_classes }}">
+    <div class="tab-buttons">
+        {% for tab in tabs %}
+            <button data-tab="{{ tab.id }}"{% if forloop.first %} class="active"{% endif %}>
+                {% if tab.icon %}
+                    {% include "components/icon.html" with icon=tab.icon %}&nbsp;
+                {% endif %}
+                {{ tab.label }}
+            </button>
+        {% endfor %}
+    </div>
+    <div class="tab-content">
+        {% for tab in tabs %}
+            <div id="{{ tab.id }}" class="tab-pane{% if forloop.first %} active{% endif %}">
+                {{ tab.content|safe }}
+            </div>
+        {% endfor %}
+    </div>
+</section>

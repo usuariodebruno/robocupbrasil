@@ -51,34 +51,12 @@
                 <border-detail class="container rcb blue top right big hidden desktop:shown margin-t-0/"></border-detail>
             {% endif %}
             <div class="container padding-t-5 padding-b-2">
-                <!-- Tab section -->
-                <section class="border-radius tabs yin blue-secondary">
-                    <div class="tab-buttons">
-                        <button data-tab="voluntarios">Auxilie</button>
-                        <button data-tab="invista">Contato</button>
-                    </div>
-                    <div class="tab-content">
-                        <div id="voluntarios" class="tab-pane">
-                            <h3 class="margin-0 margin-b-0/ text-xlarge">Programa de voluntariado</h3>
-                            <p class="margin-0 text-large">Deseja ser um voluntário em algum evento regional ou estadual? <strong>Entre em contato</strong> com um representante e ajude-nos a democratizar a robótica!</p>
-                        </div>
-                        <div id="invista" class="tab-pane">
-                            <h3 class="margin-0 margin-b-0/ text-xlarge">Invista nos eventos de robótica do seu estado!</h3>
-                            <p class="margin-0 text-large">
-                                Deseja investir em uma Regional ou Estadual de algum evento RoboCup Brasil?
-                                Entre em contato com um <strong>representante</strong> e ajude-nos a democratizar a robótica!
-                            </p>
-                        </div>
-                    </div>
-                </section>
+                {% include "components/dynamic/tabs.html" with style_classes="yin blue-secondary" tabs=tabs %}
             </div>
         </section>
     </section>
 
     <section class="container margin-t-1">
-        {% if texto is None %}
-            aaaaaaaaaa
-        {% endif %}
         {{ texto | safe }}
     </section>
 {% endblock %}

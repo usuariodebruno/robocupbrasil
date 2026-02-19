@@ -78,19 +78,15 @@
                     return;
                 }
 
-                // Oculta tudo inicialmente para depois mostrar apenas os matches
                 allLis.forEach(el => el.classList.add("hidden-by-search"));
 
-                // Filter links
                 const links = sidebar.querySelectorAll("ul.menu a");
                 links.forEach(link => {
                     const text = link.innerText.toLowerCase();
                     if (text.includes(term)) {
-                        // Mostra o LI do link
                         const li = link.closest("li");
                         if (li) li.classList.remove("hidden-by-search");
 
-                        // Se estiver dentro de um details, abre ele e mostra o pai
                         const parentDetails = link.closest("details");
                         if (parentDetails) {
                             parentDetails.open = true;

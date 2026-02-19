@@ -1,0 +1,26 @@
+<section class="accordion border-radius {{ style_classes }}">
+    {% for tab in tabs %}
+        <div class="accordion-item">
+            <button class="accordion-header{% if forloop.first %} active{% endif %}" type="button">
+                {% if tab.icon %}
+                    {% include "components/icon.html" with icon=tab.icon %}&nbsp;
+                {% endif %}
+                {{ tab.label }}
+            </button>
+            <div id="{{ tab.id }}" class="accordion-content{% if forloop.first %} active{% endif %}">
+                {{ tab.content|safe }}
+            </div>
+        </div>
+    {% endfor %}
+</section>
+
+<script>
+    document.currentScript.previousElementSibling.querySelectorAll('.accordion-header').forEach(button => {
+        button.addEventListener('click', () => {
+            const content = button.nextElementSibling;
+
+            button.classList.toggle('active');
+            content.classList.toggle('active');
+        });
+    });
+</script>

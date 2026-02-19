@@ -6,6 +6,7 @@ window.addEventListener('load', function() {
     console.log('CMS RoboCup Brasil por\n\n ████  ████                     \n░░███ ░░███                     \n ░███  ░███  █████ ████  ██████ \n ░███  ░███ ░░███ ░███  ███░░███\n ░███  ░███  ░███ ░███ ░███ ░░░ \n ░███  ░███  ░███ ░███ ░███  ███\n █████ █████ ░░████████░░██████ \n░░░░░ ░░░░░   ░░░░░░░░  ░░░░░░  \n                                \n █████████████    ██████  █████ ████\n░░███░░███░░███  ███░░███░░███ ░███ \n ░███ ░███ ░███ ░███ ░███ ░███ ░███ \n ░███ ░███ ░███ ░███ ░███ ░███ ░███ \n █████░███ █████░░██████  ░░████████\n░░░░░ ░░░ ░░░░░  ░░░░░░    ░░░░░░░░ \n\nhttps://lluc.dev | https://github.com/lluckymou\n');
     console.log('%cAgora, o que você faz aqui? Sai fora hacker\n', "color: #ff0000;");
     setupTabs();
+    setupAdminShortcut();
 });
 
 window.addEventListener('scroll', function() {
@@ -100,5 +101,32 @@ function setupTabs() {
         if (!hasActive && buttons.length > 0) {
             buttons[0].click();
         }
+    });
+}
+
+function setupAdminShortcut() {
+    const targets = document.querySelectorAll('header div:first-child');
+    
+    targets.forEach(target => {
+        let timer;
+        
+        const start = () => {
+            target.classList.add('holding');
+            timer = setTimeout(() => {
+                window.location.href = '/admin/';
+            }, 2000);
+        };
+
+        const end = () => {
+            target.classList.remove('holding');
+            clearTimeout(timer);
+        };
+
+        target.addEventListener('mousedown', (e) => { if (e.button === 0) start(); });
+        target.addEventListener('touchstart', start, { passive: true });
+
+        ['mouseup', 'mouseleave', 'touchend', 'touchcancel'].forEach(evt => target.addEventListener(evt, end));
+
+        target.addEventListener('contextmenu', (e) => e.preventDefault());
     });
 }

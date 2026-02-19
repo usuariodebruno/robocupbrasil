@@ -53,6 +53,7 @@
 
 html {
   scroll-behavior: smooth;
+  overflow-x: hidden;
 }
 
 * {
@@ -70,7 +71,7 @@ body {
     color: var(--yin);
     margin: 0;
     padding: 0;
-    overflow-x: hidden;
+    overflow: hidden;
 }
 
 a {
@@ -276,7 +277,7 @@ header.floating .mnr {
 }
 
 header main .logo {
-    height: var(--header-logo);
+    height: calc(var(--header-logo) * 0.7);
 }
 
 header .button-outer {
@@ -544,6 +545,10 @@ header .rcb-links a:hover {
     header main.transferring {
         opacity: 0;
         pointer-events: none;
+    }
+    
+    header main .logo {
+        height: var(--header-logo);
     }
 
     header.floating.scrolled {

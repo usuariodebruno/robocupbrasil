@@ -53,6 +53,8 @@ TEMPLATES = [
     },
 ]
 
+SILENCED_SYSTEM_CHECKS = ["ckeditor.W001", "urls.W005"]
+
 WSGI_APPLICATION = "rcb.wsgi.application"
 
 # Database

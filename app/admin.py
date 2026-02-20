@@ -224,7 +224,7 @@ class NoticiaAdmin(admin.ModelAdmin):
     list_per_page = 50
 
     def get_tags(self, obj):
-        return "; ".join([f"{tag.id} - {tag.nome}<br>" for tag in obj.tags.all()])
+        return "; ".join([f"{tag.id} - {tag.nome}" for tag in obj.tags.all()])
     get_tags.short_description = 'Tags'
 
 @admin.register(TagData)
@@ -249,7 +249,7 @@ class DataAdmin(RolePermissionMixin, admin.ModelAdmin):
     list_per_page = 50
 
     def get_tags(self, obj):
-        return "; ".join([f"{tag.id} - {tag.nome}<br>" for tag in obj.tags.all()])
+        return "; ".join([f"{tag.id} - {tag.nome}" for tag in obj.tags.all()])
     get_tags.short_description = 'Tags'
 
     def get_queryset(self, request):
@@ -304,7 +304,7 @@ class ArquivoAdmin(RolePermissionMixin, admin.ModelAdmin):
     list_per_page = 50
 
     def get_tags(self, obj):
-        return "; ".join([f"{tag.id} - {tag.nome}<br>" for tag in obj.tags.all()])
+        return "; ".join([f"{tag.id} - {tag.nome}" for tag in obj.tags.all()])
     get_tags.short_description = 'Tags'
 
     def has_delete_permission(self, request, obj=None):

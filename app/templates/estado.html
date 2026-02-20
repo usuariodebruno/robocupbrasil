@@ -55,8 +55,10 @@
             </div>
         </section>
     </section>
-
+    
     <section class="container margin-t-1">
+        
+        {% include "components/dynamic/funcionario.html" with funcionarios=funcionarios %}
         {{ conteudo }}
     </section>
 {% endblock %}

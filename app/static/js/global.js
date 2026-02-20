@@ -8,6 +8,7 @@ window.addEventListener('load', function() {
     setupTabs();
     setupCarousel();
     setupAdminShortcut();
+    setupDraggableScroll();
 });
 
 window.addEventListener('scroll', function() {
@@ -259,5 +260,61 @@ function setupAdminShortcut() {
         ['mouseup', 'mouseleave', 'touchend', 'touchcancel'].forEach(evt => target.addEventListener(evt, end));
 
         target.addEventListener('contextmenu', (e) => e.preventDefault());
+    });
+}
+
+function setupDraggableScroll() {
+    document.querySelectorAll('.funcionarios-wrapper').forEach(wrapper => {
+        const slider = wrapper.querySelector('.funcionarios');
+        if (!slider) return;
+        
+        const indicator = wrapper.querySelector('.scroll-indicator');
+        const isScrollable = slider.scrollWidth > slider.clientWidth;
+
+        if (!isScrollable) {
+            if (indicator) indicator.style.display = 'none';
+            slider.style.cursor = 'default';
+            return;
+        } else if(indicator) {
+            indicator.style.display = 'block';
+        }
+
+        if (indicator) {
+            slider.addEventListener('scroll', () => {
+                indicator.style.opacity = '0';
+            }, { once: true });
+        }
+
+        let isDown = false;
+        let startX;
+        let scrollLeft;
+
+        const start = (e) => {
+            isDown = true;
+            slider.classList.add('grabbing');
+            startX = (e.pageX || e.touches[0].pageX) - slider.offsetLeft;
+            scrollLeft = slider.scrollLeft;
+        };
+
+        const end = () => {
+            isDown = false;
+            slider.classList.remove('grabbing');
+        };
+
+        const move = (e) => {
+            if (!isDown) return;
+            e.preventDefault();
+            const x = (e.pageX || e.touches[0].pageX) - slider.offsetLeft;
+            const walk = (x - startX);
+            slider.scrollLeft = scrollLeft - walk;
+        };
+
+        slider.addEventListener('mousedown', start);
+        slider.addEventListener('touchstart', start, { passive: false });
+
+        ['mouseup', 'mouseleave', 'touchend', 'touchcancel'].forEach(evt => slider.addEventListener(evt, end));
+
+        slider.addEventListener('mousemove', move);
+        slider.addEventListener('touchmove', move);
     });
 }

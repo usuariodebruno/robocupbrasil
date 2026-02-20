@@ -1,0 +1,100 @@
+{% extends "admin/login.html" %}
+{% load i18n admin_urls static admin_modify %}
+{% load dash_tags %}
+
+{% block extrastyle %}
+<style>
+    .flex.justify-center.items-center.h-full {
+        display: block !important;
+        justify-content: start !important;
+        align-items: center !important;
+        height: fit-content !important;
+        margin-top: 60px;
+    }
+
+    .card.w-96 {
+        width: unset !important;
+    }
+    
+    body {
+        overflow: hidden;
+        color: white;
+        letter-spacing: 0.025em;
+        background: rgb(0,138,195);
+        background: linear-gradient(180deg, rgba(0,138,195,1) 0%, rgba(0,125,179,1) 100%);
+        zoom: unset !important;
+    }
+
+    .top-cloud {
+        bottom: 75px;
+        z-index: 8;
+        transform: translateX(-50%);
+    }
+
+    .robot {
+        height: 200px;
+        left: 50%;
+        transform: translateX(-50%);
+        bottom: 25px;
+    }
+
+    .left-cloud {
+        z-index: 4;
+    }
+
+    .right-cloud {
+        z-index: 9;
+    }
+
+    .admin-link {
+        left: 16px;
+    }
+
+    @media (min-width: 768px) {
+        .admin-link {
+            left: 36px;
+        }
+
+        .top-cloud {
+            z-index: 3;
+            bottom: unset;
+            top: 0;
+            transform: unset;
+        }
+
+        .robot {
+            transform: unset;
+            left: unset;
+            bottom: unset;
+            height: 90vh;
+            right: 25px;
+        }
+
+        .left-cloud {
+            z-index: 4;
+        }
+
+        .right-cloud {
+            z-index: 5;
+        }
+
+        .card.w-96 {
+            width: 384px !important;
+        }
+    }
+
+    div.card {
+        position: relative;
+        z-index: 100;
+        color: #2c2e35;
+    }
+</style>
+{% endblock %}
+
+{% block nav-sidebar %}
+<a href="/" class="admin-link" style="display: block; position: absolute; top: 24px;"><img draggable="false" style="height: 48px;" src="{% static 'images/logo-white.png' %}" alt="RoboCup Brasil"/></a>
+<img class="top-cloud" draggable="false" style="position: absolute; left: 50%; height: 200px; object-fit: cover;" src="{% static 'images/clouds/cloud-top.png' %}" alt="Nuvem"/>
+<img class="left-cloud" draggable="false" style="position: absolute;  bottom: 0; left: 0; height: 200px" src="{% static 'images/clouds/cloud-left.png' %}" alt="Nuvem"/>
+<img class="right-cloud" draggable="false" style="position: absolute; bottom: 0; right: 0; height: 200px" src="{% static 'images/clouds/cloud-right.png' %}" alt="Nuvem"/>
+<img class="robot" draggable="false" style="position: absolute; z-index: 6;" src="{% static 'images/clouds/robot-happy.png' %}" alt="Robô"/>
+{% endblock %}

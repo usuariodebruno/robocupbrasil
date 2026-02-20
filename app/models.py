@@ -11,6 +11,53 @@ def validate_file_size(f):
     if f and getattr(f, 'size', 0) > 64 * 1024 * 1024:
         raise ValidationError("Tamanho máximo do arquivo: 64MB.")
 
+class GlobalQueryMixin(models.Model):
+    class Meta:
+        abstract = True
+
+    @classmethod
+    def get_items(cls, tag_ids=None, limit=10, page_index=0):
+        if not tag_ids:
+            tag_ids = []
+
+        qs = cls.objects.all()
+
+        # Tag filtering
+        if tag_ids and hasattr(cls, 'tags'):
+            try:
+                valid_tag_ids = [int(tid) for tid in tag_ids]
+                if valid_tag_ids:
+                    qs = qs.filter(tags__id__in=valid_tag_ids).distinct()
+            except (ValueError, TypeError):
+                pass
+
+        # Ordering
+        if cls.__name__ == 'Noticia':
+            qs = qs.order_by('-data')
+        elif cls.__name__ == 'Data':
+            qs = qs.order_by('data')
+        elif hasattr(cls, 'ano'):
+            qs = qs.order_by('-ano')
+        elif hasattr(cls, 'nome'):
+            qs = qs.order_by('nome')
+        elif hasattr(cls, 'titulo'):
+            qs = qs.order_by('titulo')
+        elif hasattr(cls, 'descricao'):
+            qs = qs.order_by('descricao')
+
+        # Pagination
+        try:
+            limit = int(limit) if limit is not None else 10
+            page_index = int(page_index) if page_index is not None else 0
+        except (ValueError, TypeError):
+            limit = 10
+            page_index = 0
+        
+        start_index = page_index * limit
+        end_index = start_index + limit
+        
+        return list(qs[start_index:end_index])
+
 class Evento(models.TextChoices):
     MNR = 'MNR', 'MNR'
     CBR = 'CBR', 'CBR'
@@ -70,9 +117,10 @@ class TagFuncionario(models.Model):
     def __str__(self):
         return self.nome
 
-class Funcionario(models.Model):
+class Funcionario(GlobalQueryMixin, models.Model):
     nome = models.CharField(max_length=200)
     cargo = models.CharField(max_length=200)
+    instituicao = models.CharField(max_length=200, blank=True, verbose_name='Instituição / Empresa')
     tags = models.ManyToManyField(TagFuncionario)
     bio = models.TextField(blank=True)
     foto = ResizedImageField(
@@ -101,7 +149,7 @@ class TagNoticia(models.Model):
     def __str__(self):
         return self.nome
 
-class Noticia(models.Model):
+class Noticia(GlobalQueryMixin, models.Model):
     titulo = models.CharField(max_length=200)
     chamada = models.CharField(max_length=200, default="Insira uma curta chamada ou introdução para sua notícia aqui...")
     imagem = ResizedImageField(
@@ -161,7 +209,7 @@ class TagData(models.Model):
     def __str__(self):
         return self.nome
 
-class Data(models.Model):
+class Data(GlobalQueryMixin, models.Model):
     descricao = models.CharField(max_length=200, verbose_name='Descrição')
     data = models.DateField()
     cor = models.CharField(max_length=7, default='#000000')
@@ -187,7 +235,7 @@ class TagArquivo(models.Model):
     def __str__(self):
         return self.nome
 
-class Arquivo(models.Model):
+class Arquivo(GlobalQueryMixin, models.Model):
     nome = models.CharField(max_length=200)
     arquivo = models.FileField(
         upload_to='arquivos/',
@@ -204,7 +252,7 @@ class Arquivo(models.Model):
     def __str__(self):
         return self.nome
 
-class Subevento(models.Model):
+class Subevento(GlobalQueryMixin, models.Model):
     nome = models.CharField(max_length=200)
     evento = models.CharField(max_length=50, choices=Evento.choices)
     icone = ResizedImageField(
@@ -519,7 +567,7 @@ class Pagina(models.Model):
         self.clean()
         super().save(*args, **kwargs)
 
-class Sede(models.Model):
+class Sede(GlobalQueryMixin, models.Model):
     ano = models.CharField(max_length=4, help_text="Ano (ex: 2026)")
     cidade = models.CharField(max_length=200)
     estado = models.CharField(max_length=2, choices=Regiao.choices)
@@ -536,6 +584,10 @@ class Sede(models.Model):
 
     def __str__(self):
         return f"{self.ano} - {self.cidade}, {self.estado}"
+
+    @classmethod
+    def get_sedes_list(cls):
+        return list(cls.objects.order_by('-ano').values_list('cidade', 'ano'))
 
 class PaginaEstado(models.Model):
     estado = models.CharField(

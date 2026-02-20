@@ -55,12 +55,15 @@ def estado_view(request, sigla):
         }
     ]
 
+    #funcionarios = Funcionario.get_items(tag_ids=[9])
+
     context = {
         'sigla': sigla_upper,
         'nome_estado': pagina.get_estado_display(),
         'conteudo': pagina.componentes,
         'reference': reference,
         'tabs': tabs,
+        #'funcionarios': funcionarios,
     }
     return render(request, 'estado.html', context)
 

@@ -21,6 +21,8 @@
 
         table.table-responsive th.original, table.table-responsive td.original { width: 0px; font-size: 0px; padding: 0 !important; visibility: hidden; }
 
+        .navbar-center { display: none; }
+
         a.indicator.tab.tab-active span {
             translate: none !important;
             left: 90%;
@@ -34,6 +36,8 @@
         #sidebar .menu li a, #sidebar .menu li summary { padding: 0.5rem 1rem !important; }
 
         @media (min-width: 768px) {
+            body div.flex:first-child { margin-left: 6px; }
+
             #smartToggle {
                 position: fixed;
                 top: 0;
@@ -42,6 +46,7 @@
                 height: 100vh;
                 width: 6px;
                 cursor: w-resize;
+                z-index: 10;
             }
         }
 

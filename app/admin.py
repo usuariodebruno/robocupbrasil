@@ -200,10 +200,14 @@ class TagFuncionarioAdmin(admin.ModelAdmin):
 
 @admin.register(Funcionario)
 class FuncionarioAdmin(admin.ModelAdmin):
-    list_display = ['nome', 'cargo']
+    list_display = ['nome', 'cargo', 'get_tags']
     list_filter = ['tags']
     search_fields = ['nome', 'cargo']
     list_per_page = 50
+
+    def get_tags(self, obj):
+        return ";ㅤ".join([f"{tag.id} - {tag.nome}" for tag in obj.tags.all()])
+    get_tags.short_description = 'Tags'
 
 @admin.register(TagNoticia)
 class TagNoticiaAdmin(admin.ModelAdmin):
@@ -220,7 +224,7 @@ class NoticiaAdmin(admin.ModelAdmin):
     list_per_page = 50
 
     def get_tags(self, obj):
-        return ", ".join([tag.nome for tag in obj.tags.all()])
+        return "; ".join([f"{tag.id} - {tag.nome}<br>" for tag in obj.tags.all()])
     get_tags.short_description = 'Tags'
 
 @admin.register(TagData)
@@ -237,12 +241,16 @@ class TagDataAdmin(RolePermissionMixin, admin.ModelAdmin):
 
 @admin.register(Data)
 class DataAdmin(RolePermissionMixin, admin.ModelAdmin):
-    list_display = ['descricao', 'data', 'cor', 'action_link']
+    list_display = ['descricao', 'data', 'cor', 'action_link', 'get_tags']
     list_filter = ['data', 'tags']
     search_fields = ['descricao']
     date_hierarchy = 'data'
     filter_horizontal = ['tags']
     list_per_page = 50
+
+    def get_tags(self, obj):
+        return "; ".join([f"{tag.id} - {tag.nome}<br>" for tag in obj.tags.all()])
+    get_tags.short_description = 'Tags'
 
     def get_queryset(self, request):
         qs = super().get_queryset(request)
@@ -296,7 +304,7 @@ class ArquivoAdmin(RolePermissionMixin, admin.ModelAdmin):
     list_per_page = 50
 
     def get_tags(self, obj):
-        return ", ".join([tag.nome for tag in obj.tags.all()])
+        return "; ".join([f"{tag.id} - {tag.nome}<br>" for tag in obj.tags.all()])
     get_tags.short_description = 'Tags'
 
     def has_delete_permission(self, request, obj=None):

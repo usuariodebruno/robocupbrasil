@@ -190,40 +190,6 @@ header div:first-child.holding {
     filter: blur(calc(var(--default-measure) * 0.25));
 }
 
-/* Desktop */
-@media (min-width: 768px) {
-    .post-header {
-        aspect-ratio: 16 / 9;
-        overflow: hidden;
-    }
-
-    .post-header .background {
-        display: block;
-        max-width: 100%;
-        filter: blur(1rem);
-    }
-
-    .post-header .background, .post-header .foreground {
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        translate: -50% -50%;
-    }
-
-    .post-header:hover .foreground {
-        max-height: 100%;
-    }
-
-    .post-header:hover .box-shadow {
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        box-shadow: inset 0px 0px 4rem 1rem color-mix(in srgb, var(--yin), transparent 60%);
-    }
-}
-
 .carousel {
     position: relative;
     overflow: hidden;
@@ -361,5 +327,106 @@ header div:first-child.holding {
     100% {
         transform: scale(1);
         opacity: 0.8;
+    }
+}
+
+.funcionarios-wrapper {
+    position: relative;
+}
+
+.funcionarios {
+    user-select: none;
+    overflow-x: auto;
+    display: flex;
+    gap: var(--default-measure);
+    text-transform: uppercase;
+    cursor: grab;
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+    justify-content: center;
+}
+
+.funcionarios::-webkit-scrollbar {
+    display: none;
+}
+
+.funcionarios.grabbing {
+    cursor: grabbing;
+}
+
+.funcionarios-wrapper .scroll-indicator {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translateY(-50%) translateX(-50%);
+    font-size: 256px;
+    color: var(--yang);
+    text-shadow: var(--shadow-hover);
+    pointer-events: none;
+    opacity: 55%;
+    transition: opacity 0.5s ease;
+    animation: pulse-horizontal 5s infinite;
+}
+
+@keyframes pulse-horizontal {
+    0%, 100% {
+        transform: translateY(-50%) translateX(-60%);
+    }
+    50% {
+        transform: translateY(-50%) translateX(-40%);
+    }
+}
+
+.funcionarios img {
+    width: 250px;
+    aspect-ratio: 1/1;
+    object-position: center;
+    object-fit: cover;
+}
+
+.funcionarios .funcionario {
+    max-width: 250px;
+}
+
+.funcionarios.large .funcionario {
+    max-width: 270px;
+}
+
+.funcionarios.large img {
+    width: 270px;
+}
+
+/* Desktop */
+@media (min-width: 768px) {
+
+    .post-header {
+        aspect-ratio: 16 / 9;
+        overflow: hidden;
+    }
+
+    .post-header .background {
+        display: block;
+        max-width: 100%;
+        filter: blur(1rem);
+    }
+
+    .post-header .background, .post-header .foreground {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        translate: -50% -50%;
+    }
+
+    .post-header:hover .foreground {
+        max-height: 100%;
+    }
+
+    .post-header:hover .box-shadow {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        box-shadow: inset 0px 0px 4rem 1rem color-mix(in srgb, var(--yin), transparent 60%);
     }
 }

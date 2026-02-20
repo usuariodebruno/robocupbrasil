@@ -107,7 +107,7 @@ class Command(BaseCommand):
                 ]
             },
             'REPRESENTANTE': {
-                'display_name': 'Representante Local',
+                'display_name': 'Representante Regional',
                 'permissions': [
                     ('add_paginaestado', 'app', 'paginaestado'),
                     ('change_paginaestado', 'app', 'paginaestado'),

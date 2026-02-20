@@ -1,0 +1,98 @@
+{% load i18n admin_icons static %}
+<div class="navbar bg-base-100">
+    <div class="navbar-start">
+        <div id="sidebar-toggle" tabindex="0" role="button" class="btn btn-ghost btn-circle">
+            <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    class="h-5 w-5"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor">
+                <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M4 6h16M4 12h16M4 18h7"/>
+            </svg>
+        </div>
+        <div id="search-modal-toggle" tabindex="0" role="button" class="ml-1 btn btn-ghost btn-circle group">
+            <i class="h-5 w-5 fa-solid fa-magnifying-glass" style="line-height: 1.5;"></i>
+            <div class="opacity-0 ml-1 absolute ml-21 md:group-hover:opacity-50 text-nowrap" style="font-size: 7pt;">CTRL + \</div>
+        </div>
+    </div>
+    <div class="navbar-center max-sm:hidden"></div>
+    <div class="navbar-end">
+    {% if SHOW_THEME_SELECTOR %}
+        <div title="Change Theme" class="dropdown dropdown-end block ">
+            <div tabindex="0" role="button" class="btn group btn-sm gap-2 px-2 py-4.5 btn-ghost rounded-full" aria-label="Change Theme">
+                <div class="bg-base-100 group-hover:border-base-content/20 border-base-content/10 grid shrink-0 grid-cols-2 gap-0.5 rounded-md border p-1 transition-colors">
+                    <div class="bg-base-content shrink-0 size-1.5 rounded-full"></div>
+                    <div class="bg-primary size-1.5 shrink-0 rounded-full"></div>
+                    <div class="bg-secondary size-1.5 shrink-0 rounded-full"></div>
+                    <div class="bg-accent size-1.5 shrink-0 rounded-full"></div>
+                </div>
+                <svg width="12px" height="12px" class="mt-px hidden size-2 fill-current opacity-60 sm:inline-block"
+                     xmlns="http://www.w3.org/2000/svg" viewBox="0 0 2048 2048">
+                    <path d="M1799 349l242 241-1017 1017L7 590l242-241 775 775 775-775z"></path>
+                </svg>
+            </div>
+            <div tabindex="0" class="dropdown-content bg-base-200 text-base-content rounded-box top-px overflow-y-auto border-[length:var(--border)] border-white/5 shadow-2xl outline-[length:var(--border)] outline-black/5 mt-10">
+                <div class="menu-title text-xs">{% trans "Theme" %}</div>
+                <div class="grid grid-cols-2 gap-2 w-56">
+                    {% for theme in THEME_LIST %}
+                        <div class="hover:bg-base-300 rounded-md p-2 flex items-center justify-center relative">
+                            <button class="gap-1.5 flex flex-col items-center justify-center hover:opacity-100 px-2 cursor-pointer" data-set-theme="{{ theme.value }}" data-act-class="[&amp;_i]:visible">
+                                <div data-theme="{{ theme.value }}" class="bg-base-100 h-9 w-9 shrink-0 flex flex-wrap rounded-md p-1 shadow-sm items-center justify-center gap-1">
+                                    <div class="bg-base-content size-3 shrink-0 rounded-full"></div>
+                                    <div class="bg-primary size-3 shrink-0 rounded-full"></div>
+                                    <div class="bg-secondary size-3 shrink-0 rounded-full"></div>
+                                    <div class="bg-accent size-3 shrink-0 rounded-full"></div>
+                                </div>
+                                <div class="truncate">{{ theme.name }}</div>
+                                <i class="invisible shrink-0 text-2xl top-0 right-1 fa fa-check text-primary absolute w-fit ml-0.5"></i>
+                            </button>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+        {% endif %}
+        <div class="dropdown dropdown-bottom dropdown-end">
+            <div tabindex="0" role="button" class="btn btn-ghost btn-circle m-1 overflow-hidden rounded-full">
+                <div class="w-26 h-26">
+                    <img  class="w-full h-full object-cover rounded-full -mt-2.5" src="{% static 'images/clouds/robot-happy.png' %}" style="background-color: #5688be;"/>
+                </div>
+            </div>
+            <ul tabindex="0" class="dropdown-content rounded-md  bg-base-300 z-20 w-56 p-2 shadow-2xl">
+                <li class="menu-title px-3 py-2">
+                    <div class="flex flex-col gap-0.5">
+                        <span class="font-bold text-base-content text-sm">{{ request.user.get_full_name|default:request.user.username }}</span>
+                        {% if request.user.email %}
+                            <span class="text-xs font-normal opacity-70 truncate w-full">{{ request.user.email }}</span>
+                        {% endif %}
+                        
+                        {% if request.user.is_superuser %}
+                            <span class="badge badge-primary badge-sm mt-1">Superusuário</span>
+                        {% elif request.user.userprofile.grupo_extra %}
+                            <span class="badge badge-neutral badge-sm mt-1">{{ request.user.userprofile.get_grupo_extra_display }}</span>
+                        {% endif %}
+                    </div>
+                </li>
+                <li class="divider my-1"></li>
+                {% if site_url %}
+                    <li><a class="p-2 w-full block hover:bg-base-100" href="{{ site_url }}" target="_blank"><i class="fa-solid fa-globe w-4 text-center opacity-70"></i>&nbsp; {% translate 'View site' %}</a></li>
+                {% endif %}
+                <li>
+                    <a class="p-2 w-full block hover:bg-base-100" href="{% url 'admin:password_change' %}">
+                        <i class="fa-solid fa-key w-4 text-center opacity-70"></i>&nbsp; {% trans 'Change password' %}
+                    </a>
+                </li>
+                <li>
+                    <a class="p-2 text-error w-full block hover:bg-base-100" onclick="$('#logout-form').submit()" href="#">
+                        <i class="fa-solid fa-arrow-right-from-bracket w-4 text-center"></i>&nbsp; {% translate 'Log out' %}
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>

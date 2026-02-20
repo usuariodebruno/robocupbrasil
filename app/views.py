@@ -1,6 +1,6 @@
 from django.shortcuts import render, get_object_or_404
 from django.http import Http404
-from .models import Regiao, Pagina, Funcionario, Arquivo, Data, Noticia, PaginaEstado
+from .models import Regiao, Pagina, Funcionario, Arquivo, Data, Noticia, PaginaEstado, Sede, Subevento
 
 def error_view(request, exception=None):
     path = request.path
@@ -66,6 +66,34 @@ def estado_view(request, sigla):
         #'funcionarios': funcionarios,
     }
     return render(request, 'estado.html', context)
+
+def subevento_view(request, permalink):
+    subevento = get_object_or_404(Subevento, permalink=permalink)
+
+    reference = request.GET.get('ref', 'rcb').lower()
+    if(reference != 'cbr' and reference != 'mnr' and reference != 'obr'):
+        reference = 'rcb'
+
+    context = {
+        'subevento': subevento,
+        'conteudo': subevento.componentes,
+        'reference': reference,
+    }
+    return render(request, 'subevento.html', context)
+
+def sede_view(request, ano):
+    sede = get_object_or_404(Sede, ano=ano)
+
+    reference = request.GET.get('ref', 'rcb').lower()
+    if(reference != 'cbr' and reference != 'mnr' and reference != 'obr'):
+        reference = 'rcb'
+
+    context = {
+        'sede': sede,
+        'conteudo': sede.componentes,
+        'reference': reference,
+    }
+    return render(request, 'sede.html', context)
 
 def pagina_dinamica_view(request, path):
     path = path.strip('/')

@@ -268,6 +268,22 @@ class Subevento(GlobalQueryMixin, models.Model):
         blank=True,
         verbose_name="🧩 Componentes",
     )
+    permalink = models.SlugField(unique=True, max_length=255, editable=False, allow_unicode=True, blank=True)
+
+    def save(self, *args, **kwargs):
+        if not self.permalink:
+            base_slug = slugify(self.nome, allow_unicode=True)
+            slug = base_slug
+            counter = 1
+
+            while Subevento.objects.filter(permalink=slug).exists():
+                slug = f"{base_slug}-{counter}"
+                counter += 1
+            self.permalink = slug
+        super().save(*args, **kwargs)
+
+    def get_absolute_url(self):
+        return f"/evento/{self.permalink}"
 
     class Meta:
         verbose_name = "Subevento (Liga)"
@@ -559,7 +575,7 @@ class Pagina(models.Model):
     def clean(self):
         from django.core.exceptions import ValidationError
 
-        prohibited_slugs = ['noticia', 'estado', 'static', 'media', 'admin']
+        prohibited_slugs = ['noticia', 'estado', 'evento', 'sede', 'static', 'media', 'admin']
         if self.slug in prohibited_slugs:
             raise ValidationError(f"Slug '{self.slug}' é reservado e não pode ser usado.")
 
@@ -568,7 +584,7 @@ class Pagina(models.Model):
         super().save(*args, **kwargs)
 
 class Sede(GlobalQueryMixin, models.Model):
-    ano = models.CharField(max_length=4, help_text="Ano (ex: 2026)")
+    ano = models.CharField(max_length=4, help_text="Ano (ex: 2026)", unique=True)
     cidade = models.CharField(max_length=200)
     estado = models.CharField(max_length=2, choices=Regiao.choices)
     componentes = models.JSONField(

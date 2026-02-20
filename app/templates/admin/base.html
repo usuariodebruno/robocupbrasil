@@ -7,7 +7,6 @@
         html { scroll-behavior: smooth; }
         body { zoom: 1.15; overflow-x: hidden; }
         * { transition: all 0.3s ease-in-out; }
-        a.flex.flex-row.h-16.items-center img { filter: drop-shadow(1px 0 0 white) drop-shadow(-1px 0 0 white) drop-shadow(0 1px 0 white) drop-shadow(0 -1px 0 white) drop-shadow(4px 0 0 white) drop-shadow(-4px 0 0 white) drop-shadow(0 4px 0 white) drop-shadow(0 -4px 0 white); }
         a.flex.flex-row.h-16.items-center:hover { background: #5f95cf; } 
         .hidden-by-search { display: none !important; }
         .breadcrumbs { padding-bottom: 0 !important; padding-top: 16px !important; line-height: 1.25; overflow-y: hidden; }
@@ -21,6 +20,7 @@
 
         table.table-responsive th.original, table.table-responsive td.original { width: 0px; font-size: 0px; padding: 0 !important; visibility: hidden; }
 
+        .table.border.border-base-200.table-auto { overflow: hidden; } 
         .navbar-center { display: none; }
 
         a.indicator.tab.tab-active span {
@@ -32,11 +32,64 @@
             height: 30px;
         }
 
+        .search-modal {
+            position: fixed;
+            z-index: 100;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.55);
+            display: none;
+            justify-content: center;
+            backdrop-filter: blur(3px);
+        }
+
+        .w-modal {
+            width: 42rem;
+        }
+        
+        .search-modal.open {
+            display: flex;
+        }
+
+        #search-list a {
+            border: 1px solid transparent;
+            border-radius: 5px;
+        }
+
+        #content { min-height: calc(100vh - 130px) !important; }
+
         .action-checkbox, .action-checkbox-column { width: 0; }
         #sidebar .menu li a, #sidebar .menu li summary { padding: 0.5rem 1rem !important; }
 
+        #sidebar.toggled {
+            max-width: 0;
+            min-width: 0;
+        }
+
+        #sidebar {
+            max-width: 14rem;
+            min-width: 14rem;
+        }
+
         @media (min-width: 768px) {
-            body div.flex:first-child { margin-left: 6px; }
+
+            #sidebar {
+                max-width: 0;
+                min-width: 0;
+            }
+
+            #sidebar.toggled {
+                max-width: 14rem;
+                min-width: 14rem;
+            }
+
+            #search-list a {
+                width: calc(50% - 5px);
+            }
+
+            body > div:first-of-type { margin-left: 6px; }
 
             #smartToggle {
                 position: fixed;
@@ -55,6 +108,20 @@
             fieldset .collapse-content { max-width: unset !important; }
             .grid.grid-cols-1.\32 xl\:grid-cols-4.gap-3.auto-rows-auto { display: flex !important; }
             .save-col { width: 296px; }
+        }
+
+        #search-list a.selected {
+            width: 100%;
+            border: 1px solid color-mix(in srgb, var(--color-primary), transparent 60%);
+        }
+
+        #search-list a.selected::after {
+            content: "Enter";
+            position: absolute;
+            top: 28px;
+            right: 30px;
+            font-size: 9pt;
+            opacity: 50%;
         }
     </style>
     <link rel="icon" href="{% static 'images/favicon/rcb.png' %}" type="image/png"/>
@@ -102,6 +169,79 @@
                     }
                 });
             });
+
+            const searchModal = document.querySelector(".search-modal");
+            const searchInputModal = document.getElementById("search-modal-input");
+            const searchListModal = document.getElementById("search-list");
+            const searchToggleBtn = document.getElementById("search-modal-toggle");
+
+            if (searchModal && searchInputModal && searchListModal) {
+                const links = searchListModal.querySelectorAll("a");
+
+                function openModal() {
+                    searchModal.classList.add("open");
+                    searchInputModal.focus();
+                    updateSelection();
+                }
+
+                function closeModal() {
+                    searchModal.classList.remove("open");
+                }
+
+                function updateSelection() {
+                    let found = false;
+                    links.forEach(link => {
+                        link.classList.remove("selected");
+                        if (!found && link.style.display !== "none") {
+                            link.classList.add("selected");
+                            found = true;
+                        }
+                    });
+                }
+
+                if (searchToggleBtn) {
+                    searchToggleBtn.addEventListener("click", openModal);
+                }
+
+                document.addEventListener("keydown", function(e) {
+                    if (e.key === "Escape") closeModal();
+                    if (e.ctrlKey && e.key === "\\") {
+                        e.preventDefault();
+                        openModal();
+                    }
+                });
+
+                searchModal.addEventListener("click", function(e) {
+                    if (e.target === searchModal) closeModal();
+                });
+
+                searchInputModal.addEventListener("input", function() {
+                    const term = this.value.toLowerCase().trim();
+                    links.forEach(link => {
+                        const text = link.innerText.toLowerCase();
+                        link.style.display = text.includes(term) ? "" : "none";
+                    });
+                    updateSelection();
+                });
+
+                searchInputModal.addEventListener("keydown", function(e) {
+                    if (e.key === "Enter") {
+                        e.preventDefault();
+                        const selected = searchListModal.querySelector("a.selected");
+                        if (selected) selected.click();
+                    }
+                });
+                
+                // Initial selection setup
+                updateSelection();
+            }
+
+            const btn = document.getElementById('sidebar-toggle');
+
+            btn.addEventListener('click', () => {
+            sidebar.classList.toggle('toggled');
+            });
+
         });
     </script>
 {% endblock %}

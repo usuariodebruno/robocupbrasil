@@ -175,10 +175,5 @@ DAISY_SETTINGS = {
             "name": "Usuários do Sistema",
             "hide": False,
         },
-        "app": {
-            "icon": "fa-solid fa-globe",
-            "name": "Site RoboCup Brasil",
-            "hide": False,
-        },
     },
 }

@@ -1,6 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
-from django.db.models.signals import post_save
+from django.db.models.signals import post_save, post_delete
 from django.dispatch import receiver
 from django.core.exceptions import ValidationError
 from django.utils.text import slugify
@@ -672,3 +672,32 @@ def save_user_profile(sender, instance, **kwargs):
         instance.userprofile.save()
     except UserProfile.DoesNotExist:
         pass
+
+@receiver(post_delete, sender=Funcionario)
+def delete_funcionario_foto(sender, instance, **kwargs):
+    if instance.foto:
+        instance.foto.delete(save=False)
+
+@receiver(post_delete, sender=Noticia)
+def delete_noticia_imagem(sender, instance, **kwargs):
+    if instance.imagem:
+        instance.imagem.delete(save=False)
+
+@receiver(post_delete, sender=Arquivo)
+def delete_arquivo_files(sender, instance, **kwargs):
+    if instance.arquivo:
+        instance.arquivo.delete(save=False)
+    if instance.thumbnail:
+        instance.thumbnail.delete(save=False)
+
+@receiver(post_delete, sender=Subevento)
+def delete_subevento_icone(sender, instance, **kwargs):
+    if instance.icone:
+        instance.icone.delete(save=False)
+
+@receiver(post_delete, sender=ConfiguracaoGlobal)
+def delete_config_patrocinios(sender, instance, **kwargs):
+    if instance.patrocinio_vertical:
+        instance.patrocinio_vertical.delete(save=False)
+    if instance.patrocinio_horizontal:
+        instance.patrocinio_horizontal.delete(save=False)

@@ -12,7 +12,7 @@
     <div class="tab-content">
         {% for tab in tabs %}
             <div id="{{ tab.id }}" class="tab-pane{% if forloop.first %} active{% endif %}">
-                {{ tab.content|safe }}
+                {% include "components/content/texto.html" with conteudo=tab.content %}
             </div>
         {% endfor %}
     </div>

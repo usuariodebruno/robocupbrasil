@@ -1,7 +1,11 @@
 {% load static %}
-<div class="sede-slide">
+<div class="sede-slide"
+    style="
+        {% if theme_primary %}--primary: var(--{{ theme_primary }});{% endif %}
+        {% if theme_foreground %}--foreground: var(--{{ theme_foreground }});{% endif %}
+    ">
     <div class="card" draggable="false">
-        <a href="/sede/{{ item.ano }}" class="floating-flag" draggable="false"><img src="{% static 'images/bandeiras/' %}{{ item.estado|lower }}.png" class="cross-rounded" draggable="false" alt="{{ item.estado|lower }}"/></a>
+        <a href="/sede/{{ item.ano }}" class="floating-flag" draggable="false"><img src="{% static 'images/bandeiras/' %}{{ item.estado|lower }}.png" class="border-radius inner" draggable="false" alt="{{ item.estado|lower }}"/></a>
         <h4><a href="/sede/{{ item.ano }}" draggable="false">{{ item.ano }}</a></h4>
         <p class="margin-0 text-medium"><a href="/sede/{{ item.ano }}" draggable="false">{{ item.cidade }}</a></p>
     </div>

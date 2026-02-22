@@ -1,7 +1,12 @@
 {% load static file_extras %}
 <div id="arquivos-component" class="slider-component">
     {% with item.arquivo|file_extension as ext %}
-        <div class="arquivo text-shadow slider-item">
+        <div class="arquivo text-shadow slider-item"
+        style="
+            {% if theme_primary %}--primary: var(--{{ theme_primary }});{% endif %}
+            {% if theme_secondary %}--secondary: var(--{{ theme_secondary }});{% endif %}
+            {% if theme_foreground %}--foreground: var(--{{ theme_foreground }});{% endif %}
+        ">
             <div class="file-extension">
                 <div class="details flex-start">
                     <i class="

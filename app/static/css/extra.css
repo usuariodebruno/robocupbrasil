@@ -59,8 +59,8 @@
     display: flex;
     align-items: center;
 }
-.accordion-content { display: none; padding: calc(var(--default-measure) * 2); }
-.accordion-content.active { display: block; }
+.accordion-content { max-height: 0; padding: 0 calc(var(--default-measure) * 2); transition: padding 0.1s ease-in-out; }
+.accordion-content.active { max-height: 10000px; padding: calc(var(--default-measure) * 2); }
 
 /* Accordion Colors (Mapping to Tabs logic) */
 .accordion .accordion-content { background-color: var(--background); color: var(--foreground); }
@@ -407,6 +407,7 @@ header div:first-child.holding {
 
 .sede-slide {
     --primary: var(--gray-secondary);
+    --foreground: var(--yang);
 
     aspect-ratio: 1.75 / 1;
     height: calc(var(--default-measure) * 9);
@@ -416,6 +417,7 @@ header div:first-child.holding {
     opacity: 75%;
     border-radius: var(--default-measure);
     box-shadow: var(--shadow);
+    color: var(--foreground);
 }
 
 .sede-slide:hover {
@@ -439,7 +441,6 @@ header div:first-child.holding {
     flex-direction: column;
     justify-content: space-between;
     height: 100%;
-    color: var(--yang);
 }
 
 .sede-slide .floating-flag {
@@ -508,9 +509,11 @@ header div:first-child.holding {
 }
 
 .noticia {
+    --primary: var(--blue-secondary) url('../images/watermark.png');
+    --foreground: var(--yang);
+
     height: 280px;
-    background-color: var(--blue-secondary);
-    background-image: url('../images/watermark.png');
+    background: var(--primary);
     background-size: contain;
     background-position: center right;
     background-repeat: no-repeat;
@@ -534,7 +537,7 @@ header div:first-child.holding {
 .noticia:hover .noticia-image {
     filter: blur(2px);
     max-height: 0px;
-    transition: max-height 0.8s ease-in, filter 0.75s ease-out;
+    transition: max-height 0.8s ease-in, filter 0.6s ease-out;
 }
 
 .link {
@@ -963,7 +966,7 @@ header div:first-child.holding {
 
 .calendar-header-card {
     background-color: var(--header);
-    color: var(--yang);
+    color: var(--foreground);
 }
 
 .event-lines-container {
@@ -1006,4 +1009,396 @@ header div:first-child.holding {
     #calendar-list { flex: 1; }
     #calendar-grid { flex: 2; }
     .event-list-items { max-height: calc(var(--default-measure) * 38); }
+}
+
+/* Content Components */
+
+/* Button Rounded */
+.button-rounded {
+    text-decoration: none;
+    cursor: pointer;
+    border: var(--default-measure) solid;
+    transition: all 0.3s ease;
+    overflow: hidden;
+    padding: 0;
+    display: inline-block;
+}
+
+.button-rounded .inner {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: calc(var(--default-measure) * 0.5);
+    padding: calc(var(--default-measure) * 2) calc(var(--default-measure) * 3.5);
+    width: 100%;
+    height: 100%;
+    box-sizing: border-box;
+    transition: inherit;
+}
+
+.button-rounded-yellow {
+    --button-foreground: var(--yellow);
+    --button-background: var(--yang);
+    border-color: var(--button-foreground);
+    background: var(--button-foreground);
+}
+
+.button-rounded-yellow .inner {
+    color: var(--button-foreground);
+    background-color: var(--button-background);
+}
+
+.button-rounded-yellow:hover .inner {
+    background-color: var(--button-foreground);
+    color: var(--button-background);
+}
+
+.button-rounded-blue {
+    --button-foreground: var(--blue);
+    --button-background: var(--yang);
+    border-color: var(--button-foreground);
+    background: var(--button-foreground);
+}
+
+.button-rounded-blue .inner {
+    color: var(--button-foreground);
+    background-color: var(--button-background);
+}
+
+.button-rounded-blue:hover .inner {
+    background-color: var(--button-foreground);
+    color: var(--button-background);
+}
+
+.button-rounded-yin {
+    --button-foreground: var(--yin);
+    --button-background: var(--yang);
+    border-color: var(--button-foreground);
+    background: var(--button-foreground);
+}
+
+.button-rounded-yin .inner {
+    color: var(--button-foreground);
+    background-color: var(--button-background);
+}
+
+.button-rounded-yin:hover .inner {
+    background-color: var(--button-foreground);
+    color: var(--button-background);
+}
+
+.button-rounded-yang {
+    --button-foreground: var(--yang);
+    --button-background: var(--yin);
+    border-color: var(--button-foreground);
+    background: var(--button-foreground);
+}
+
+.button-rounded-yang .inner {
+    color: var(--button-foreground);
+    background-color: var(--button-background);
+}
+
+.button-rounded-yang:hover .inner {
+    background-color: var(--button-foreground);
+    color: var(--button-background);
+}
+
+.button-rounded-red {
+    --button-foreground: var(--red);
+    --button-background: var(--yang);
+    border-color: var(--button-foreground);
+    background: var(--button-foreground);
+}
+
+.button-rounded-red .inner {
+    color: var(--button-foreground);
+    background-color: var(--button-background);
+}
+
+.button-rounded-red:hover .inner {
+    background-color: var(--button-foreground);
+    color: var(--button-background);
+}
+
+/* Button Square */
+.button-square {
+    background-color: var(--yang);
+    border: 1px solid var(--gray);
+    border-radius: var(--default-measure);
+    padding: calc(var(--default-measure) * 3);
+    width: 100%;
+    transition: all 0.3s ease;
+    text-decoration: none;
+}
+
+.button-square:hover {
+    border-color: var(--gray-secondary);
+    opacity: 80%;
+}
+
+/* Button Inline */
+.button-inline {
+    display: inline-block;
+    text-decoration: none;
+    padding: var(--default-measure) calc(var(--default-measure) * 1.5);
+    border-radius: var(--default-measure);
+    font-weight: 600;
+    font-size: var(--text-size-medium);
+    transition: all 0.3s ease;
+}
+
+.button-inline-yang {
+    --button-theme-foreground: var(--yang);
+}
+
+.button-inline-yin {
+    --button-theme-foreground: var(--yin);
+}
+
+/* Color variants for button-inline */
+.button-inline-color-yin {
+    background-color: var(--button-theme-foreground, var(--yang));
+    color: var(--yin);
+    border: 1px solid var(--yin);
+}
+
+.button-inline-color-yin:hover {
+    background-color: var(--yin);
+    color: var(--button-theme-foreground, var(--yang));
+}
+
+.button-inline-color-yang {
+    background-color: var(--button-theme-foreground, var(--yin));
+    color: var(--yang);
+    border: 1px solid var(--yang);
+}
+
+.button-inline-color-yang:hover {
+    background-color: var(--yang);
+    color: var(--button-theme-foreground, var(--yin));
+}
+
+.button-inline-color-blue {
+    background-color: var(--blue);
+    color: var(--yang);
+    border: 1px solid var(--blue);
+}
+
+.button-inline-color-blue:hover {
+    background-color: var(--yang);
+    color: var(--blue);
+}
+
+.button-inline-color-blue-secondary,
+.button-inline-color-blue_secondary {
+    background-color: var(--blue-secondary);
+    color: var(--yang);
+    border: 1px solid var(--blue-secondary);
+}
+
+.button-inline-color-blue-secondary:hover,
+.button-inline-color-blue_secondary:hover {
+    background-color: var(--yang);
+    color: var(--blue-secondary);
+}
+
+.button-inline-color-yellow {
+    background-color: var(--yellow);
+    color: var(--yin);
+    border: 1px solid var(--yellow);
+}
+
+.button-inline-color-yellow:hover {
+    background-color: var(--yin);
+    color: var(--yellow);
+}
+
+.button-inline-color-yellow-secondary,
+.button-inline-color-yellow_secondary {
+    background-color: var(--yellow-secondary);
+    color: var(--yin);
+    border: 1px solid var(--yellow-secondary);
+}
+
+.button-inline-color-yellow-secondary:hover,
+.button-inline-color-yellow_secondary:hover {
+    background-color: var(--yin);
+    color: var(--yellow-secondary);
+}
+
+.button-inline-color-orange {
+    background-color: var(--orange);
+    color: var(--yang);
+    border: 1px solid var(--orange);
+}
+
+.button-inline-color-orange:hover {
+    background-color: var(--yang);
+    color: var(--orange);
+}
+
+.button-inline-color-orange-secondary,
+.button-inline-color-orange_secondary {
+    background-color: var(--orange-secondary);
+    color: var(--yang);
+    border: 1px solid var(--orange-secondary);
+}
+
+.button-inline-color-orange-secondary:hover,
+.button-inline-color-orange_secondary:hover {
+    background-color: var(--yang);
+    color: var(--orange-secondary);
+}
+
+.button-inline-color-red {
+    background-color: var(--red);
+    color: var(--yang);
+    border: 1px solid var(--red);
+}
+
+.button-inline-color-red:hover {
+    background-color: var(--yang);
+    color: var(--red);
+}
+
+.button-inline-color-red-secondary,
+.button-inline-color-red_secondary {
+    background-color: var(--red-secondary);
+    color: var(--yang);
+    border: 1px solid var(--red-secondary);
+}
+
+.button-inline-color-red-secondary:hover,
+.button-inline-color-red_secondary:hover {
+    background-color: var(--yang);
+    color: var(--red-secondary);
+}
+
+.button-inline-color-gray {
+    background-color: var(--gray);
+    color: var(--yang);
+    border: 1px solid var(--gray);
+}
+
+.button-inline-color-gray:hover {
+    background-color: var(--yang);
+    color: var(--gray);
+}
+
+.button-inline-color-gray-secondary,
+.button-inline-color-gray_secondary {
+    background-color: var(--gray-secondary);
+    color: var(--yang);
+    border: 1px solid var(--gray-secondary);
+}
+
+.button-inline-color-gray-secondary:hover,
+.button-inline-color-gray_secondary:hover {
+    background-color: var(--yang);
+    color: var(--gray-secondary);
+}
+
+.button-inline-color-green {
+    background-color: var(--green);
+    color: var(--yang);
+    border: 1px solid var(--green);
+}
+
+.button-inline-color-green:hover {
+    background-color: var(--yang);
+    color: var(--green);
+}
+
+.button-inline-color-green-secondary,
+.button-inline-color-green_secondary {
+    background-color: var(--green-secondary);
+    color: var(--yang);
+    border: 1px solid var(--green-secondary);
+}
+
+.button-inline-color-green-secondary:hover,
+.button-inline-color-green_secondary:hover {
+    background-color: var(--yang);
+    color: var(--green-secondary);
+}
+
+.button-inline-shrink {
+    width: fit-content !important;
+    display: inline-block !important;
+}
+
+/* Conteudo Square */
+.conteudo-square {
+    border: 1px solid var(--gray);
+    border-radius: var(--default-measure);
+    padding: calc(var(--default-measure) * 2);
+    gap: calc(var(--default-measure) * 2) !important;
+    transition: all 0.3s ease;
+}
+
+.conteudo-square:hover {
+    border-color: var(--gray-secondary);
+}
+
+.conteudo-square-image {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    width: 100%;
+    max-width: 300px;
+}
+
+.conteudo-square-content {
+    gap: var(--default-measure);
+}
+
+@media (min-width: 768px) {
+    .conteudo-square {
+        flex-direction: row;
+        gap: calc(var(--default-measure) * 3) !important;
+        padding: calc(var(--default-measure) * 3);
+    }
+    
+    .conteudo-square-image {
+        flex-shrink: 0;
+        width: auto;
+        max-width: 40%;
+    }
+    
+    .conteudo-square-content {
+        flex-grow: 1;
+    }
+    
+    .conteudo-square.desktop\:items-center .conteudo-square-content {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+}
+
+/* YouTube Container */
+.youtube-container {
+    position: relative;
+    width: 100%;
+    padding-bottom: 56.25%;
+    height: 0;
+    overflow: hidden;
+}
+
+.youtube-iframe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border: none;
+}
+
+/* Mapa Container */
+.mapa-container {
+    border-radius: var(--default-measure);
+    overflow: hidden;
+    box-shadow: var(--shadow);
 }

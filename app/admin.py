@@ -123,6 +123,15 @@ class UserProfileInline(admin.StackedInline):
     verbose_name = "Dados Extras do Usuário"
     verbose_name_plural = "Dados Extras do Usuário"
 
+    def formfield_for_manytomany(self, db_field, request, **kwargs):
+        field = super().formfield_for_manytomany(db_field, request, **kwargs)
+        if db_field.name == "ligas":
+            field.widget.can_add_related = False
+            field.widget.can_change_related = False
+            field.widget.can_delete_related = False
+            field.widget.can_view_related = False
+        return field
+
 class CustomUserAdmin(BaseUserAdmin):
     inlines = [UserProfileInline]
     add_fieldsets = (
@@ -211,6 +220,15 @@ class FuncionarioAdmin(admin.ModelAdmin):
         return ";ㅤ".join([f"{tag.id} - {tag.nome}" for tag in obj.tags.all()])
     get_tags.short_description = 'Tags'
 
+    def formfield_for_manytomany(self, db_field, request, **kwargs):
+        field = super().formfield_for_manytomany(db_field, request, **kwargs)
+        if db_field.name == "tags":
+            field.widget.can_add_related = False
+            field.widget.can_change_related = False
+            field.widget.can_delete_related = False
+            field.widget.can_view_related = False
+        return field
+
 @admin.register(TagNoticia)
 class TagNoticiaAdmin(admin.ModelAdmin):
     list_display = ['nome']
@@ -230,6 +248,15 @@ class NoticiaAdmin(admin.ModelAdmin):
         return "; ".join([f"{tag.id} - {tag.nome}" for tag in obj.tags.all()])
     get_tags.short_description = 'Tags'
 
+    def formfield_for_manytomany(self, db_field, request, **kwargs):
+        field = super().formfield_for_manytomany(db_field, request, **kwargs)
+        if db_field.name == "tags":
+            field.widget.can_add_related = False
+            field.widget.can_change_related = False
+            field.widget.can_delete_related = False
+            field.widget.can_view_related = False
+        return field
+
 @admin.register(TagData)
 class TagDataAdmin(RolePermissionMixin, admin.ModelAdmin):
     list_display = ['nome']
@@ -242,8 +269,17 @@ class TagDataAdmin(RolePermissionMixin, admin.ModelAdmin):
             return False
         return super().has_delete_permission(request, obj)
 
+class DataAdminForm(forms.ModelForm):
+    class Meta:
+        model = Data
+        fields = '__all__'
+        widgets = {
+            'cor': forms.TextInput(attrs={'type': 'color'}),
+        }
+        
 @admin.register(Data)
 class DataAdmin(RolePermissionMixin, admin.ModelAdmin):
+    form = DataAdminForm
     list_display = ['descricao', 'data', 'cor', 'action_link', 'get_tags']
     list_filter = ['data', 'tags']
     search_fields = ['descricao']
@@ -254,6 +290,15 @@ class DataAdmin(RolePermissionMixin, admin.ModelAdmin):
     def get_tags(self, obj):
         return "; ".join([f"{tag.id} - {tag.nome}" for tag in obj.tags.all()])
     get_tags.short_description = 'Tags'
+
+    def formfield_for_manytomany(self, db_field, request, **kwargs):
+        field = super().formfield_for_manytomany(db_field, request, **kwargs)
+        if db_field.name == "tags":
+            field.widget.can_add_related = False
+            field.widget.can_change_related = False
+            field.widget.can_delete_related = False
+            field.widget.can_view_related = False
+        return field
 
     def get_queryset(self, request):
         qs = super().get_queryset(request)
@@ -310,6 +355,15 @@ class ArquivoAdmin(RolePermissionMixin, admin.ModelAdmin):
     def get_tags(self, obj):
         return "; ".join([f"{tag.id} - {tag.nome}" for tag in obj.tags.all()])
     get_tags.short_description = 'Tags'
+
+    def formfield_for_manytomany(self, db_field, request, **kwargs):
+        field = super().formfield_for_manytomany(db_field, request, **kwargs)
+        if db_field.name == "tags":
+            field.widget.can_add_related = False
+            field.widget.can_change_related = False
+            field.widget.can_delete_related = False
+            field.widget.can_view_related = False
+        return field
 
     def has_delete_permission(self, request, obj=None):
         role = self.get_user_role(request)
@@ -632,3 +686,9 @@ class UserProfileAdmin(admin.ModelAdmin):
         if request.user.has_perm('auth.delete_user') or request.user.is_superuser:
             return True
         return False
+
+    def formfield_for_manytomany(self, db_field, request, **kwargs):
+        field = super().formfield_for_manytomany(db_field, request, **kwargs)
+        if db_field.name == "ligas":
+            field.widget.can_add_related = False
+        return field

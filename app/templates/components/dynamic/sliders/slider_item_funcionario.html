@@ -1,5 +1,5 @@
 {% load static %}
-<div class="funcionario">
+<div class="funcionario {{ size }}">
     {%  if item.foto %}
         <img src="/media/{{ item.foto }}" draggable="false" alt="{{ item.nome }} - {{ item.cargo }}" class="cross-rounded"/>
     {% else %}

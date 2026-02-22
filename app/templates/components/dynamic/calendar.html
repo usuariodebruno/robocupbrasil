@@ -3,7 +3,12 @@
     {% for d in datas %}
         {"date": "{{ d.data|date:"Y-m-d" }}", "descricao": "{{ d.descricao|escapejs }}", "cor": "{{ d.cor }}", "link": "{{ d.action_link }}"}{% if not forloop.last %},{% endif %}
     {% endfor %}
-]'>
+    ]'
+    style="
+        {% if theme_primary %}--header: var(--{{ theme_primary }});{% endif %}
+        {% if theme_secondary %}--card: var(--{{ theme_secondary }});{% endif %}
+        {% if theme_foreground %}--foreground: var(--{{ theme_foreground }});{% endif %}
+    ">
     <div class="flex flex-column desktop:flex-row align-items-start">
         <div id="calendar-list" class="desktop:margin-b-0 desktop:padding-r-2">
             <div id="upcoming-events-header" class="flex flex-center calendar-container-card calendar-header-card margin-b-1">
@@ -12,7 +17,7 @@
             <div class="event-list-items">
                 {% for d in datas %}
                     {% if d.action_link %}
-                        <a href="{{ d.action_link }}" target="_blank" class="event-card" data-date="{{ d.data|date:'Y-m-d' }}" style="--event-color: {{ d.cor }}">
+                        <a href="{{ d.action_link }}" class="event-card" data-date="{{ d.data|date:'Y-m-d' }}" style="--event-color: {{ d.cor }}">
                             <div class="event-card-content flex">
                                 <div class="event-date text-large bold">{{ d.data|date:"d/m" }}</div>
                                 <div class="event-desc">{{ d.descricao }}</div>
@@ -35,7 +40,7 @@
             <div id="rcb-calendar-controls" class="flex flex-between calendar-container-card calendar-header-card margin-b-1">
                 <button id="cal-prev" style="visibility: hidden;" class="calendar-nav-btn"><i style="padding-top:2px;padding-right: 2px;" class="fa fa-chevron-left"></i></button>
                 <span id="cal-month" class="text-large semibold"></span>
-                <button id="cal-next" class="calendar-nav-btn"><i style="padding-top:2px;padding-left: 1px;" class="fa fa-chevron-right"></i></button>
+                <button id="cal-next" class="calendar-nav-btn"><i style="padding-top:2px;padding-left: 2px;" class="fa fa-chevron-right"></i></button>
             </div>
             <div class="calendar-container-card">
                 <div id="rcb-calendar-weekdays" class="desktop-only"></div>

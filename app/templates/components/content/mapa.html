@@ -1,0 +1,24 @@
+<div id="mapa-{{ id|default:'map' }}" class="mapa-container w-100" style="height: 400px;"></div>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const mapElement = document.getElementById('mapa-{{ id|default:'map' }}');
+        if (!mapElement) return;
+        
+        const lat = {{ latitude }};
+        const lon = {{ longitude }};
+        const map = L.map('mapa-{{ id|default:'map' }}').setView([lat, lon], 15);
+        
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '© OpenStreetMap contributors',
+            maxZoom: 19,
+        }).addTo(map);
+        
+        const marker = L.marker([lat, lon]).addTo(map);
+        const googleMapsUrl = `https://www.google.com/maps/?q=${lat},${lon}`;
+        marker.bindPopup(`<a href="${googleMapsUrl}" target="_blank">Ver no Google Maps</a>`);
+    });
+</script>

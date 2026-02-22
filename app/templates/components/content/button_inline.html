@@ -1,0 +1,6 @@
+<a href="{{ href|default:'#' }}" {% if blank %}target="_blank"{% endif %} class="button-inline button-inline-{{ theme|default:'yang' }} button-inline-color-{{ color|default:'yin' }}{% if shrink %} button-inline-shrink{% endif %}">
+    {% if icon %}
+        <i class="fa fa-{{ icon }}"></i>&nbsp;
+    {% endif %}
+    {{ texto }}
+</a>

@@ -38,7 +38,7 @@ def estado_view(request, sigla):
             "label": "Auxilie",
             "icon": "group",
             "content": """
-                <h3 class="margin-0 margin-b-0/ text-xlarge">Programa de voluntariado</h3>
+                <h3 class="margin-0 margin-b-1 text-xlarge">Programa de voluntariado</h3>
                 <p class="margin-0 text-large">Deseja ser um voluntário em algum evento regional ou estadual? <strong>Entre em contato</strong> com um representante e ajude-nos a democratizar a robótica!</p>
             """
         },
@@ -47,7 +47,7 @@ def estado_view(request, sigla):
             "label": "Invista",
             "icon": "money",
             "content": """
-                <h3 class="margin-0 margin-b-0/ text-xlarge">Invista em eventos de robótica do seu estado!</h3>
+                <h3 class="margin-0 margin-b-1 text-xlarge">Invista em eventos de robótica do seu estado!</h3>
                 <p class="margin-0 text-large">
                     Deseja investir em uma Regional ou Estadual de algum evento RoboCup Brasil?
                     Entre em contato com um <strong>representante</strong> e ajude-nos a democratizar a robótica!
@@ -90,6 +90,7 @@ def estado_view(request, sigla):
         'arquivo': arquivos[0] if arquivos else None,
         'noticias': noticias,
         'datas': datas,
+        'imagem_estado': f"/static/images/estados/{sigla_upper.lower()}.png",
     }
     return render(request, 'estado.html', context)
 

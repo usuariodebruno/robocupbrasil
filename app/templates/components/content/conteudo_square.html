@@ -1,0 +1,31 @@
+<div class="conteudo-square flex flex-column
+    {% if image_align_mobile == 'top'%} flex-column{% endif %}
+    {% if image_align_mobile == 'bottom'%} flex-reverse-column{% endif %}
+    {% if image_align_desktop == 'right'%} desktop:flex-reverse{% endif %}
+    {% if image_align_desktop == 'left'%} desktop:flex-row{% endif %}
+    {% if image_align_desktop == 'center'%}
+        {% if image_align_mobile == 'top'%}
+            desktop:flex-column
+        {% else %}
+            desktop:flex-reverse-column
+        {% endif %}
+    {% endif %}
+    ">
+    {% if imagem %}
+        <img 
+            draggable="false"
+            src="{{ imagem }}" 
+            alt="{{ titulo }}" 
+            class="conteudo-square-image"
+        />
+    {% endif %}
+    
+    <div class="conteudo-square-content text-align-{{ text_align|default:'start' }}">
+        <h2 class="text-xlarge margin-b-1 w-100 margin-t-0">{{ titulo }}</h2>
+        <p class="text-large margin-b-1 w-100">{{ descricao }}</p>
+        
+        {% if inline_text %}
+            {% include "components/content/button_inline.html" with texto=inline_text href=inline_href theme=inline_theme color=inline_color shrink=True %}
+        {% endif %}
+    </div>
+</div>

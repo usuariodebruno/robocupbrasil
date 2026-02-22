@@ -1,0 +1,11 @@
+<a href="{{ href|default:'#' }}" class="button-square flex flex-column flex-center w-100">
+    <div class="text-align-center">
+        {% if icon %}
+            <i class="fa fa-{{ icon }} text-xxlarge text-yin block margin-b-0/"></i>
+        {% endif %}
+        <span class="text-large text-yin">{{ titulo }}</span>
+    </div>
+    {% if descricao %}
+        <span class="text-medium text-gray-secondary">{{ descricao }}</span>
+    {% endif %}
+</a>

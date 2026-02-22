@@ -1,14 +1,14 @@
 <section class="accordion border-radius {{ style_classes }}">
     {% for tab in tabs %}
         <div class="accordion-item">
-            <button class="accordion-header{% if forloop.first %} active{% endif %}" type="button">
+            <button class="accordion-header{% if forloop.first and opened == 'true' %} active{% endif %}" type="button">
                 {% if tab.icon %}
                     {% include "components/icon.html" with icon=tab.icon %}&nbsp;
                 {% endif %}
                 {{ tab.label }}
             </button>
-            <div id="{{ tab.id }}" class="accordion-content{% if forloop.first %} active{% endif %}">
-                {{ tab.content|safe }}
+            <div id="{{ tab.id }}" class="accordion-content{% if forloop.first and opened == 'true' %} active{% endif %}">
+                {% include "components/content/texto.html" with conteudo=tab.content %}
             </div>
         </div>
     {% endfor %}

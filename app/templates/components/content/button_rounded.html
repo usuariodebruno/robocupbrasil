@@ -1,0 +1,8 @@
+<a href="{{ href|default:'#' }}" {% if blank %}target="_blank"{% endif %} class="button-rounded button-rounded-{{ theme|default:'yellow' }} border-radius w-100">
+    <div class="border-radius inner w-100 flex flex-center flex-column">
+        {% if icon %}
+            <i class="fa fa-{{ icon }} text-xlarge"></i>
+        {% endif %}
+        <span class="text-large text-600">{{ texto }}</span>
+    </div>
+</a>

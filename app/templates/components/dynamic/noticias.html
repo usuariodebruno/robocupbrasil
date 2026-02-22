@@ -2,7 +2,11 @@
 <div id="noticias-component">
     <div class="noticias-list">
         {% for n in noticias %}
-            <div class="noticia">
+            <div class="noticia" 
+            style="
+                {% if theme_primary %}--primary: var(--{{ theme_primary }});{% endif %}
+                {% if theme_foreground %}--foreground: var(--{{ theme_foreground }});{% endif %}
+            ">
                 <div style="max-width: 200px;overflow: hidden;">
                     <p class="margin-y-0 text-large"><strong>{{ n.titulo }}</strong></p>
                     <p class="margin-y-0 text-small">{{ n.data|date:'d/m/Y' }}</p>

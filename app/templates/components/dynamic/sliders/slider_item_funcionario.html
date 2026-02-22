@@ -1,0 +1,12 @@
+{% load static %}
+<div class="funcionario">
+    {%  if item.foto %}
+        <img src="/media/{{ item.foto }}" draggable="false" alt="{{ item.nome }} - {{ item.cargo }}" class="cross-rounded"/>
+    {% else %}
+        <img src="{% static 'images/clouds/robot-happy.png' %}" draggable="false" alt="{{ item.nome }} - {{ item.cargo }}" class="cross-rounded"/>
+    {% endif %}
+    <div>
+        <h3 class="margin-y-0/ text-large">{{ item.nome }}</h3>
+        {%  if item.cargo %}<p class="text-medium margin-0">{{ item.cargo }}</p>{% endif %}
+    </div>
+</div>

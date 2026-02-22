@@ -121,7 +121,7 @@ class Funcionario(GlobalQueryMixin, models.Model):
     nome = models.CharField(max_length=200)
     cargo = models.CharField(max_length=200)
     instituicao = models.CharField(max_length=200, blank=True, verbose_name='Instituição / Empresa')
-    tags = models.ManyToManyField(TagFuncionario)
+    tags = models.ManyToManyField(TagFuncionario, verbose_name='Tag(s) de Funcionário')
     bio = models.TextField(blank=True)
     foto = ResizedImageField(
         size=[3000, 3000],
@@ -210,11 +210,11 @@ class TagData(models.Model):
         return self.nome
 
 class Data(GlobalQueryMixin, models.Model):
-    descricao = models.CharField(max_length=200, verbose_name='Descrição')
+    descricao = models.CharField(max_length=200, verbose_name='Nome / Descrição para a Data')
     data = models.DateField()
     cor = models.CharField(max_length=7, default='#000000')
     action_link = models.URLField(blank=True, verbose_name='Link de mais informações')
-    tags = models.ManyToManyField(TagData)
+    tags = models.ManyToManyField(TagData, verbose_name='Tag(s) da Data')
 
     owner = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, editable=False)
 
@@ -243,7 +243,15 @@ class Arquivo(GlobalQueryMixin, models.Model):
         help_text='Tamanho máximo: 64MB',
         validators=[validate_file_size],
     )
-    tags = models.ManyToManyField(TagArquivo)
+    descricao = models.TextField(blank=True, verbose_name='Descrição')
+    thumbnail = ResizedImageField(
+        size=[1200, 1200],
+        quality=80,
+        upload_to='arquivos/thumbnails/',
+        blank=True,
+        editable=False,
+    )
+    tags = models.ManyToManyField(TagArquivo, verbose_name='Tag(s) de Arquivo')
 
     class Meta:
         verbose_name = "Arquivo"
@@ -251,6 +259,29 @@ class Arquivo(GlobalQueryMixin, models.Model):
 
     def __str__(self):
         return self.nome
+
+    def save(self, *args, **kwargs):
+        # attempt to generate thumbnail for PDF files using pdf2image (requires poppler)
+        if self.arquivo and (not self.thumbnail) and self.arquivo.name.lower().endswith('.pdf'):
+            try:
+                from pdf2image import convert_from_bytes
+                from io import BytesIO
+                from django.core.files.base import ContentFile
+
+                self.arquivo.open('rb')
+                pdf_bytes = self.arquivo.read()
+                images = convert_from_bytes(pdf_bytes, first_page=1, last_page=1)
+                if images:
+                    bio = BytesIO()
+                    images[0].save(bio, format='PNG')
+                    bio.seek(0)
+                    thumb_name = f"{self.arquivo.name.rsplit('/',1)[-1]}.png"
+                    self.thumbnail.save(thumb_name, ContentFile(bio.read()), save=False)
+            except Exception:
+                # silently ignore thumbnail generation errors
+                pass
+
+        super().save(*args, **kwargs)
 
 class Subevento(GlobalQueryMixin, models.Model):
     nome = models.CharField(max_length=200)
@@ -268,6 +299,7 @@ class Subevento(GlobalQueryMixin, models.Model):
         blank=True,
         verbose_name="🧩 Componentes",
     )
+    componentes_html = models.TextField(blank=True, verbose_name='Componentes (HTML cache)', editable=False)
     permalink = models.SlugField(unique=True, max_length=255, editable=False, allow_unicode=True, blank=True)
 
     def save(self, *args, **kwargs):
@@ -541,6 +573,7 @@ class Pagina(models.Model):
         blank=True,
         verbose_name="🧩 Componentes",
     )
+    componentes_html = models.TextField(blank=True, verbose_name='Componentes (HTML cache)', editable=False)
     evento_associado = models.CharField(
         max_length=50,
         choices=Evento.choices,
@@ -592,6 +625,7 @@ class Sede(GlobalQueryMixin, models.Model):
         blank=True,
         verbose_name="🧩 Componentes",
     )
+    componentes_html = models.TextField(blank=True, verbose_name='Componentes (HTML cache)', editable=False)
 
     class Meta:
         ordering = ['ano']

@@ -40,6 +40,19 @@ You should see `(venv)` at the beginning of your terminal prompt.
 pip install -r requirements.txt
 ```
 
+Note: for PDF thumbnail generation the project uses `pdf2image`, which requires the `poppler` system package. On Debian/Ubuntu (and derivatives like Zorin/PopOS) install:
+
+```bash
+sudo apt update
+sudo apt install poppler-utils
+```
+
+After installing `poppler-utils`, re-run:
+
+```bash
+pip install -r requirements.txt
+```
+
 <!-- If `requirements.txt` is missing or outdated, install the core packages and regenerate it:
 Bash
 

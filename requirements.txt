@@ -13,3 +13,8 @@ rcssmin==1.2.2
 rjsmin==1.2.5
 sqlparse==0.5.5
 whitenoise==6.11.0
+
+# Added for PDF thumbnail generation and markdown rendering
+# markdown 3.5.4 is not available on some pip indices; pin to a widely available version
+markdown==3.5.2
+pdf2image==1.16.3

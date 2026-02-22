@@ -1,0 +1,10 @@
+{% load static %}
+
+<div class="scroll-wrapper">
+    <div class="scroll-items">
+        {% for item in items %}
+            {% include item_template with item=item %}
+        {% endfor %}
+    </div>
+    <div class="scroll-indicator" style="display: none;"><i class="fa fa-arrows-h"></i></div>
+</div>

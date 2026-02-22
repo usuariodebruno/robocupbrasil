@@ -1,3 +1,5 @@
+var dFlipLocation = '/static/js/dflip/';
+
 let isTransferring = false;
 let threshold = 100;
 
@@ -8,6 +10,7 @@ window.addEventListener('load', function() {
     setupTabs();
     setupCarousel();
     setupAdminShortcut();
+    setupCalendar();
     setupDraggableScroll();
 });
 
@@ -236,6 +239,173 @@ function setupCarousel() {
     });
 }
 
+function setupCalendar() {
+    const calendarComponent = document.getElementById('calendar-component');
+    if (!calendarComponent) return;
+
+    const eventsData = JSON.parse(calendarComponent.dataset.events || '[]');
+    const grid = document.getElementById('rcb-calendar-days');
+    const weekdaysContainer = document.getElementById('rcb-calendar-weekdays');
+    const monthDisplay = document.getElementById('cal-month');
+    const prevBtn = document.getElementById('cal-prev');
+    const nextBtn = document.getElementById('cal-next');
+
+    let currentDate = new Date();
+    const minDate = new Date();
+
+    // Hover Sync Logic
+    function setHover(dateKey, active) {
+        if (!dateKey) return;
+        const selector = `[data-date="${dateKey}"]`;
+        const elements = document.querySelectorAll(selector);
+        elements.forEach(el => {
+            if (active) el.classList.add('hover-sync');
+            else el.classList.remove('hover-sync');
+        });
+    }
+
+    // Add hover to static list items once
+    const listItems = document.querySelectorAll('.event-card');
+    listItems.forEach(item => {
+        item.addEventListener('mouseenter', () => {
+            const dateStr = item.dataset.date;
+            if (dateStr) {
+                const [y, m, d] = dateStr.split('-').map(Number);
+                if (currentDate.getFullYear() !== y || currentDate.getMonth() !== (m - 1)) {
+                    currentDate.setFullYear(y);
+                    currentDate.setMonth(m - 1);
+                    renderCalendar(currentDate.getFullYear(), currentDate.getMonth());
+                }
+                setHover(dateStr, true);
+            }
+        });
+        item.addEventListener('mouseleave', () => setHover(item.dataset.date, false));
+    });
+
+    function renderCalendar(year, month) {
+        const monthName = new Date(year, month).toLocaleDateString('pt-BR', { month: 'long', year: 'numeric' });
+        monthDisplay.textContent = monthName.charAt(0).toUpperCase() + monthName.slice(1);
+        grid.innerHTML = '';
+        if (weekdaysContainer) weekdaysContainer.innerHTML = '';
+
+        // Visibility of Prev Button
+        if (year === minDate.getFullYear() && month === minDate.getMonth()) {
+            prevBtn.style.visibility = 'hidden';
+        } else {
+            prevBtn.style.visibility = 'visible';
+        }
+
+        // Render Weekdays
+        if (weekdaysContainer) {
+            const weekdays = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'];
+            weekdays.forEach(day => {
+                const daySpan = document.createElement('span');
+                daySpan.textContent = day;
+                weekdaysContainer.appendChild(daySpan);
+            });
+        }
+
+        const firstDayOfMonth = new Date(year, month, 1);
+        const lastDayOfMonth = new Date(year, month + 1, 0);
+        
+        for (let i = 0; i < firstDayOfMonth.getDay(); i++) {
+            const blankCell = document.createElement('div');
+            blankCell.className = 'calendar-day blank';
+            grid.appendChild(blankCell);
+        }
+
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+
+        for (let d = 1; d <= lastDayOfMonth.getDate(); d++) {
+            const dayDate = new Date(year, month, d);
+            const dateKey = dayDate.toISOString().slice(0, 10);
+            const eventsForDay = eventsData.filter(e => e.date === dateKey);
+
+            const cell = document.createElement('div');
+            cell.className = 'calendar-day';
+            cell.dataset.date = dateKey;
+
+            cell.addEventListener('mouseenter', () => setHover(dateKey, true));
+            cell.addEventListener('mouseleave', () => setHover(dateKey, false));
+
+            if (dayDate < today) {
+                cell.classList.add('past-day');
+            }
+            if (dayDate.getTime() === today.getTime()) {
+                cell.classList.add('today');
+            }
+
+            const dayNumber = document.createElement('strong');
+            dayNumber.className = 'day-number';
+            dayNumber.textContent = d;
+            cell.appendChild(dayNumber);
+
+            if (eventsForDay.length > 0) {
+                const linesContainer = document.createElement('div');
+                linesContainer.className = 'event-lines-container flex flex-column';
+                
+                eventsForDay.forEach(event => {
+                    const eventLine = document.createElement('div');
+                    eventLine.className = 'event-line';
+                    eventLine.style.backgroundColor = event.cor;
+                    eventLine.innerHTML = `<span>${event.descricao}</span>`;
+                    
+                    if (event.link) {
+                        const link = document.createElement('a');
+                        link.href = event.link;
+                        link.target = '_blank';
+                        link.title = event.descricao;
+                        link.appendChild(eventLine);
+                        linesContainer.appendChild(link);
+                    } else {
+                        eventLine.title = event.descricao;
+                        linesContainer.appendChild(eventLine);
+                    }
+                });
+                cell.appendChild(linesContainer);
+            }
+            grid.appendChild(cell);
+        }
+
+        // Apply corner radius logic dynamically
+        const cells = grid.children;
+        const totalCells = cells.length;
+        const cols = 7;
+        const rows = Math.ceil(totalCells / cols);
+        const radius = 'calc(var(--default-measure) * 0.5)';
+
+        if (totalCells > 0) {
+            // Top Corners
+            cells[0].style.borderTopLeftRadius = radius;
+            if (cells[6]) cells[6].style.borderTopRightRadius = radius;
+
+            // Bottom Corners
+            const bottomLeftIndex = (rows - 1) * cols;
+            if (cells[bottomLeftIndex]) cells[bottomLeftIndex].style.borderBottomLeftRadius = radius;
+
+            const bottomRightIndex = (rows * cols) - 1;
+            if (cells[bottomRightIndex]) cells[bottomRightIndex].style.borderBottomRightRadius = radius;
+        }
+    }
+
+    prevBtn.addEventListener('click', () => {
+        const prevMonthDate = new Date(currentDate.getFullYear(), currentDate.getMonth() - 1, 1);
+        const minMonthDate = new Date(minDate.getFullYear(), minDate.getMonth(), 1);
+        if (prevMonthDate < minMonthDate) return;
+
+        currentDate.setMonth(currentDate.getMonth() - 1);
+        renderCalendar(currentDate.getFullYear(), currentDate.getMonth());
+    });
+
+    nextBtn.addEventListener('click', () => {
+        currentDate.setMonth(currentDate.getMonth() + 1);
+        renderCalendar(currentDate.getFullYear(), currentDate.getMonth());
+    });
+
+    renderCalendar(currentDate.getFullYear(), currentDate.getMonth());
+}
+
 function setupAdminShortcut() {
     const targets = document.querySelectorAll('header.floating div:first-child');
     
@@ -264,8 +434,8 @@ function setupAdminShortcut() {
 }
 
 function setupDraggableScroll() {
-    document.querySelectorAll('.funcionarios-wrapper').forEach(wrapper => {
-        const slider = wrapper.querySelector('.funcionarios');
+    document.querySelectorAll('.scroll-wrapper').forEach(wrapper => {
+        const slider = wrapper.querySelector('.scroll-items');
         if (!slider) return;
         
         const indicator = wrapper.querySelector('.scroll-indicator');
@@ -276,6 +446,7 @@ function setupDraggableScroll() {
             slider.style.cursor = 'default';
             return;
         } else if(indicator) {
+            slider.style.justifyContent = 'start';
             indicator.style.display = 'block';
         }
 
@@ -317,4 +488,78 @@ function setupDraggableScroll() {
         slider.addEventListener('mousemove', move);
         slider.addEventListener('touchmove', move);
     });
+}
+
+function rcb_change_page(param, delta, anchor) {
+    try {
+        const url = new URL(window.location.href);
+        const cur = parseInt(url.searchParams.get(param) || '0');
+        const next = Math.max(0, cur + delta);
+        url.searchParams.set(param, next);
+        const base = url.toString().split('#')[0];
+        window.location.assign(base + '#' + anchor);
+    } catch(e){ console.warn(e); }
+}
+
+document.querySelectorAll('.pagination .page-number').forEach(div => {
+    div.innerText = parseInt(new URLSearchParams(window.location.search).get(div.innerText.trim())) + 1 || 1;
+});
+
+// PDF Viewer Functions
+let activeBook = null;
+
+function showPDFViewer(event, pdfUrl) {
+    event.preventDefault();
+    const component = event.target.closest('#arquivos-component');
+    if (!component) return;
+    
+    const list = component.querySelector('.arquivo-list');
+    const viewer = component.querySelector('.arquivo-visualizador');
+    const book = component.querySelector('.arquivo-pdf');
+    
+    // Trigger transitions
+    list.classList.add('pdf-viewer-active');
+    viewer.classList.add('pdf-viewer-active');
+    
+    // Initialize dFlip after transition
+    setTimeout(() => {
+        // Add the class so dFlip recognizes it
+        book.classList.add('_df_book');
+        
+        // Initialize dFlip
+        if (window.DFLIP && window.jQuery) {
+            // Dispose previous instance if exists (safety check)
+            if (activeBook) {
+                activeBook.dispose();
+                activeBook = null;
+            }
+            activeBook = jQuery(book).flipBook(pdfUrl);
+        }
+    }, 300);
+}
+
+function closePDFViewer(event) {
+    event.preventDefault();
+    const component = event.target.closest('#arquivos-component');
+    if (!component) return;
+    
+    const list = component.querySelector('.arquivo-list');
+    const viewer = component.querySelector('.arquivo-visualizador');
+    const book = component.querySelector('.arquivo-pdf');
+    
+    // Remove active classes
+    list.classList.remove('pdf-viewer-active');
+    viewer.classList.remove('pdf-viewer-active');
+    
+    // Clean up after transition
+    setTimeout(() => {
+        if (activeBook) {
+            activeBook.dispose();
+            activeBook = null;
+        }
+
+        book.classList.remove('_df_book');
+        book.innerHTML = '';
+        book.removeAttribute('source');
+    }, 300);
 }

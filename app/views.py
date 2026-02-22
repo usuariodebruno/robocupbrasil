@@ -20,6 +20,7 @@ def error_view(request, exception=None):
         'exception': exception,
     }, status=status_code)
 
+# Essa página eventualmente será excluída, mas por ora serve como exemplo de renderização de componentes dinâmicos
 def estado_view(request, sigla):
     sigla_upper = sigla.upper()
     if sigla_upper not in [choice[0] for choice in Regiao.choices]:
@@ -55,15 +56,40 @@ def estado_view(request, sigla):
         }
     ]
 
-    #funcionarios = Funcionario.get_items(tag_ids=[9])
+    funcionarios = Funcionario.get_items(tag_ids=[10])
+    # pagination params for files and news (começar em 0)
+    try:
+        file_page = int(request.GET.get('file_page', 0))
+    except (ValueError, TypeError):
+        file_page = 0
+
+    try:
+        news_page = int(request.GET.get('news_page', 0))
+    except (ValueError, TypeError):
+        news_page = 0
+
+    sedes = Sede.get_items(tag_ids=[])
+    subeventos = Subevento.get_items(tag_ids=[])
+    arquivos = Arquivo.get_items(tag_ids=[], page_index=file_page)
+    noticias = Noticia.get_items(tag_ids=[], page_index=news_page)
+
+    from datetime import date
+    datas = list(Data.objects.filter(data__gte=date.today()).order_by('data')[:50])
 
     context = {
         'sigla': sigla_upper,
         'nome_estado': pagina.get_estado_display(),
         'conteudo': pagina.componentes,
+        'conteudo_html': getattr(pagina, 'componentes_html', ''),
         'reference': reference,
         'tabs': tabs,
-        #'funcionarios': funcionarios,
+        'funcionarios': funcionarios,
+        'sedes': sedes,
+        'subeventos': subeventos,
+        'arquivos': arquivos,
+        'arquivo': arquivos[0] if arquivos else None,
+        'noticias': noticias,
+        'datas': datas,
     }
     return render(request, 'estado.html', context)
 
@@ -77,6 +103,7 @@ def subevento_view(request, permalink):
     context = {
         'subevento': subevento,
         'conteudo': subevento.componentes,
+        'conteudo_html': getattr(subevento, 'componentes_html', ''),
         'reference': reference,
     }
     return render(request, 'subevento.html', context)
@@ -91,12 +118,27 @@ def sede_view(request, ano):
     context = {
         'sede': sede,
         'conteudo': sede.componentes,
+        'conteudo_html': getattr(sede, 'componentes_html', ''),
         'reference': reference,
     }
     return render(request, 'sede.html', context)
 
 def pagina_dinamica_view(request, path):
     path = path.strip('/')
+
+    # Query params for pagination
+
+    try:
+        file_page = int(request.GET.get('file_page', 0))
+    except (ValueError, TypeError):
+        file_page = 0
+
+    try:
+        news_page = int(request.GET.get('news_page', 0))
+    except (ValueError, TypeError):
+        news_page = 0
+    
+    # ------------------
 
     if not path:
         try:
@@ -110,24 +152,10 @@ def pagina_dinamica_view(request, path):
             if slug:
                 pagina = get_object_or_404(Pagina, slug=slug, parent=pagina)
 
-    # rendered_components = []
-    # for comp in pagina.componentes:
-    #     try:
-    #         if comp['type'] == 'equipe':
-    #             funcionario_ids = comp.get('funcionarios', []) 
-    
-    #             rendered_components.append(render(request, 'components/sections/equipe.html', {
-    #                 'titulo': comp.get('titulo', 'Equipe'),
-    #                 'funcionarios': Funcionario.objects.filter(id__in=funcionario_ids)
-    #             }).content.decode())
-    #     except Exception as e:
-    #         rendered_components.append(f"<p>Erro ao renderizar componente: {e}</p>")
-    #     pass
-
     context = {
         'pagina': pagina,
-        # 'componentes_rendered': rendered_components,
         'header_type': pagina.header_type,
+        'conteudo_html': getattr(pagina, 'componentes_html', ''),
     }
     return render(request, 'base_dynamic.html', context)
 

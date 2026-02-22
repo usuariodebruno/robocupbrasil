@@ -1,0 +1,14 @@
+{% load static %}
+<div class="subevento-slide">
+    <div class="card">
+        <a href="{{ item.get_absolute_url }}" draggable="false" class="img-link">
+            {% if item.icone %}
+                <img src="/media/{{ item.icone }}" draggable="false" alt="{{ item.nome }}"/>        
+            {% endif %}
+        </a>
+        <div>
+            <h4 class="margin-0 text-large"><a href="{{ item.get_absolute_url }}" draggable="false">{{ item.nome }}</a></h4>
+            <p class="margin-0 text-small"><a href="{{ item.get_absolute_url }}" draggable="false">{{ item.get_evento_display|default:item.evento }}</a></p>
+        </div>
+    </div>
+</div>

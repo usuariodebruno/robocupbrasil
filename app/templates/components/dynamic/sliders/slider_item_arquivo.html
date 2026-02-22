@@ -1,0 +1,36 @@
+{% load static file_extras %}
+<div id="arquivos-component" class="slider-component">
+    {% with item.arquivo|file_extension as ext %}
+        <div class="arquivo text-shadow slider-item">
+            <div class="file-extension">
+                <div class="details flex-start">
+                    <i class="
+                    {% if ext in 'png jpg jpeg gif' %}
+                        fa fa-picture-o
+                    {% elif ext in 'doc docx' %}
+                        fa fa-file-text
+                    {% elif ext in 'xls xlsx' %}
+                        fa fa-file-table
+                    {% else %}
+                        fa fa-file
+                    {% endif %}
+                    text-xlarge block w-100"></i>
+                    <div class="margin-t-0/ w-100">
+                        .{{ ext }}
+                    </div>
+
+                    <div class="margin-t-2 text-large text-700 w-100">{{ item.nome }}</div>
+                    <div class="margin-t-0/ text-medium w-100">{{ item.descricao }}</div>
+                    <a href="{{ item.arquivo.url }}" target="_blank" style="color:inherit" class="fa fa-download text-large dl"></a>
+                </div>
+                {% if item.thumbnail or ext in 'png jpg jpeg gif'%}
+                    {% if item.thumbnail %}
+                        <img draggable="false" src="{{ item.thumbnail.url }}" alt="{{ item.nome }}" />
+                        {% else %}
+                        <img draggable="false" src="{{ item.arquivo.url }}" alt="{{ item.nome }}" />
+                    {% endif %}
+                {% endif %}
+            </div>
+        </div>
+    {% endwith %}
+</div>

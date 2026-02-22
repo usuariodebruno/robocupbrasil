@@ -1,0 +1,21 @@
+{% load static %}
+<div id="noticias-component">
+    <div class="noticias-list">
+        {% for n in noticias %}
+            <div class="noticia">
+                <div style="max-width: 200px;overflow: hidden;">
+                    <p class="margin-y-0 text-large"><strong>{{ n.titulo }}</strong></p>
+                    <p class="margin-y-0 text-small">{{ n.data|date:'d/m/Y' }}</p>
+                    <p class="margin-y-0/">{{ n.chamada }}</p>
+                </div>
+                <a href="{{ n.get_absolute_url }}" class="link text-medium">Leia mais</a>
+                {% if n.imagem %}
+                    <img src="/media/{{ n.imagem }}" alt="{{ n.titulo }}" class="noticia-image">
+                {% endif %}
+            </div>
+        {% endfor %}
+    </div>
+    {% if pagination %}
+        {% include "components/dynamic/pagination.html" with page_param='news_page' component_id='noticias-component' %}
+    {% endif %}
+</div>

@@ -18,6 +18,7 @@ from .models import (
     Sede,
     PaginaEstado,
 )
+from .utils.render_components import render_components_to_html
 from .permissions import RolePermissionMixin
 
 _original_get_app_list = admin.sites.AdminSite.get_app_list
@@ -138,7 +139,7 @@ class CustomUserAdmin(BaseUserAdmin):
 
 
     def get_list_display(self, request):
-        return ['first_name', 'username', 'get_grupo', 'get_estado']
+        return ['username', 'first_name', 'get_grupo', 'get_estado']
 
     def get_grupo(self, obj):
         profile = getattr(obj, 'userprofile', None)
@@ -204,6 +205,7 @@ class FuncionarioAdmin(admin.ModelAdmin):
     list_filter = ['tags']
     search_fields = ['nome', 'cargo']
     list_per_page = 50
+    filter_horizontal = ['tags']
 
     def get_tags(self, obj):
         return ";ㅤ".join([f"{tag.id} - {tag.nome}" for tag in obj.tags.all()])
@@ -221,6 +223,7 @@ class NoticiaAdmin(admin.ModelAdmin):
     list_filter = ['header_type', 'tags']
     search_fields = ['titulo', 'conteudo']
     date_hierarchy = 'data'
+    filter_horizontal = ['tags']
     list_per_page = 50
 
     def get_tags(self, obj):
@@ -283,6 +286,7 @@ class DataAdmin(RolePermissionMixin, admin.ModelAdmin):
         if role == 'MARKETING' or role == 'REPRESENTANTE':
             return False
         return super().has_delete_permission(request, obj)
+
 @admin.register(TagArquivo)
 class TagArquivoAdmin(RolePermissionMixin, admin.ModelAdmin):
     list_display = ['nome']
@@ -297,7 +301,7 @@ class TagArquivoAdmin(RolePermissionMixin, admin.ModelAdmin):
 
 @admin.register(Arquivo)
 class ArquivoAdmin(RolePermissionMixin, admin.ModelAdmin):
-    list_display = ['nome', 'arquivo', 'get_tags']
+    list_display = ['nome', 'arquivo', 'get_tags', 'descricao']
     list_filter = ['tags']
     search_fields = ['nome']
     filter_horizontal = ['tags']
@@ -328,6 +332,18 @@ class SubeventoAdmin(RolePermissionMixin, admin.ModelAdmin):
             return qs.filter(id__in=request.user.userprofile.ligas.all())
         
         return qs
+
+    def formfield_for_dbfield(self, db_field, request, **kwargs):
+        if db_field.name == 'componentes':
+            kwargs['widget'] = ComponentesWidget()
+        return super().formfield_for_dbfield(db_field, request, **kwargs)
+
+    def save_model(self, request, obj, form, change):
+        try:
+            obj.componentes_html = render_components_to_html(obj.componentes)
+        except Exception:
+            obj.componentes_html = ''
+        super().save_model(request, obj, form, change)
 
     def has_change_permission(self, request, obj=None):
         role = self.get_user_role(request)
@@ -476,6 +492,13 @@ class PaginaAdmin(admin.ModelAdmin):
             widget.can_view_related = False
         return form
 
+    def save_model(self, request, obj, form, change):
+        try:
+            obj.componentes_html = render_components_to_html(obj.componentes)
+        except Exception:
+            obj.componentes_html = ''
+        super().save_model(request, obj, form, change)
+
     def has_module_permission(self, request):
         role = None
         if hasattr(request.user, 'userprofile'):
@@ -496,6 +519,18 @@ class SedeAdmin(RolePermissionMixin, admin.ModelAdmin):
             return False
         return super().has_delete_permission(request, obj)
 
+    def formfield_for_dbfield(self, db_field, request, **kwargs):
+        if db_field.name == 'componentes':
+            kwargs['widget'] = ComponentesWidget()
+        return super().formfield_for_dbfield(db_field, request, **kwargs)
+
+    def save_model(self, request, obj, form, change):
+        try:
+            obj.componentes_html = render_components_to_html(obj.componentes)
+        except Exception:
+            obj.componentes_html = ''
+        super().save_model(request, obj, form, change)
+
 @admin.register(PaginaEstado)
 class PaginaEstadoAdmin(RolePermissionMixin, admin.ModelAdmin):
     list_display = ['estado', 'get_estado_display']
@@ -503,7 +538,7 @@ class PaginaEstadoAdmin(RolePermissionMixin, admin.ModelAdmin):
     list_per_page = 50
     fieldsets = (
         (None, {
-            'fields': ('estado','texto'),
+            'fields': ('estado','componentes'),
         }),
     )
 
@@ -536,6 +571,11 @@ class PaginaEstadoAdmin(RolePermissionMixin, admin.ModelAdmin):
 
         kwargs['form'] = RequestForm
         return super().get_form(request, obj, **kwargs)
+
+    def formfield_for_dbfield(self, db_field, request, **kwargs):
+        if db_field.name == 'componentes':
+            kwargs['widget'] = ComponentesWidget()
+        return super().formfield_for_dbfield(db_field, request, **kwargs)
 
     def get_estado_display(self, obj):
         return obj.get_estado_display()

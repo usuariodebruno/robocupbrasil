@@ -1,0 +1,61 @@
+{% load static file_extras %}
+<div id="arquivos-component">
+    <div class="arquivo-list">
+        {% for a in arquivos %}
+            {% with a.arquivo|file_extension as ext %}
+                <div class="arquivo text-shadow">
+                        <div class="file-extension">
+                            <div class="details">
+                                <i class="
+                                {% if ext in 'png jpg jpeg gif' %}
+                                    fa fa-picture-o
+                                {% elif ext in 'doc docx' %}
+                                    fa fa-file-text
+                                {% elif ext in 'xls xlsx' %}
+                                    fa fa-file-table
+                                {% else %}
+                                    fa fa-file
+                                {% endif %}
+                                text-xlarge block text-align-center"></i>
+                                <p class="margin-0 margin-t-0/ text-align-center">
+                                    .{{ ext }}
+                                </p>
+                            </div>
+                            {% if a.thumbnail or ext in 'png jpg jpeg gif'%}
+                                <a href="{{ a.arquivo.url }}" class="w-100 h-100 block" target="_blank">
+                                    {% if a.thumbnail %}
+                                        <img draggable="false" src="{{ a.thumbnail.url }}" alt="{{ a.nome }}" />
+                                        {% else %}
+                                        <img draggable="false" src="{{ a.arquivo.url }}" alt="{{ a.nome }}" />
+                                    {% endif %}
+                                </a>
+                            {% endif %}
+                        </div>
+                    <div class="arquivo-details">
+                        <div>
+                            <div class="text-large"><strong>{{ a.nome }}</strong></div>
+                            {% if a.descricao %}<p class="text-medium margin-y-0/">{{ a.descricao }}</p>{% endif %}
+                            <div class="flex flex-between desktop:flex-start">
+                                <a href="{{ a.arquivo.url }}" target="_blank" class="download">Baixar</a>
+                                {% if ext in 'pdf' %} 
+                                    <a href="#" class="download pdf-viewer-btn" onclick="showPDFViewer(event, '{{ a.arquivo.url }}')">Ver</a>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endwith %}
+        {% endfor %}
+    </div>
+    
+    <div class="arquivo-visualizador">
+        <div class="visualizador-close" onclick="closePDFViewer(event)">
+            <i class="fa fa-times-circle text-xlarge"></i>
+        </div>
+        <div class="arquivo-pdf" id="pdf-viewer"></div>
+    </div>
+
+    {% if pagination %}
+        {% include "components/dynamic/pagination.html" with page_param='file_page' component_id='arquivos-component' %}
+    {% endif %}
+</div>

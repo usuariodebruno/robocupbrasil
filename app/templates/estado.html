@@ -57,8 +57,27 @@
     </section>
     
     <section class="container margin-t-1">
-        
-        {% include "components/dynamic/funcionario.html" with funcionarios=funcionarios %}
-        {{ conteudo }}
+        <!-- por ora to usando estado.html como testing ground -->
+        {% include "components/dynamic/slider.html" with items=funcionarios item_template='components/dynamic/sliders/slider_item_funcionario.html' %}
+
+        {% include "components/dynamic/slider.html" with items=arquivos item_template='components/dynamic/sliders/slider_item_arquivo.html' %}
+
+        {% include "components/dynamic/slider.html" with items=sedes item_template='components/dynamic/sliders/slider_item_sede.html' %}
+
+        {% include "components/dynamic/slider.html" with items=subeventos item_template='components/dynamic/sliders/slider_item_subevento.html' %}
+
+        {% include "components/dynamic/arquivo.html" with arquivo=arquivo %}
+
+        {% include "components/dynamic/noticias.html" with noticias=noticias pagination='true' %}
+
+        {% include "components/dynamic/arquivos.html" with arquivos=arquivos pagination='true' %}
+
+        {% include "components/dynamic/calendar.html" with datas=datas %}
+
+        <!-- {% if conteudo_html %}
+            {{ conteudo_html|safe }}
+        {% else %}
+            {{ conteudo }}
+        {% endif %} -->
     </section>
 {% endblock %}

@@ -334,7 +334,7 @@ class DataAdmin(RolePermissionMixin, admin.ModelAdmin):
 
 @admin.register(TagArquivo)
 class TagArquivoAdmin(RolePermissionMixin, admin.ModelAdmin):
-    list_display = ['nome']
+    list_display = ['nome', 'id']
     search_fields = ['nome']
     list_per_page = 50
 

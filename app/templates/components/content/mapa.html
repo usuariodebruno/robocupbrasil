@@ -1,8 +1,5 @@
 <div id="mapa-{{ id|default:'map' }}" class="mapa-container w-100" style="height: 400px;"></div>
 
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         const mapElement = document.getElementById('mapa-{{ id|default:'map' }}');

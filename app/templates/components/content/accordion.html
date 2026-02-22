@@ -8,7 +8,7 @@
                 {{ tab.label }}
             </button>
             <div id="{{ tab.id }}" class="accordion-content{% if forloop.first and opened == 'true' %} active{% endif %}">
-                {% include "components/content/texto.html" with conteudo=tab.content %}
+                {% include "components/dynamic/texto.html" with conteudo=tab.content %}
             </div>
         </div>
     {% endfor %}

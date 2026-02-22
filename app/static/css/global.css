@@ -56,10 +56,8 @@ html {
   overflow-x: hidden;
 }
 
-* {
-    box-sizing: border-box;
-    transition: var(--transition);
-}
+* { box-sizing: border-box; }
+*:not(.mapa-container *) { transition: var(--transition); }
 
 body {
     font-family: "Nunito", sans-serif;

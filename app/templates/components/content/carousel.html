@@ -6,11 +6,11 @@
                     <img src="{{ tab.image }}" alt="{{ tab.label }}" class="carousel-bg-image">
                     <i class="fa  fa-hand-o-up click-indicator"></i>
                     <div class="carousel-content has-image">
-                        {% include "components/content/texto.html" with conteudo=tab.content %}
+                        {% include "components/dynamic/texto.html" with conteudo=tab.content %}
                     </div>
                 {% else %}
                     <div class="carousel-content">
-                        {% include "components/content/texto.html" with conteudo=tab.content %}
+                        {% include "components/dynamic/texto.html" with conteudo=tab.content %}
                     </div>
                 {% endif %}
             </div>

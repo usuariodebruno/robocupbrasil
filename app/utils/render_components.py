@@ -1,50 +1,202 @@
-try:
-    from markdown import markdown
-except Exception:
-    def markdown(text):
-        # fallback: very small passthrough (no markdown processing)
-        return '<pre>'+ (str(text) or '') +'</pre>'
+# markdown conversion is now handled on the front end; backend simply
+# returns the raw text.  The import remains hidden in case older code still
+# calls markdown(), but it will just return the input.
+
+def markdown(text):
+    return str(text or '')
 
 from django.template import Engine, Context
 
-# Very small renderer for componentes JSON to HTML. Extend as needed.
+# Renderer for componentes JSON to HTML.  Supports the richer schema
+# described in claude.txt.  Accepts an optional ``extra_context`` dict of
+# variables made available to dynamic component templates (e.g. lists of
+# funcionarios, noticias, etc gathered by the view).
 
-def render_components_to_html(componentes):
-    """Render a list of componentes (JSON) into a minimal HTML string.
 
-    Supported component types (basic):
-    - content: {'type':'content','markdown': '...'}
-    - title: {'type':'title','texto':'...', 'evento':'RCB'}
-    - grid: {'type':'grid','columns_mobile':1,'columns_desktop':3,'items':[...]} (renders a flex grid)
-    - button: {'type':'button','text':'...', 'bg':'#000', 'fg':'#fff', 'href':'...'}
+def render_components_to_html(componentes, extra_context=None):
+    """Render a list of componentes (JSON) into an HTML string.
 
-    WIP
+    ``extra_context`` should be a dictionary containing any objects or
+    querysets that dynamic components may refer to by name.  For instance,
+    ``estado_view`` always passes ``{'funcionarios': funcionarios}`` so a
+    JSON item with ``"items": "funcionarios"`` will receive that list.
     """
+
+    if extra_context is None:
+        extra_context = {}
+
     out = []
+    section_counter = 0
+
+    def render_list(lst):
+        return render_components_to_html(lst, extra_context)
+
     for c in componentes or []:
-        t = c.get('type')
-        if t == 'content':
-            md = c.get('markdown') or c.get('texto') or ''
-            html = markdown(md)
-            out.append(f"<div class=\"component-content\">{html}</div>")
-        elif t == 'title':
-            texto = c.get('texto','')
-            evento = c.get('evento','')
-            out.append(f"<h2 class=\"header-line ribbon-{evento.lower()}\">{texto}</h2>")
-        elif t == 'grid':
-            items = c.get('items', [])
-            cols = c.get('columns_desktop', 3)
-            out.append(f"<div class=\"rcb-grid\" style=\"display:flex;gap:1rem;flex-wrap:wrap;\">")
-            for it in items:
-                out.append(f"<div style=\"flex:1 1 calc({100/cols}% - 1rem);\">{render_components_to_html([it])}</div>")
-            out.append('</div>')
-        elif t == 'button':
-            text = c.get('text','Clique')
-            href = c.get('href','#')
-            bg = c.get('bg','#000')
-            fg = c.get('fg','#fff')
-            out.append(f"<a class=\"rcb-button\" href=\"{href}\" style=\"background:{bg};color:{fg};padding:0.5rem 1rem;border-radius:6px;display:inline-block;\">{text}</a>")
-        else:
-            # fallback: dump raw
+        if not isinstance(c, dict):
             out.append(f"<div class=\"component-unknown\">{c}</div>")
+            continue
+
+        t = c.get('type') or c.get('tipo')
+        if t is None:
+            # backwards compatibility with very simple objects
+            if 'markdown' in c or 'texto' in c:
+                md = c.get('markdown') or c.get('texto') or ''
+                html = markdown(md)
+                out.append(f"<div class=\"component-content\">{html}</div>")
+            else:
+                out.append(f"<div class=\"component-unknown\">{c}</div>")
+            continue
+
+        # section handling
+        if t == 'section':
+            classes = []
+            if c.get('bg'):
+                classes.append(f"bg-{c['bg']}")
+            for axis in ('', 'x', 'y'):
+                for prop in ('padding', 'margin'):
+                    val = c.get(f"{prop}{'_'+axis if axis else ''}")
+                    if val is not None:
+                        key = f"{prop}{'-'+axis if axis else ''}-{val}"
+                        classes.append(key)
+            if c.get('inside_top'):
+                classes.append('inside-top')
+            if c.get('inside_bottom'):
+                classes.append('inside-bottom')
+            # preserve any user-supplied class list on the section itself
+            if c.get('classes'):
+                classes.extend(str(c['classes']).split())
+
+            # id handling: use provided id or auto‑generate sequential
+            sec_id = c.get('id')
+            if not sec_id:
+                sec_id = f"section-{section_counter}"
+                section_counter += 1
+            # also add id to classes so old CSS still works
+            classes.append(f"id-{sec_id}")
+
+            html = f"<section id=\"{sec_id}\" class=\"{' '.join(classes)}\">"
+            for bd in c.get('border_details', []):
+                bd_classes = []
+                if bd.get('container'):
+                    bd_classes.append('container')
+                bd_classes.append(bd.get('type', ''))
+                if bd.get('color'):
+                    bd_classes.append(bd['color'])
+                if bd.get('position'):
+                    bd_classes.append(bd['position'])
+                if bd.get('size'):
+                    bd_classes.append(bd['size'])
+                if bd.get('spin'):
+                    bd_classes.append('spin')
+                if bd.get('desktop_only'):
+                    bd_classes.append('desktop-only')
+                if bd.get('mobile_only'):
+                    bd_classes.append('mobile-only')
+                if bd.get('margin_t'):
+                    bd_classes.append(f"margin-t-{bd['margin_t']}")
+                html += f"<border-detail class=\"{' '.join(bd_classes)}\"></border-detail>"
+
+            if c.get('content'):
+                html += str(c['content'])
+
+            main = c.get('main')
+            if main:
+                mclasses = []
+                if main.get('bg'):
+                    mclasses.append(f"bg-{main['bg']}")
+                if main.get('container'):
+                    mclasses.append('container')
+                if main.get('flex'):
+                    mclasses.append('flex')
+                for flexprop in ('flex_wrap','flex_row','flex_column','flex_center',
+                                 'flex_start','flex_end','flex_between','flex_around','flex_evenly',
+                                 'flex_reverse'):
+                    if main.get(flexprop):
+                        mclasses.append(flexprop.replace('_','-'))
+                if main.get('padding'):
+                    mclasses.append(f"padding-{main['padding']}")
+                if main.get('margin'):
+                    mclasses.append(f"margin-{main['margin']}")
+                # allow arbitrary extra classes on main
+                if main.get('classes'):
+                    mclasses.extend(str(main['classes']).split())
+                html += f"<main class=\"{' '.join(mclasses)}\">"
+                if main.get('content'):
+                    html += str(main['content'])
+                if c.get('components'):
+                    html += render_list(c['components'])
+                html += "</main>"
+
+            if c.get('components') and not main:
+                html += render_list(c['components'])
+
+            html += "</section>"
+            out.append(html)
+            continue
+
+        # template renderer helper
+        def render_template(name, ctx):
+            try:
+                tpl = Engine.get_default().get_template(name)
+                return tpl.render(Context(ctx))
+            except Exception as e:
+                return f"<!-- error rendering {name}: {e} -->"
+
+        # dynamic components (prefix dynamic_)
+        if t.startswith('dynamic_'):
+            comp = t.split('dynamic_')[1]
+            ctx = {}
+
+            # copy all keys, but if the value is a string referencing an
+            # item in extra_context, substitute the real object.  this
+            # handles "items" as well as component-specific variable names
+            for key, v in c.items():
+                if isinstance(v, str) and v in extra_context:
+                    ctx[key] = extra_context[v]
+                else:
+                    ctx[key] = v
+
+            # slider components need an item_template; try to infer a
+            # default when none is provided.  we look at the first element
+            # of the items list and pick a template based on its class name.
+            if comp == 'slider':
+                if not ctx.get('item_template'):
+                    items = ctx.get('items') or []
+                    if items and not isinstance(items, str):
+                        first = items[0]
+                        classname = first.__class__.__name__.lower()
+                        candidate = f"components/dynamic/sliders/slider_item_{classname}.html"
+                        # ensure template exists
+                        try:
+                            Engine.get_default().get_template(candidate)
+                            ctx['item_template'] = candidate
+                        except:
+                            # leave empty; template render will show error
+                            ctx['item_template'] = ''
+
+
+            out.append(render_template(f"components/dynamic/{comp}.html", ctx))
+            continue
+
+        # static content widgets
+        if t in ('tabs', 'accordion', 'carousel'):
+            # carousel historically used "slides" key in JSON, but the
+            # template expects "tabs" (it reuses the tabs code).  alias if
+            # necessary so both work.
+            ctx = {**c}
+            if t == 'carousel' and 'slides' in ctx:
+                ctx['tabs'] = ctx.pop('slides')
+            # support simple style shortcuts: put style value into the
+            # template variable the markup uses
+            if 'style' in ctx:
+                ctx['style_classes'] = ctx.get('style') or ''
+            # keep any explicit classes as well
+            if 'classes' in ctx:
+                ctx['style_classes'] = (ctx.get('style_classes','') + ' ' + ctx['classes']).strip()
+            out.append(render_template(f"components/content/{t}.html", ctx))
+            continue
+
+        # fallback: try generic content include path
+        out.append(render_template(f"components/content/{t}.html", c))
+
     return '\n'.join(out)

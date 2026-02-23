@@ -1,13 +1,19 @@
 <div id="component-builder-ui" data-source-id="{{ widget.attrs.id }}">
-    builder wip <button><b>manipulate JSON</b></button>
+    <!-- aqui pode ficar a parte de criar componentes -->
+    
+    <button><b>na parte de construção</b></button>
 </div>
 
 <div style="margin-top: 1rem;">
     <p><strong>JSON:</strong></p>
     {% include "django/forms/widgets/textarea.html" %}
+    <!-- dá para colocar esse textarea com um tamanho pequeno em uma tag style -->
 </div>
 
 <script>
+    // aqui pode ficar o JS da parte de construção
+    // eu adicionei um exemplo de como pegar o textarea original e adicionar um texto nele, 
+    // mas isso é só um exemplo, o que for necessário para a construção pode ser adicionado aqui
     document.addEventListener("DOMContentLoaded", () => {
         const uiContainer = document.getElementById('component-builder-ui');
         

@@ -37,22 +37,13 @@ def estado_view(request, sigla):
             "id": "voluntarios",
             "label": "Auxilie",
             "icon": "group",
-            "content": """
-                <h3 class="margin-0 margin-b-1 text-xlarge">Programa de voluntariado</h3>
-                <p class="margin-0 text-large">Deseja ser um voluntário em algum evento regional ou estadual? <strong>Entre em contato</strong> com um representante e ajude-nos a democratizar a robótica!</p>
-            """
+            "content": "<h3 class=\"margin-0 margin-b-1 text-xlarge\">Programa de voluntariado</h3><p class=\"margin-0 text-large\">Deseja ser um voluntário em algum evento regional ou estadual? <strong>Entre em contato</strong> com um representante e ajude-nos a democratizar a robótica!</p>"
         },
         {
             "id": "invista",
             "label": "Invista",
             "icon": "money",
-            "content": """
-                <h3 class="margin-0 margin-b-1 text-xlarge">Invista em eventos de robótica do seu estado!</h3>
-                <p class="margin-0 text-large">
-                    Deseja investir em uma Regional ou Estadual de algum evento RoboCup Brasil?
-                    Entre em contato com um <strong>representante</strong> e ajude-nos a democratizar a robótica!
-                </p>
-            """
+            "content": "<h3 class=\"margin-0 margin-b-1 text-xlarge\">Invista em eventos de robótica do seu estado!</h3><p class=\"margin-0 text-large\">Deseja investir em uma Regional ou Estadual de algum evento RoboCup Brasil? Entre em contato com um <strong>representante</strong> e ajude-nos a democratizar a robótica!</p>"
         }
     ]
 
@@ -153,9 +144,54 @@ def pagina_dinamica_view(request, path):
             if slug:
                 pagina = get_object_or_404(Pagina, slug=slug, parent=pagina)
 
+    # prepare the same queries that estado_view uses so components can
+    # reference them by name
+    funcionarios = Funcionario.get_items(tag_ids=[10])
+    sedes = Sede.get_items(tag_ids=[])
+    subeventos = Subevento.get_items(tag_ids=[])
+
+    # pagination params (unused here but available if components need them)
+    try:
+        file_page = int(request.GET.get('file_page', 0))
+    except (ValueError, TypeError):
+        file_page = 0
+    try:
+        news_page = int(request.GET.get('news_page', 0))
+    except (ValueError, TypeError):
+        news_page = 0
+
+    arquivos = Arquivo.get_items(tag_ids=[], page_index=file_page)
+    noticias = Noticia.get_items(tag_ids=[], page_index=news_page)
+    from datetime import date
+    datas = list(Data.objects.filter(data__gte=date.today()).order_by('data')[:50])
+
+    arquivo_obj = arquivos[0] if arquivos else None
+    # build context for dynamic components; include a few convenience
+    # aliases used in the example JSON so users don't have to guess the
+    # correct name.
+    extra = {
+        'funcionarios': funcionarios,
+        'sedes': sedes,
+        'subeventos': subeventos,
+        'arquivos': arquivos,
+        'noticias': noticias,
+        'datas': datas,
+        'arquivo': arquivo_obj,
+        # aliases matching the example JSON we shipped
+        'arquivos_exemplo': arquivos,
+        'noticias_exemplo': noticias,
+        'datas_exemplo': datas,
+    }
+
+    from .utils.render_components import render_components_to_html
+    rendered = render_components_to_html(pagina.componentes or [], extra)
+
     context = {
         'pagina': pagina,
         'header_type': pagina.header_type,
+        # keep the entire rendered HTML as one item so the template loop
+        # simply dumps it
+        'componentes_rendered': [rendered],
         'conteudo_html': getattr(pagina, 'componentes_html', ''),
     }
     return render(request, 'base_dynamic.html', context)

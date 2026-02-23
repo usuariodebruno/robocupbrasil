@@ -33,15 +33,55 @@
     {% include "components/footer.html" %}
 
     {% block extra_js %}{% endblock %}
+
+    <script>
+    // simple front-end markdown rendering with spinner and icon shorthand
+    document.addEventListener('DOMContentLoaded', function() {
+        function processIcons(html) {
+            return html.replace(/<icon=([\w\-]+)>/g, '<i class="fa fa-$1"></i>');
+        }
+
+        function renderMarkdownArea(container) {
+            var raw = container.querySelector('.markdown-raw');
+            var render = container.querySelector('.markdown-rendered');
+            var spinner = container.querySelector('.markdown-spinner');
+            if (!raw || !render) return;
+            var md = raw.textContent || raw.innerText || '';
+            // show spinner while processing
+            spinner.style.display = 'block';
+            setTimeout(function() {
+                var html = marked.parse(md, { sanitize: false, mangle: false });
+                html = processIcons(html);
+                render.innerHTML = html;
+                spinner.style.display = 'none';
+                container.classList.add('expanded');
+            }, 10);
+        }
+
+        document.querySelectorAll('.texto-container').forEach(function(ct) {
+            renderMarkdownArea(ct);
+        });
+        // also process #conteudo if not inside texto-container
+        var mainConteudo = document.getElementById('conteudo');
+        if (mainConteudo && mainConteudo.classList.contains('texto-container')) {
+            renderMarkdownArea(mainConteudo);
+        }
+    });
+    </script>
+        <!-- markdown processor (marked.js from CDN) -->
+        <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+        
     {% compress js %}
-        <script src="{% static 'js/global.js' %}"></script>
+        <!-- jQuery for dflip -->
         <script src="{% static 'js/dflip/js/libs/jquery.min.js' %}" type="text/javascript"></script>
         
         <!-- Openstreetmap -->
         <script src="{% static 'js/leaflet/leaflet.js' %}"></script>
-
+        
         <!-- dflip -->
         <script src="{% static 'js/dflip/js/dflip.min.js' %}" type="text/javascript"></script>
+
+        <script src="{% static 'js/global.js' %}"></script>
     {% endcompress %}
 </body>
 </html>

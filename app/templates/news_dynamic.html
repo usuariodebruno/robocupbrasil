@@ -66,8 +66,10 @@
             </div>
         {% endif %}
 
-        <div id="conteudo">
-            {{ noticia.conteudo|safe }}
+        <div id="conteudo" class="texto-container w-100 text-yin">
+            <div class="markdown-raw" style="display:none;">{{ noticia.conteudo }}</div>
+            <div class="markdown-rendered"></div>
+            <div class="markdown-spinner" style="display:none;"><i class="fa fa-spin fa-spinner"></i></div>
         </div>
     </article>
 {% endblock %}

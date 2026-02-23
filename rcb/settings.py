@@ -12,7 +12,7 @@ ALLOWED_HOSTS = os.getenv("ALLOWED_HOSTS", "127.0.0.1,localhost").split(",")
 
 INSTALLED_APPS = [
     "app",
-    "ckeditor",
+    # ckeditor removed, using front-end markdown instead
     "django_resized",
     "django_daisy",
     "django.contrib.auth",
@@ -55,7 +55,8 @@ TEMPLATES = [
     },
 ]
 
-SILENCED_SYSTEM_CHECKS = ["ckeditor.W001", "urls.W005"]
+# previously silenced ckeditor warning; no longer needed
+SILENCED_SYSTEM_CHECKS = ["urls.W005"]
 
 WSGI_APPLICATION = "rcb.wsgi.application"
 
@@ -142,13 +143,7 @@ COMPRESS_FILTERS = {
     "js": ["compressor.filters.jsmin.rJSMinFilter"],
 }
 
-# Other Plugins
-
-CKEDITOR_CONFIGS = {
-    "default": {
-        "toolbar": "full",
-    },
-}
+# Other Plugins (ckeditor removed)
 
 DAISY_SETTINGS = {
     "SITE_LOGO": "/static/images/header/rcb.png",

@@ -1,3 +1,5 @@
-<div class="texto-container w-100 text-{{ theme_foreground|default:'yin' }}">
-    {{ conteudo|safe }}
+<div class="texto-container w-100{% if theme_foreground %} text-{{ theme_foreground }}{% endif %}{% if classes %} {{ classes }}{% endif %}">
+    <div class="markdown-raw" style="display:none;">{{ conteudo }}</div>
+    <div class="markdown-rendered"></div>
+    <div class="markdown-spinner" style="display:none;"><i class="fa fa-spin fa-spinner"></i></div>
 </div>

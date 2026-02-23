@@ -5,11 +5,28 @@ from django.dispatch import receiver
 from django.core.exceptions import ValidationError
 from django.utils.text import slugify
 from django_resized import ResizedImageField
-from ckeditor.fields import RichTextField
+# removed ckeditor import since rich text is no longer needed
+# from ckeditor.fields import RichTextField
 
 def validate_file_size(f):
     if f and getattr(f, 'size', 0) > 64 * 1024 * 1024:
         raise ValidationError("Tamanho máximo do arquivo: 64MB.")
+
+
+def _sanitize_recursive(value):
+    """Walk through strings/lists/dicts raising ValidationError if forbidden patterns are found."""
+    if isinstance(value, str):
+        lowered = value.lower()
+        if '<script' in lowered or 'onclick=' in lowered or 'onerror=' in lowered or 'onload=' in lowered:
+            raise ValidationError(
+                "Conteúdo contém trechos proibidos (scripts/onclick/etc). Remova qualquer tag <script> ou atributos de evento."
+            )
+    elif isinstance(value, dict):
+        for v in value.values():
+            _sanitize_recursive(v)
+    elif isinstance(value, (list, tuple)):
+        for v in value:
+            _sanitize_recursive(v)
 
 class GlobalQueryMixin(models.Model):
     class Meta:
@@ -160,7 +177,9 @@ class Noticia(GlobalQueryMixin, models.Model):
         verbose_name='Imagem da Notícia (prop. ideal 16:9)',
         help_text='A imagem será redimensionada para no máximo 3000x3000 pixels.',
     )
-    conteudo = RichTextField()
+    # stored as plain markdown (rendered on front-end)
+    conteudo = models.TextField()
+
     header_type = models.CharField(
         max_length=50,
         choices=[
@@ -177,7 +196,12 @@ class Noticia(GlobalQueryMixin, models.Model):
     data = models.DateTimeField(auto_now_add=True)
     permalink = models.SlugField(unique=True, max_length=255, editable=False, allow_unicode=True, blank=True)
 
+    def clean(self):
+        # ensure markdown content doesn't contain disallowed scripts or event attributes
+        _sanitize_recursive(self.conteudo)
+
     def save(self, *args, **kwargs):
+        self.clean()
         if not self.permalink:
             base_slug = slugify(self.titulo, allow_unicode=True)
             slug = base_slug
@@ -297,9 +321,10 @@ class Subevento(GlobalQueryMixin, models.Model):
     componentes = models.JSONField(
         default=list,
         blank=True,
-        verbose_name="🧩 Componentes",
+        verbose_name="Configuração da Página",
     )
-    componentes_html = models.TextField(blank=True, verbose_name='Componentes (HTML cache)', editable=False)
+    # cache field removed; dynamic rendering used instead
+
     permalink = models.SlugField(unique=True, max_length=255, editable=False, allow_unicode=True, blank=True)
 
     def save(self, *args, **kwargs):
@@ -323,6 +348,10 @@ class Subevento(GlobalQueryMixin, models.Model):
 
     def __str__(self):
         return self.nome
+
+    def clean(self):
+        # sanitize componentes JSON
+        _sanitize_recursive(self.componentes)
 
 class ConfiguracaoGlobal(models.Model):
     descricao = models.TextField(blank=True, verbose_name="Descrição da Página (para o Google e Rodapé)")
@@ -571,9 +600,10 @@ class Pagina(models.Model):
     componentes = models.JSONField(
         default=list,
         blank=True,
-        verbose_name="🧩 Componentes",
+        verbose_name="Configuração da Página",
     )
-    componentes_html = models.TextField(blank=True, verbose_name='Componentes (HTML cache)', editable=False)
+    # removed HTML cache field
+
     evento_associado = models.CharField(
         max_length=50,
         choices=Evento.choices,
@@ -606,6 +636,9 @@ class Pagina(models.Model):
         return f"/{self.slug}/" if self.slug else '/'
 
     def clean(self):
+        # sanitize components JSON to avoid dangerous snippets
+        _sanitize_recursive(self.componentes)
+
         from django.core.exceptions import ValidationError
 
         prohibited_slugs = ['noticia', 'estado', 'evento', 'sede', 'static', 'media', 'admin']
@@ -623,9 +656,10 @@ class Sede(GlobalQueryMixin, models.Model):
     componentes = models.JSONField(
         default=list,
         blank=True,
-        verbose_name="🧩 Componentes",
+        verbose_name="Configuração da Página",
     )
-    componentes_html = models.TextField(blank=True, verbose_name='Componentes (HTML cache)', editable=False)
+    # removed HTML cache field
+
 
     class Meta:
         ordering = ['ano']
@@ -634,6 +668,9 @@ class Sede(GlobalQueryMixin, models.Model):
 
     def __str__(self):
         return f"{self.ano} - {self.cidade}, {self.estado}"
+
+    def clean(self):
+        _sanitize_recursive(self.componentes)
 
     @classmethod
     def get_sedes_list(cls):
@@ -648,7 +685,7 @@ class PaginaEstado(models.Model):
     componentes = models.JSONField(
         default=list,
         blank=True,
-        verbose_name="🧩 Componentes",
+        verbose_name="Configuração da Página",
     )
 
     class Meta:
@@ -657,6 +694,9 @@ class PaginaEstado(models.Model):
 
     def __str__(self):
         return f"Página de {self.get_estado_display()} ({self.estado})"
+
+    def clean(self):
+        _sanitize_recursive(self.componentes)
 
     def get_absolute_url(self):
         return f"/estado/{self.estado.lower()}"

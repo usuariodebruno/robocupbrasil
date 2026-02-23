@@ -63,7 +63,7 @@
 .accordion-content.active { max-height: 10000px; padding: calc(var(--default-measure) * 2); }
 
 /* Accordion Colors (Mapping to Tabs logic) */
-.accordion .accordion-content { background-color: var(--background); color: var(--foreground); }
+.accordion .accordion-content { background-color: var(--background); color: var(--foreground); overflow: hidden; }
 .accordion .accordion-header { background-color: var(--secondary-foreground); color: var(--secondary-background); }
 .accordion .accordion-header:hover { background-color: var(--background); color: var(--foreground); }
 .accordion .accordion-header.active { background-color: var(--background); color: var(--foreground); }
@@ -879,6 +879,8 @@ header div:first-child.holding {
 }
 
 #rcb-calendar-controls {
+    display: flex;
+    justify-content: space-between;
     align-items: center;
 }
 

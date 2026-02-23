@@ -18,7 +18,6 @@ from .models import (
     Sede,
     PaginaEstado,
 )
-from .utils.render_components import render_components_to_html
 from .permissions import RolePermissionMixin
 
 _original_get_app_list = admin.sites.AdminSite.get_app_list
@@ -204,7 +203,7 @@ except admin.sites.NotRegistered:
 
 @admin.register(TagFuncionario)
 class TagFuncionarioAdmin(admin.ModelAdmin):
-    list_display = ['nome']
+    list_display = ['nome', 'id']
     search_fields = ['nome']
     list_per_page = 50
 
@@ -231,7 +230,7 @@ class FuncionarioAdmin(admin.ModelAdmin):
 
 @admin.register(TagNoticia)
 class TagNoticiaAdmin(admin.ModelAdmin):
-    list_display = ['nome']
+    list_display = ['nome', 'id']
     search_fields = ['nome']
     list_per_page = 50
 
@@ -259,7 +258,7 @@ class NoticiaAdmin(admin.ModelAdmin):
 
 @admin.register(TagData)
 class TagDataAdmin(RolePermissionMixin, admin.ModelAdmin):
-    list_display = ['nome']
+    list_display = ['nome', 'id']
     search_fields = ['nome']
     list_per_page = 50
 
@@ -393,10 +392,7 @@ class SubeventoAdmin(RolePermissionMixin, admin.ModelAdmin):
         return super().formfield_for_dbfield(db_field, request, **kwargs)
 
     def save_model(self, request, obj, form, change):
-        try:
-            obj.componentes_html = render_components_to_html(obj.componentes)
-        except Exception:
-            obj.componentes_html = ''
+        # cache no longer stored
         super().save_model(request, obj, form, change)
 
     def has_change_permission(self, request, obj=None):
@@ -525,7 +521,7 @@ class PaginaAdmin(admin.ModelAdmin):
         (None, {
             'fields': ('nome', 'slug', 'parent', 'header_type', 'privada', 'evento_associado'),
         }),
-        ('Componentes', {
+        ('Configuração da Página', {
             'fields': ('componentes',),
             'description': 'Lista JSON ordenada. A ordem dos itens define a sequência na página.'
         }),
@@ -547,10 +543,7 @@ class PaginaAdmin(admin.ModelAdmin):
         return form
 
     def save_model(self, request, obj, form, change):
-        try:
-            obj.componentes_html = render_components_to_html(obj.componentes)
-        except Exception:
-            obj.componentes_html = ''
+        # HTML cache no longer used
         super().save_model(request, obj, form, change)
 
     def has_module_permission(self, request):
@@ -579,10 +572,7 @@ class SedeAdmin(RolePermissionMixin, admin.ModelAdmin):
         return super().formfield_for_dbfield(db_field, request, **kwargs)
 
     def save_model(self, request, obj, form, change):
-        try:
-            obj.componentes_html = render_components_to_html(obj.componentes)
-        except Exception:
-            obj.componentes_html = ''
+        # HTML cache no longer used
         super().save_model(request, obj, form, change)
 
 @admin.register(PaginaEstado)

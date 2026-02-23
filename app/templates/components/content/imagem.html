@@ -1,7 +1,10 @@
 {% if clicavel and link %}
-    <a href="{{ link }}" {% if blank %}target="_blank"{% endif %} class="w-100 block">
-        <img draggable="false" src="{{ imagem }}" alt="{{ titulo }}" class="w-100 block{% if rounded %} cross-rounded{% endif %}"/>
+    <a href="{{ link }}" {% if blank %}target="_blank"{% endif %}
+       class="{% if classes %}{{ classes }} {% endif %}w-100 block {% if rounded %} cross-rounded{% endif %}">
+        <img draggable="false" src="{{ imagem }}" alt="{{ titulo }}"
+             class="{% if classes %}{{ classes }} {% endif %}w-100 block {% if rounded %} cross-rounded{% endif %}"/>
     </a>
 {% else %}
-    <img draggable="false" src="{{ imagem }}" alt="{{ titulo }}" class="w-100 block{% if rounded %} cross-rounded{% endif %}"/>
+    <img draggable="false" src="{{ imagem }}" alt="{{ titulo }}"
+         class="{% if classes %}{{ classes }} {% endif %}w-100 block {% if rounded %} cross-rounded{% endif %}"/>
 {% endif %}

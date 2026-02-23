@@ -5,9 +5,9 @@
 {% block submit_buttons_bottom %}
     <div class="save-col flex flex-col justify-between">
         <div>
-            <a class="max-2xl:hidden block mb-2 font-bold text-center border rounded-lg border-base-300 p-2 hover:bg-base-300 transition mb-4" href="#saving-area">
-                <span class="collapsable-col">Pular para salvar</span> <i class="fas fa-arrow-down"></i>
-            </a>
+            <button id="pin-save-col" type="button" class="max-2xl:hidden block mb-2 font-bold text-center border rounded-lg border-base-300 p-2 hover:bg-base-300 transition mb-4 w-full" title="Alternar barra de salvamento">
+                <i class="fas fa-arrow-right"></i>
+            </button>
             <div class="max-2xl:hidden border-t max-w-md border-base-300 history-outer">
                 {% if original and not is_popup %}
                     {% include "admin/includes/object_history_summary.html" %}
@@ -19,13 +19,13 @@
             <div class="text-start grid gap-2 btn-lista">
                 
                     <button title="Salvar" type="submit" class="btn btn-block btn-success dark:btn-primary px-4 rounded-md legitRipple" name="_save">
-                        <span>Salvar</span>
+                        <span>Salvar e sair</span>
                         <i class="fas fa-save px-1"></i>
                         <span></span>
                     </button>
 
                     <button title="Salvar e continuar editando" class="btn-info btn-block btn rounded-md legitRipple" type="submit" name="_continue">
-                        <span>Salvar e continuar editando</span>
+                        <span>Salvar e continuar</span>
                         <i class="fas fa-sync"></i>
                         <span></span>
                     </button>

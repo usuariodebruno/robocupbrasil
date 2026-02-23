@@ -17,6 +17,7 @@ urlpatterns = [
     path('noticia/<str:permalink>', views.noticia_detail, name='noticia_detail'),
     path('sede/<str:ano>', views.sede_view, name='sede'),
     path('evento/<str:permalink>', views.subevento_view, name='evento'),
+    path('component-preview/', views.component_preview, name='component_preview'),
 
     re_path(r'^(?!(media|static|admin)/)(?P<path>.*)/?$', views.pagina_dinamica_view, name='pagina_dinamica'),
 ]

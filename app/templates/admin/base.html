@@ -113,16 +113,18 @@
 
             .save-col .history-outer li > *:not(:first-child), .save-col .history-outer .btn, .save-col .collapsable-col, .save-col #saving-area .btn-lista span {
                 max-width: 0;
+                max-height: 0;
                 opacity: 0;
                 overflow: hidden;
             }
 
-            .save-col:hover {
-                max-width: 300px;
+            .save-col.pinned {
+                max-width: 350px;
             }
 
-            .save-col:hover .history-outer li > *:not(:first-child), .save-col:hover .history-outer .btn, .save-col:hover .collapsable-col, .save-col:hover #saving-area .btn-lista span {
+            .save-col.pinned .history-outer li > *:not(:first-child), .save-col.pinned .history-outer .btn, .save-col.pinned .collapsable-col, .save-col.pinned #saving-area .btn-lista span {
                 max-width: 999px;
+                max-height: 999px;
                 opacity: 1;
                 overflow: visible;
             }
@@ -148,6 +150,11 @@
             right: 30px;
             font-size: 9pt;
             opacity: 50%;
+        }
+
+        .save-col li.p-4.text-center.text-sm.opacity-60 {
+            overflow-wrap: break-word;
+            word-break: break-all;
         }
     </style>
     <link rel="icon" href="{% static 'images/favicon/rcb.png' %}" type="image/png"/>
@@ -268,6 +275,48 @@
             sidebar.classList.toggle('toggled');
             });
 
+            // unsaved changes warning
+            let isDirty = false;
+            document.querySelectorAll('form input, form select, form textarea').forEach(el => {
+                el.addEventListener('change', () => { isDirty = true; });
+                el.addEventListener('input', () => { isDirty = true; });
+            });
+            document.querySelectorAll('form').forEach(f => {
+                f.addEventListener('submit', () => { isDirty = false; });
+            });
+            window.addEventListener('beforeunload', function(e) {
+                if (isDirty) {
+                    e.preventDefault();
+                    e.returnValue = '';
+                }
+            });
+
+            // Pin save column
+            const pinButton = document.getElementById('pin-save-col');
+            if (pinButton) {
+                const saveCol = pinButton.closest('.save-col');
+                const icon = pinButton.querySelector('i');
+                if (saveCol) {
+                    // Default is pinned (true), unless explicitly set to 'false'
+                    if (localStorage.getItem('saveColPinned') !== 'false') {
+                        saveCol.classList.add('pinned');
+                        if (icon) icon.className = 'fas fa-arrow-right';
+                    } else {
+                        saveCol.classList.remove('pinned');
+                        if (icon) icon.className = 'fas fa-arrow-left';
+                    }
+
+                    pinButton.addEventListener('click', () => {
+                        const isPinned = saveCol.classList.toggle('pinned');
+                        localStorage.setItem('saveColPinned', isPinned);
+                        
+                        if (icon) {
+                            // If pinned, show arrow right (to close), else arrow left (to open)
+                            icon.className = isPinned ? 'fas fa-arrow-right' : 'fas fa-arrow-left';
+                        }
+                    });
+                }
+            }
         });
     </script>
 {% endblock %}

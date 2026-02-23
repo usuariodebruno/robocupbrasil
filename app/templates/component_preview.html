@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Visualização Rápida{% endblock %}
+
+{% block header %}
+    {% include "components/header.html" with header_type_lower=header_type_lower %}
+{% endblock %}
+
+{% block content %}
+    {{ html|safe }}
+{% endblock %}

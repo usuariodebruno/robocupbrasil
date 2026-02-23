@@ -11,13 +11,14 @@
   <div id="cb-desktop">
     <style>
       #cb-desktop {
+        position: relative;
         font-family: 'Inter', ui-sans-serif, system-ui, sans-serif;
         font-size: 13px;
         display: flex;
         height: 600px;
         border: 1px solid #e2e8f0;
         border-radius: 8px;
-        overflow: hidden;
+        overflow: auto;
         background: #f8fafc;
       }
 
@@ -397,6 +398,18 @@
       .cb-type-btn:hover { background: #eff6ff; border-color: #93c5fd; color: #1d4ed8; }
     </style>
 
+    <!-- preview iframe (resizeable overlay) -->
+    <div id="cb-preview-wrapper" style="display:none; position:fixed; top:100px; left:100px; width:500px; height:400px; resize:both; overflow:hidden; border:1px solid #94a3b8; box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3); z-index:2147483647; background:#fff; transition:none !important; border-radius: 6px;">
+      <div id="cb-preview-bar" style="position:absolute;top:0;left:0;right:0;height:24px;cursor:move;background:#f1f5f9;z-index:100000;">
+        <button type="button" id="cb-preview-maximize" title="Maximizar" style="position:absolute;top:0;right:24px;width:24px;height:24px;background:none;border:none;cursor:pointer;font-size:11px;color:#64748b;display:flex;align-items:center;justify-content:center;">🗖</button>
+        <button type="button" id="cb-preview-close" title="Fechar" style="position:absolute;top:0;right:0;width:24px;height:24px;background:none;border:none;cursor:pointer;font-size:13px;color:#64748b;display:flex;align-items:center;justify-content:center;">
+          <i class="fa fa-times"></i>
+        </button>
+      </div>
+      <div id="cb-drag-overlay" style="display:none; position:absolute; top:24px; left:0; width:100%; height:calc(100% - 24px); z-index:100001; background:transparent;"></div>
+      <iframe id="cb-preview" style="width:100%; height:100%; border:0; margin-top:24px;"></iframe>
+    </div>
+
     <!-- Tree panel -->
     <div id="cb-tree-panel">
       <div id="cb-tree-header">
@@ -413,8 +426,10 @@
     <div id="cb-props-panel">
       <div id="cb-props-header">
         <span id="cb-props-title">Propriedades</span>
-        <div style="display:flex;gap:6px;">
+        <div style="display:flex;gap:6px;align-items:center;">
           <button type="button" id="cb-duplicate-btn" title="Duplicar" style="background:none;border:1px solid #e2e8f0;border-radius:4px;cursor:pointer;padding:2px 8px;font-size:11px;color:#475569;display:none;"><i class="fa fa-copy"></i></button>
+          <button type="button" id="cb-preview-btn" title="Visualizar" style="background:none;border:1px solid #e2e8f0;border-radius:4px;cursor:pointer;padding:2px 8px;font-size:11px;color:#475569;"><i class="fa fa-eye"></i></button>
+          <button type="button" id="cb-toggle-json-btn" title="JSON avançado" style="background:none;border:1px solid #e2e8f0;border-radius:4px;cursor:pointer;padding:2px 8px;font-size:11px;color:#475569;">Avançado</button>
         </div>
       </div>
       <div id="cb-props-scroll">
@@ -436,25 +451,89 @@
 
 <script>
 (function() {
-
 // ============================================================
 // CONSTANTS
 // ============================================================
 const COLORS = ['','yin','yang','blue','blue-secondary','red','red-secondary','yellow','yellow-secondary','gray','gray-secondary','orange','orange-secondary','green','green-secondary'];
 const COLOR_MAP = {
-  'yin':'#ffffff','yang':'#111111','blue':'#1d4ed8','blue-secondary':'#93c5fd',
-  'red':'#dc2626','red-secondary':'#fca5a5','yellow':'#ca8a04','yellow-secondary':'#fde68a',
-  'gray':'#6b7280','gray-secondary':'#e5e7eb','orange':'#ea580c','orange-secondary':'#fed7aa',
-  'green':'#16a34a','green-secondary':'#bbf7d0','':`#f8fafc`
+  'yin':'#2c2e35','yang':'#f4fcfc','blue':'#5F95CF','blue-secondary':'#5688BE',
+  'red':'#EB6047','red-secondary':'#D7523A','yellow':'#E8C347','yellow-secondary':'#DAB439',
+  'gray':'#939598','gray-secondary':'#828282','orange':'#F5821F','orange-secondary':'#E07B25',
+  'green':'#84C54F','green-secondary':'#71B13C','':`#5F95CF`
 };
 const SPACINGS = ['','0','0/','1','1/','2','2/','3','3/','4','4/','5'];
 const BD_TYPES = ['cbr','mnr','obr','rcb'];
-const BD_POSITIONS = ['','top','bottom','left','right'];
+const BD_POSITIONS = ['','top','top_center','top_start','top_end','bottom','bottom_center','bottom_start','bottom_end','left','right','center'];
 const BD_SIZES = ['','small'];
 const THEMES = ['','rcb','obr','cbr','mnr'];
 const ALIGNMENTS = ['','center','start','end'];
 const HEADER_SIZES = ['','small','medium','large','xlarge','xxlarge'];
 const FLEX_PROPS = ['flex_wrap','flex_row','flex_column','flex_center','flex_start','flex_end','flex_between','flex_around','flex_evenly','flex_reverse'];
+
+// label translations for various UI elements
+const SPACING_LABELS = {
+  'padding': 'margem interior',
+  'padding_x': 'margem interior horizontal',
+  'padding_y': 'margem interior vertical',
+  'margin': 'margem exterior',
+  'margin_x': 'margem exterior horizontal',
+  'margin_y': 'margem exterior vertical'
+};
+
+const FLEX_PROP_LABELS = {
+  'flex_wrap': 'quebra de linha',
+  'flex_row': 'horizontal',
+  'flex_column': 'vertical',
+  'flex_center': 'itens alinhados ao centro',
+  'flex_start': 'itens alinhados ao começo',
+  'flex_end': 'itens alinhados ao final',
+  'flex_between': 'espaçados entre si',
+  'flex_around': 'espaçados ao redor',
+  'flex_evenly': 'espaçados igualmente',
+  'flex_reverse': 'inverter ordem'
+};
+
+const BD_POSITION_LABELS = {
+  '': 'centro',
+  'top': 'topo',
+  'bottom': 'embaixo',
+  'left': 'esquerda',
+  'right': 'direita',
+  'top_center': 'topo centro',
+  'top_start': 'topo início',
+  'top_end': 'topo final',
+  'center': 'centro',
+  'bottom_center': 'embaixo centro',
+  'bottom_start': 'embaixo início',
+  'bottom_end': 'embaixo final'
+};
+
+const COLOR_NAME_MAP = {
+  'yin': 'Yin',
+  'yang': 'Yang',
+  'blue': 'Azul',
+  'blue-secondary': 'Azul Secundário',
+  'red': 'Vermelho',
+  'red-secondary': 'Vermelho Secundário',
+  'yellow': 'Amarelo',
+  'yellow-secondary': 'Amarelo Secundário',
+  'gray': 'Cinza',
+  'gray-secondary': 'Cinza Secundário',
+  'orange': 'Laranja',
+  'orange-secondary': 'Laranja Secundário',
+  'green': 'Verde',
+  'green-secondary': 'Verde Secundário',
+  '': '(nenhum)'
+};
+
+function formatSpacingLabel(v) {
+  if (!v) return '(nenhum)';
+  if (v.endsWith('/')) {
+    const num = v.slice(0,-1);
+    return (num ? num : '0') + '.5';
+  }
+  return v;
+}
 
 // FA4 icons (common subset)
 const FA_ICONS = ['adjust','anchor','archive','arrow-circle-down','arrow-circle-left','arrow-circle-right','arrow-circle-up','arrow-down','arrow-left','arrow-right','arrow-up','asterisk','at','ban','bar-chart','bars','bell','bolt','book','bookmark','briefcase','bug','building','bullhorn','calendar','camera','caret-down','caret-left','caret-right','caret-up','certificate','chain','check','check-circle','check-square','chevron-circle-down','chevron-circle-left','chevron-circle-right','chevron-circle-up','chevron-down','chevron-left','chevron-right','chevron-up','circle','clock-o','cloud','cog','cogs','comment','comments','compress','copy','cube','cubes','cut','dashboard','database','desktop','dot-circle-o','download','edit','envelope','envelope-open','exchange','exclamation','exclamation-circle','exclamation-triangle','expand','external-link','eye','eye-slash','facebook','file','file-code-o','file-pdf-o','file-text','filter','flag','flask','folder','folder-open','forward','gear','gift','github','globe','graduation-cap','group','hand-o-right','heart','history','home','image','inbox','info','info-circle','instagram','key','laptop','leaf','level-down','level-up','link','linkedin','list','location-arrow','lock','magic','map','map-marker','medal','minus','minus-circle','mobile','money','moon-o','newspaper-o','paint-brush','paper-plane','paperclip','pencil','phone','picture-o','pie-chart','play','play-circle','plug','plus','plus-circle','print','puzzle-piece','question','question-circle','random','recycle','refresh','remove','repeat','reply','rocket','rss','save','search','send','share','share-alt','shield','shopping-cart','sign-in','sign-out','signal','sitemap','sort','spinner','star','star-o','table','tag','tags','tasks','th','thumbs-down','thumbs-up','times','times-circle','toggle-off','toggle-on','trash','trophy','truck','twitter','unlock','upload','user','user-plus','users','video-camera','warning','wifi','wrench','youtube-play'];
@@ -465,12 +544,34 @@ const DYNAMIC_TYPES = ['dynamic_slider','dynamic_arquivo','dynamic_noticias','dy
 const CONTAINER_TYPES = ['tabs','accordion','carousel'];
 const ALL_CHILD_TYPES = [...CONTENT_TYPES, ...DYNAMIC_TYPES, ...CONTAINER_TYPES];
 
+const TYPE_LABELS = {
+  section: 'Seção',
+  tabs: 'Abas',
+  accordion: 'Sanfona',
+  carousel: 'Carrossel',
+  header: 'Cabeçalho',
+  imagem: 'Imagem',
+  mapa: 'Mapa',
+  youtube: 'YouTube',
+  button_rounded: 'Botão redondo',
+  button_square: 'Botão quadrado',
+  button_inline: 'Botão inline',
+  conteudo_square: 'Cartão',
+  dynamic_slider: '⚡ Slider',
+  dynamic_arquivo: '⚡ Arquivo',
+  dynamic_noticias: '⚡ Notícias',
+  dynamic_arquivos: '⚡ Arquivos',
+  dynamic_calendar: '⚡ Calendário',
+  dynamic_texto: '⚡ Texto',
+};
+
 // ============================================================
 // STATE
 // ============================================================
 let state = [];          // top-level array of sections
 let selectedPath = null; // e.g. [0, 'components', 1, 'tabs', 2]
 let dragState = null;
+let previewRequiresReload = false; // whether preview needs manual reload
 
 // ============================================================
 // INIT
@@ -501,9 +602,45 @@ function init() {
     document.querySelectorAll('.cb-node-children').forEach(el => el.classList.add('collapsed'));
   });
   document.getElementById('cb-duplicate-btn').addEventListener('click', duplicateSelected);
-  
+  const jsonToggle = document.getElementById('cb-toggle-json-btn');
+  if (jsonToggle) {
+    jsonToggle.addEventListener('click', () => {
+      const c = document.getElementById('collapsableJSON');
+      if (c.style.display === 'none') {
+        c.style.display = 'block';
+        jsonToggle.textContent = 'Básico';
+      } else {
+        c.style.display = 'none';
+        jsonToggle.textContent = 'Avançado';
+      }
+    });
+  }
+  const previewBtn = document.getElementById('cb-preview-btn');
+  let previewRequiresReload = false;
+  if (previewBtn) {
+    previewBtn.addEventListener('click', () => {
+      const w = document.getElementById('cb-preview-wrapper');
+      if (previewRequiresReload) {
+        updatePreview();
+        previewRequiresReload = false;
+        previewBtn.innerHTML = '<i class="fa fa-eye"></i>';
+        previewBtn.title = 'Visualizar';
+        return;
+      }
+      w.style.display = (w.style.display === 'none' ? 'block' : 'none');
+    });
+  }
+  const previewClose = document.getElementById('cb-preview-close');
+  if (previewClose) {
+    previewClose.addEventListener('click', () => {
+      document.getElementById('cb-preview-wrapper').style.display = 'none';
+    });
+  }
+
   renderTree();
   syncTextarea();
+  // initial preview update
+  updatePreview();
 }
 
 // ============================================================
@@ -562,18 +699,22 @@ function renderTree() {
 function nodeLabel(node) {
   const t = node.type || node.tipo || '?';
   if (t === 'section') return `Seção${node.id ? ' #'+node.id : ''}${node.bg ? ' ('+node.bg+')' : ''}`;
-  if (t === 'tabs') return `Tabs`;
-  if (t === 'accordion') return `Accordion`;
-  if (t === 'carousel') return `Carousel`;
-  if (t === 'header') return `Header: ${node.titulo || ''}`;
+  if (t === 'tabs') return `Abas`;
+  if (t === 'accordion') return `Sanfona`;
+  if (t === 'carousel') return `Carrossel`;
+  if (t === 'header') return `Cabeçalho: ${node.titulo || ''}`;
   if (t === 'imagem') return `Imagem: ${node.titulo || ''}`;
   if (t === 'youtube') return `YouTube${node.video_id ? ' ('+node.video_id+')' : ''}`;
   if (t === 'mapa') return `Mapa`;
-  if (t === 'button_rounded') return `Btn Round: ${node.texto || ''}`;
-  if (t === 'button_square') return `Btn Square: ${node.titulo || ''}`;
-  if (t === 'button_inline') return `Btn Inline: ${node.texto || ''}`;
-  if (t === 'conteudo_square') return `Card: ${node.titulo || ''}`;
-  if (t.startsWith('dynamic_')) return t.replace('dynamic_','⚡ ');
+  if (t === 'button_rounded') return `Botão redondo: ${node.texto || ''}`;
+  if (t === 'button_square') return `Botão quadrado: ${node.titulo || ''}`;
+  if (t === 'button_inline') return `Botão inline: ${node.texto || ''}`;
+  if (t === 'conteudo_square') return `Cartão: ${node.titulo || ''}`;
+  if (t.startsWith('dynamic_')) {
+    const comp = t.replace('dynamic_','');
+    const labels = {slider:'Slider',arquivo:'Arquivo',noticias:'Notícias',arquivos:'Arquivos',calendar:'Calendário',texto:'Texto'};
+    return '⚡ ' + (labels[comp] || comp);
+  }
   if (node.label) return node.label;
   return t;
 }
@@ -646,17 +787,20 @@ function renderNode(node, path, depth) {
 
   // move up
   const upBtn = document.createElement('button');
+  upBtn.type = 'button';
   upBtn.innerHTML = '↑';
   upBtn.addEventListener('click', (e) => { e.stopPropagation(); moveNode(path, -1); });
   actions.appendChild(upBtn);
 
   // move down
   const downBtn = document.createElement('button');
+  downBtn.type = 'button';
   downBtn.innerHTML = '↓';
   downBtn.addEventListener('click', (e) => { e.stopPropagation(); moveNode(path, 1); });
   actions.appendChild(downBtn);
 
   const delBtn = document.createElement('button');
+  delBtn.type = 'button';
   delBtn.innerHTML = '✕';
   delBtn.className = 'danger';
   delBtn.title = 'Deletar';
@@ -805,7 +949,7 @@ function colorField(label, val, onChange) {
   const swatch = document.createElement('div');
   swatch.className = 'cb-color-swatch';
   swatch.style.background = COLOR_MAP[val||''] || '#f8fafc';
-  const sel = selectInput(COLORS.map(c => ({value:c, label:c||'(nenhum)'})), val, (v) => {
+  const sel = selectInput(COLORS.map(c => ({value:c, label:COLOR_NAME_MAP[c]||c||'(nenhum)'})), val, (v) => {
     swatch.style.background = COLOR_MAP[v] || '#f8fafc';
     onChange(v);
   });
@@ -829,7 +973,7 @@ function checkboxField(label, val, onChange) {
 }
 
 function spacingField(label, val, onChange) {
-  const s = selectInput(SPACINGS.map(v => ({value:v, label:v||'(nenhum)'})), val, onChange);
+  const s = selectInput(SPACINGS.map(v => ({value:v, label: formatSpacingLabel(v)})), val, onChange);
   return field(label, '', s);
 }
 
@@ -910,7 +1054,7 @@ function renderSectionForm(form, node) {
   form.appendChild(field('ID', 'opcional', textInput(node.id, v => updateNodeField('id', v), 'ex: hero, sobre')));
   
   form.appendChild(sectionDivider('Aparência'));
-  form.appendChild(colorField('Background', node.bg, v => updateNodeField('bg', v)));
+  form.appendChild(colorField('Plano de Fundo', node.bg, v => updateNodeField('bg', v)));
   form.appendChild(createCheckRow([
     ['inside_top', 'inside-top', node.inside_top],
     ['inside_bottom', 'inside-bottom', node.inside_bottom],
@@ -919,27 +1063,28 @@ function renderSectionForm(form, node) {
   form.appendChild(sectionDivider('Espaçamento'));
   const sg = document.createElement('div');
   sg.className = 'cb-spacing-grid';
-  [['padding','P'],['padding_x','P-x'],['padding_y','P-y'],['margin','M'],['margin_x','M-x'],['margin_y','M-y']].forEach(([k,l]) => {
+  ['padding','padding_x','padding_y','margin','margin_x','margin_y'].forEach(k => {
     const g = document.createElement('div');
     const lbl = document.createElement('div');
     lbl.className = 'cb-field-label';
     lbl.style.marginBottom='2px';
-    lbl.textContent = l;
+    lbl.textContent = SPACING_LABELS[k] || k;
     g.appendChild(lbl);
-    g.appendChild(selectInput(SPACINGS.map(v=>({value:v,label:v||'—'})), node[k], v => updateNodeField(k, v)));
+    g.appendChild(selectInput(SPACINGS.map(v=>({value:v,label:formatSpacingLabel(v)})), node[k], v => updateNodeField(k, v)));
     sg.appendChild(g);
   });
   form.appendChild(sg);
 
-  form.appendChild(sectionDivider('Border Details'));
+  form.appendChild(sectionDivider('Objetos na borda'));
   renderBorderDetails(form, node);
 
-  form.appendChild(sectionDivider('Main (Conteúdo)'));
+  form.appendChild(sectionDivider('Conteúdo'));
   renderMainForm(form, node);
 
   form.appendChild(sectionDivider('Adicionar Componente'));
   const addBtn = document.createElement('button');
   addBtn.className = 'cb-add-child-btn';
+  addBtn.type = 'button';
   addBtn.innerHTML = '<i class="fa fa-plus" style="margin-right:4px;"></i>Adicionar componente nesta seção';
   addBtn.addEventListener('click', () => showAddChildPickerInline(form, selectedPath));
   form.appendChild(addBtn);
@@ -974,17 +1119,17 @@ function renderMainForm(form, node) {
   const swatch = document.createElement('div');
   swatch.className = 'cb-color-swatch';
   swatch.style.background = COLOR_MAP[main.bg||''] || '#f8fafc';
-  const bgSel = selectInput(COLORS.map(c=>({value:c,label:c||'(nenhum)'})), main.bg, v => {
+  const bgSel = selectInput(COLORS.map(c=>({value:c,label:COLOR_NAME_MAP[c]||c||'(nenhum)'})), main.bg, v => {
     swatch.style.background = COLOR_MAP[v]||'#f8fafc';
     updateMain('bg', v);
   });
   bgRow.appendChild(swatch);
   bgRow.appendChild(bgSel);
-  form.appendChild(field('Main BG', '', bgRow));
+  form.appendChild(field('Plano de Fundo do conteúdo', '', bgRow));
 
   const checkItems = [
-    ['container','container',main.container],
-    ['flex','flex',main.flex],
+    ['container','respeita o container',main.container],
+    ['flex','lado-a-lado',main.flex],
   ];
   form.appendChild(createCheckRow(checkItems));
 
@@ -1001,7 +1146,7 @@ function renderMainForm(form, node) {
     cb.addEventListener('change', () => updateMain(fp, cb.checked));
     const span = document.createElement('span');
     span.style.fontSize='10px';
-    span.textContent = fp.replace('flex_','-');
+    span.textContent = FLEX_PROP_LABELS[fp] || fp.replace('flex_','-');
     row.appendChild(cb);row.appendChild(span);
     flexWrap.appendChild(row);
   });
@@ -1010,12 +1155,12 @@ function renderMainForm(form, node) {
   // gap, padding
   const g2 = document.createElement('div');
   g2.className='cb-grid-2';
-  const gapLabel = document.createElement('div');gapLabel.className='cb-field-label';gapLabel.style.marginBottom='2px';gapLabel.textContent='Gap';
-  const paddingLabel = document.createElement('div');paddingLabel.className='cb-field-label';paddingLabel.style.marginBottom='2px';paddingLabel.textContent='Padding';
+  const gapLabel = document.createElement('div');gapLabel.className='cb-field-label';gapLabel.style.marginBottom='2px';gapLabel.textContent='Espaçamento';
+  const paddingLabel = document.createElement('div');paddingLabel.className='cb-field-label';paddingLabel.style.marginBottom='2px';paddingLabel.textContent='Margem interna do conteúdo';
   const gapWrap=document.createElement('div');gapWrap.appendChild(gapLabel);
-  gapWrap.appendChild(selectInput(SPACINGS.map(v=>({value:v,label:v||'—'})), main.gap, v=>updateMain('gap',v)));
+  gapWrap.appendChild(selectInput(SPACINGS.map(v=>({value:v,label:formatSpacingLabel(v)})), main.gap, v=>updateMain('gap',v)));
   const padWrap=document.createElement('div');padWrap.appendChild(paddingLabel);
-  padWrap.appendChild(selectInput(SPACINGS.map(v=>({value:v,label:v||'—'})), main.padding, v=>updateMain('padding',v)));
+  padWrap.appendChild(selectInput(SPACINGS.map(v=>({value:v,label:formatSpacingLabel(v)})), main.padding, v=>updateMain('padding',v)));
   g2.appendChild(gapWrap);g2.appendChild(padWrap);
   form.appendChild(g2);
 
@@ -1036,8 +1181,9 @@ function renderBorderDetails(form, node) {
 
       const hdr = document.createElement('div');
       hdr.className = 'cb-bd-item-header';
-      hdr.innerHTML = `<span>Border Detail #${i+1}</span>`;
+      hdr.innerHTML = `<span>Objeto na borda #${i+1}</span>`;
       const del = document.createElement('button');
+      del.type = 'button';
       del.innerHTML = '<i class="fa fa-trash"></i>';
       del.addEventListener('click', () => {
         node.border_details.splice(i,1);
@@ -1059,7 +1205,7 @@ function renderBorderDetails(form, node) {
       typeG.appendChild(selectInput(BD_TYPES.map(v=>({value:v,label:v})), bd.type, v=>updateBD('type',v)));
       const posG=document.createElement('div');
       posG.appendChild(Object.assign(document.createElement('div'),{className:'cb-field-label',textContent:'Posição'}));
-      posG.appendChild(selectInput(BD_POSITIONS.map(v=>({value:v,label:v||'centro'})), bd.position, v=>updateBD('position',v)));
+      posG.appendChild(selectInput(BD_POSITIONS.map(v=>({value:v,label:BD_POSITION_LABELS[v]||v||'centro'})), bd.position, v=>updateBD('position',v)));
       g1.appendChild(typeG);g1.appendChild(posG);
       item.appendChild(g1);
 
@@ -1071,15 +1217,15 @@ function renderBorderDetails(form, node) {
       item.appendChild(field('Cor','',colorRow));
 
       const g2=document.createElement('div');g2.className='cb-grid-2';
-      const szG=document.createElement('div');szG.appendChild(Object.assign(document.createElement('div'),{className:'cb-field-label',textContent:'Size'}));
+      const szG=document.createElement('div');szG.appendChild(Object.assign(document.createElement('div'),{className:'cb-field-label',textContent:'Tamanho'}));
       szG.appendChild(selectInput(['','small'].map(v=>({value:v,label:v||'normal'})),bd.size,v=>updateBD('size',v)));
-      const mtG=document.createElement('div');mtG.appendChild(Object.assign(document.createElement('div'),{className:'cb-field-label',textContent:'Margin-T'}));
+      const mtG=document.createElement('div');mtG.appendChild(Object.assign(document.createElement('div'),{className:'cb-field-label',textContent:'Margem topo'}));
       mtG.appendChild(textInput(bd.margin_t,v=>updateBD('margin_t',v),'ex: 1/'));
       g2.appendChild(szG);g2.appendChild(mtG);
       item.appendChild(g2);
 
       const checks=document.createElement('div');checks.style.display='flex';checks.style.flexWrap='wrap';checks.style.gap='8px';checks.style.marginTop='4px';
-      [['container','container',bd.container],['spin','spin',bd.spin],['desktop_only','desktop-only',bd.desktop_only],['mobile_only','mobile-only',bd.mobile_only]].forEach(([k,l,v])=>{
+      [['container','respeita o container',bd.container],['spin','girar',bd.spin],['desktop_only','apenas computadores',bd.desktop_only],['mobile_only','apenas celulares',bd.mobile_only]].forEach(([k,l,v])=>{
         checks.appendChild(checkboxField(l,v,nv=>updateBD(k,nv)));
       });
       item.appendChild(checks);
@@ -1087,8 +1233,9 @@ function renderBorderDetails(form, node) {
     });
 
     const addBtn = document.createElement('button');
+    addBtn.type = 'button';
     addBtn.className = 'cb-add-bd-btn';
-    addBtn.innerHTML = '<i class="fa fa-plus"></i> Adicionar border detail';
+    addBtn.innerHTML = '<i class="fa fa-plus"></i> Adicionar objeto na borda';
     addBtn.addEventListener('click', () => {
       node.border_details.push({type:'rcb', color:'yin', position:'top'});
       syncTextarea();
@@ -1106,12 +1253,12 @@ function renderBorderDetails(form, node) {
 // ============================================================
 function renderContainerForm(form, node, t) {
   form.appendChild(sectionDivider('Estilo'));
-  form.appendChild(field('Style Classes', 'ex: yin blue-secondary', textInput(node.style, v => updateNodeField('style', v))));
+  form.appendChild(field('Classes de estilo', 'ex: yin blue-secondary', textInput(node.style, v => updateNodeField('style', v))));
   
   if (t === 'accordion') {
     const row = document.createElement('div');
     row.className = 'cb-field-group';
-    row.appendChild(checkboxField('Aberto por padrão', node.opened, v => updateNodeField('opened', v)));
+    row.appendChild(checkboxField('manter apenas um aberto por favor', node.opened, v => updateNodeField('opened', v)));
     form.appendChild(row);
   }
 
@@ -1138,9 +1285,9 @@ function renderTabsList(form, node) {
       
       const acts = document.createElement('div');
       acts.className = 'cb-tab-item-actions';
-      const up = document.createElement('button');up.textContent='↑';up.addEventListener('click',e=>{e.stopPropagation();if(i>0){[node.tabs[i-1],node.tabs[i]]=[node.tabs[i],node.tabs[i-1]];syncTextarea();rebuild();}});
-      const dn = document.createElement('button');dn.textContent='↓';dn.addEventListener('click',e=>{e.stopPropagation();if(i<node.tabs.length-1){[node.tabs[i],node.tabs[i+1]]=[node.tabs[i+1],node.tabs[i]];syncTextarea();rebuild();}});
-      const del = document.createElement('button');del.textContent='✕';del.className='danger';del.addEventListener('click',e=>{e.stopPropagation();node.tabs.splice(i,1);syncTextarea();rebuild();renderTree();});
+      const up = document.createElement('button');up.type='button';up.textContent='↑';up.addEventListener('click',e=>{e.stopPropagation();if(i>0){[node.tabs[i-1],node.tabs[i]]=[node.tabs[i],node.tabs[i-1]];syncTextarea();rebuild();}});
+      const dn = document.createElement('button');dn.type='button';dn.textContent='↓';dn.addEventListener('click',e=>{e.stopPropagation();if(i<node.tabs.length-1){[node.tabs[i],node.tabs[i+1]]=[node.tabs[i+1],node.tabs[i]];syncTextarea();rebuild();}});
+      const del = document.createElement('button');del.type='button';del.textContent='✕';del.className='danger';del.addEventListener('click',e=>{e.stopPropagation();node.tabs.splice(i,1);syncTextarea();rebuild();renderTree();});
       acts.appendChild(up);acts.appendChild(dn);acts.appendChild(del);
       hdr.appendChild(acts);
 
@@ -1151,7 +1298,7 @@ function renderTabsList(form, node) {
 
       // Tab fields
       body.appendChild(field('ID', '', textInput(tab.id, v => { tab.id=v; syncTextarea(); })));
-      body.appendChild(field('Label', '', textInput(tab.label, v => { tab.label=v; hdr.childNodes[1].textContent=v||'Tab '+i; syncTextarea(); })));
+      body.appendChild(field('Rótulo', '', textInput(tab.label, v => { tab.label=v; hdr.childNodes[1].textContent=v||'Tab '+i; syncTextarea(); })));
       body.appendChild(iconField('Ícone', tab.icon, v => { tab.icon=v; syncTextarea(); }));
       body.appendChild(field('Imagem', '(carrossel)', textInput(tab.image, v => { tab.image=v; syncTextarea(); })));
       body.appendChild(field('Conteúdo', 'HTML/Markdown', textArea(tab.content, v => { tab.content=v; syncTextarea(); }, '<p>Conteúdo da aba...</p>')));
@@ -1164,6 +1311,7 @@ function renderTabsList(form, node) {
     container.appendChild(list);
 
     const addBtn = document.createElement('button');
+    addBtn.type = 'button';
     addBtn.className = 'cb-add-tab-btn';
     addBtn.innerHTML = '<i class="fa fa-plus"></i> Adicionar aba';
     addBtn.addEventListener('click', () => {
@@ -1194,8 +1342,8 @@ function renderDynamicForm(form, node, t) {
       form.appendChild(checkboxField('Paginação', node.pagination, v => updateNodeField('pagination', v)));
     }
     if (comp === 'slider') {
-      form.appendChild(field('Item Template', '', textInput(node.item_template, v => updateNodeField('item_template', v), 'ex: components/dynamic/sliders/slider_item_sede.html')));
-      form.appendChild(field('Size', '', selectInput([{value:'',label:'(padrão)'},{value:'small',label:'small'},{value:'medium',label:'medium'},{value:'large',label:'large'}], node.size, v => updateNodeField('size', v))));
+      form.appendChild(field('Modelo de Item', '', textInput(node.item_template, v => updateNodeField('item_template', v), 'ex: components/dynamic/sliders/slider_item_sede.html')));
+      form.appendChild(field('Tamanho', '', selectInput([{value:'',label:'(padrão)'},{value:'small',label:'small'},{value:'medium',label:'medium'},{value:'large',label:'large'}], node.size, v => updateNodeField('size', v))));
     }
     if (comp === 'texto') {
       form.appendChild(field('Conteúdo Markdown', '', textArea(node.conteudo, v => updateNodeField('conteudo', v))));
@@ -1236,6 +1384,7 @@ function renderTagsField(form, node) {
     const inp = document.createElement('input');
     inp.type='number';inp.className='cb-input';inp.style.width='80px';inp.placeholder='ID';
     const addBtn = document.createElement('button');
+    addBtn.type='button';
     addBtn.textContent='+';addBtn.style.cssText='padding:4px 8px;border:1px solid #e2e8f0;border-radius:4px;cursor:pointer;background:#f8fafc;font-size:12px;';
     addBtn.addEventListener('click', () => {
       const v = parseInt(inp.value);
@@ -1383,7 +1532,7 @@ function showAddChildPicker(parentPath, treeNodeWrap) {
 
   // sections within section = tabs/accordion/carousel
   const groups = [
-    {label:'Containers', items:CONTAINER_TYPES},
+    {label:'Contêineres', items:CONTAINER_TYPES},
     {label:'Conteúdo', items:CONTENT_TYPES},
     {label:'Dinâmico', items:DYNAMIC_TYPES},
   ];
@@ -1395,8 +1544,9 @@ function showAddChildPicker(parentPath, treeNodeWrap) {
     grid.appendChild(sec);
     g.items.forEach(type => {
       const btn = document.createElement('button');
+      btn.type = 'button';
       btn.className='cb-type-btn';
-      btn.textContent=type.replace('dynamic_','⚡ ');
+      btn.textContent = TYPE_LABELS[type] || type.replace('dynamic_','⚡ ');
       btn.addEventListener('click', () => {
         addChildToNode(parentPath, type);
         picker.remove();
@@ -1407,6 +1557,7 @@ function showAddChildPicker(parentPath, treeNodeWrap) {
 
   picker.appendChild(grid);
   const close = document.createElement('button');
+  close.type='button';
   close.textContent='Cancelar';
   close.style.cssText='margin-top:6px;width:100%;padding:4px;background:none;border:1px solid #e2e8f0;border-radius:4px;cursor:pointer;font-size:11px;color:#64748b;';
   close.addEventListener('click', () => picker.remove());
@@ -1431,7 +1582,7 @@ function showAddChildPickerInline(form, parentPath) {
   grid.className='cb-type-picker';
 
   const groups = [
-    {label:'Containers', items:CONTAINER_TYPES},
+    {label:'Contêineres', items:CONTAINER_TYPES},
     {label:'Conteúdo', items:CONTENT_TYPES},
     {label:'Dinâmico', items:DYNAMIC_TYPES},
   ];
@@ -1443,8 +1594,9 @@ function showAddChildPickerInline(form, parentPath) {
     grid.appendChild(sec);
     g.items.forEach(type => {
       const btn=document.createElement('button');
+      btn.type='button';
       btn.className='cb-type-btn';
-      btn.textContent=type.replace('dynamic_','⚡ ');
+      btn.textContent = TYPE_LABELS[type] || type.replace('dynamic_','⚡ ');
       btn.addEventListener('click', () => {
         addChildToNode(parentPath, type);
         picker.remove();
@@ -1586,6 +1738,139 @@ function syncTextarea() {
     jsonTextarea.value = JSON.stringify(state, null, 2);
     jsonTextarea.dispatchEvent(new Event('change', { bubbles: true }));
   }
+  const w = document.getElementById('cb-preview-wrapper');
+  if (w && w.style.display !== 'none') {
+    // do not reload immediately, just mark that we need a manual refresh
+    previewRequiresReload = true;
+    const previewBtn = document.getElementById('cb-preview-btn');
+    if (previewBtn) {
+      previewBtn.innerHTML = '<i class="fa fa-sync-alt"></i>';
+      previewBtn.title = 'Recarregue para ver as alterações';
+    }
+  } else {
+    // preview hidden, keep iframe up to date so it shows when opened
+    updatePreview();
+  }
+}
+
+function updatePreview() {
+  const iframe = document.getElementById('cb-preview');
+  if (!iframe) return;
+  try {
+    let url = '/component-preview/?json=' + encodeURIComponent(JSON.stringify(state));
+    // try to read the page header type from a form field if present
+    const hdrInput = document.querySelector('select[name="header_type"], input[name="header_type"]');
+    if (hdrInput && hdrInput.value) {
+      url += '&header=' + encodeURIComponent(hdrInput.value);
+    }
+    iframe.src = url;
+  } catch(e) {
+    // ignore
+  }
+}
+
+function setupPreviewLinks() {
+  const iframe = document.getElementById('cb-preview');
+  if (!iframe) return;
+  try {
+    const doc = iframe.contentDocument || iframe.contentWindow.document;
+    doc.querySelectorAll('a').forEach(a => {
+      a.addEventListener('click', e => {
+        e.preventDefault();
+        alert('você não pode clicar em links no modo editor');
+      });
+    });
+  } catch(e) {
+    // may not be loaded yet
+  }
+}
+
+// attach listener when iframe loads
+const previewIframe = document.getElementById('cb-preview');
+if (previewIframe) {
+  previewIframe.addEventListener('load', setupPreviewLinks);
+}
+
+// dragging logic for the preview wrapper
+(function(){
+  const w = document.getElementById('cb-preview-wrapper');
+  const bar = document.getElementById('cb-preview-bar');
+  const overlay = document.getElementById('cb-drag-overlay');
+  
+  // Move wrapper to body to avoid z-index stacking context issues
+  if (w && document.body) document.body.appendChild(w);
+
+  if (!w || !bar) return;
+  let dragging=false, offsetX=0, offsetY=0;
+  bar.addEventListener('mousedown', e => {
+    dragging = true;
+    offsetX = e.clientX - w.offsetLeft;
+    offsetY = e.clientY - w.offsetTop;
+    document.body.style.userSelect = 'none';
+    if (overlay) overlay.style.display = 'block'; // Enable overlay to catch mouse events over iframe
+  });
+  document.addEventListener('mousemove', e => {
+    if (dragging) {
+      w.style.left = (e.clientX - offsetX) + 'px';
+      w.style.top  = (e.clientY - offsetY) + 'px';
+    }
+  });
+  document.addEventListener('mouseup', () => {
+    dragging = false;
+    document.body.style.userSelect = '';
+    if (overlay) overlay.style.display = 'none'; // Disable overlay so user can interact with iframe
+  });
+
+  // maximize toggle
+  const maxBtn = document.getElementById('cb-preview-maximize');
+  let maximized = false;
+  const prev = {};
+  if (maxBtn) {
+    maxBtn.addEventListener('click', () => {
+      if (!maximized) {
+        prev.top = w.style.top;
+        prev.left = w.style.left;
+        prev.width = w.style.width;
+        prev.height = w.style.height;
+        w.style.top = '5%';
+        w.style.left = '5%';
+        w.style.width = '90%';
+        w.style.height = '90%';
+      } else {
+        w.style.top = prev.top;
+        w.style.left = prev.left;
+        w.style.width = prev.width;
+        w.style.height = prev.height;
+      }
+      maximized = !maximized;
+    });
+  }
+
+  // prevent wrapper transitions during user resize
+  w.addEventListener('mousedown', e => {
+    if (e.target === w) {
+      w.style.transition = 'none';
+    }
+  });
+  w.addEventListener('mouseup', () => {
+    w.style.transition = 'none'; // keep it off until closed/reopened
+  });
+})();
+
+// if the administrator can choose a header on the page form, make
+// sure the preview updates when they change it
+const hdrInput = document.querySelector('select[name="header_type"], input[name="header_type"]');
+if (hdrInput) {
+  hdrInput.addEventListener('change', () => {
+    // immediately refresh the iframe and reset reload state
+    updatePreview();
+    previewRequiresReload = false;
+    const previewBtn = document.getElementById('cb-preview-btn');
+    if (previewBtn) {
+      previewBtn.innerHTML = '<i class="fa fa-eye"></i>';
+      previewBtn.title = 'Visualizar';
+    }
+  });
 }
 
 // ============================================================

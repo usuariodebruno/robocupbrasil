@@ -513,7 +513,7 @@ class PaginaAdmin(admin.ModelAdmin):
         (None, {
             'fields': ('nome', 'slug', 'parent', 'header_type', 'privada', 'evento_associado'),
         }),
-        ('Configuração da Página', {
+        ('Conteúdo da Página', {
             'fields': ('componentes',),
             'description': 'Lista JSON ordenada. A ordem dos itens define a sequência na página.'
         }),

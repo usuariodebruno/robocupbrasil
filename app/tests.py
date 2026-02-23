@@ -105,3 +105,34 @@ class RenderComponentsTests(TestCase):
         comps = [{"type": "dynamic_texto", "conteudo": "Hello", "fullwidth": False}]
         html = render_components_to_html(comps)
         self.assertNotIn('w-100', html)
+
+    def test_preview_endpoint_renders_html(self):
+        # the preview view should return HTML generated from the JSON payload
+        comps = [{"type": "section", "content": "X"}]
+        import json as _json
+        response = self.client.get('/component-preview/', {'json': _json.dumps(comps)})
+        self.assertEqual(response.status_code, 200)
+        content = response.content.decode()
+        self.assertIn('X', content)
+        self.assertIn('<link rel="stylesheet"', content)
+        # header defaults to RCB when none provided
+        self.assertIn('<div class="rcb"', content)
+        # preview wrapper should include the dragging bar and maximize control
+        self.assertIn('id="cb-preview-bar"', content)
+        self.assertIn('id="cb-preview-maximize"', content)
+
+        # reserved path should not be treated as a page
+        response2 = self.client.get('/component-preview/')
+        self.assertEqual(response2.status_code, 200)
+        response3 = self.client.get('/component-preview/anything')
+        self.assertEqual(response3.status_code, 404)
+
+        # specifying header parameter should alter included header class
+        response4 = self.client.get('/component-preview/', {'json': _json.dumps(comps), 'header': 'CBR'})
+        self.assertEqual(response4.status_code, 200)
+        content4 = response4.content.decode()
+        self.assertIn('<div class="cbr"', content4)
+        # unsupported header values should fall back to rcb
+        response5 = self.client.get('/component-preview/', {'json': _json.dumps(comps), 'header': 'INVALID'})
+        self.assertEqual(response5.status_code, 200)
+        self.assertIn('<div class="rcb"', response5.content.decode())

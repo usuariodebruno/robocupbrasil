@@ -1,6 +1,9 @@
 from django.shortcuts import render, get_object_or_404
-from django.http import Http404
+from django.http import Http404, HttpResponse
 from .models import Regiao, Pagina, Funcionario, Arquivo, Data, Noticia, PaginaEstado, Sede, Subevento
+
+import json
+from .utils.render_components import render_components_to_html
 
 def error_view(request, exception=None):
     path = request.path
@@ -19,6 +22,32 @@ def error_view(request, exception=None):
         'path': path,
         'exception': exception,
     }, status=status_code)
+
+
+def component_preview(request):
+    """Utility endpoint used by the admin component builder to render a
+    live preview of a components JSON structure.  Accepts a ``json``
+    query parameter and returns the HTML produced by
+    ``render_components_to_html``.  The view is deliberately simple and
+    does not perform any permissions checks since the JSON comes from the
+    same user who is editing the page.  If the payload fails to parse we
+    fall back to an empty list.
+    """
+    data = request.GET.get('json', '[]')
+    try:
+        comps = json.loads(data)
+    except Exception:
+        comps = []
+    html = render_components_to_html(comps)
+
+    # allow caller to request a specific page header type for the preview
+    header = request.GET.get('header', '')
+    header_lower = header.lower() if header else 'rcb'
+    # normalize allowed values (rcb, cbr, mnr, obr)
+    if header_lower not in ('rcb', 'cbr', 'mnr', 'obr'):
+        header_lower = 'rcb'
+
+    return render(request, 'component_preview.html', {'html': html, 'header_type_lower': header_lower})
 
 # Essa página eventualmente será excluída, mas por ora serve como exemplo de renderização de componentes dinâmicos
 def estado_view(request, sigla):
@@ -117,6 +146,9 @@ def sede_view(request, ano):
 
 def pagina_dinamica_view(request, path):
     path = path.strip('/')
+    # reserved paths that should not be treated as pages
+    if path in ('component-preview',):
+        raise Http404()
 
     # Query params for pagination
 

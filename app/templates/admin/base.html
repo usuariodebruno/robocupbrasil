@@ -107,7 +107,25 @@
             #smartToggle:hover { background: #5688be; }
             fieldset .collapse-content { max-width: unset !important; }
             .grid.grid-cols-1.\32 xl\:grid-cols-4.gap-3.auto-rows-auto { display: flex !important; }
-            .save-col { width: 296px; }
+            .save-col {
+                max-width: 64px;
+            }
+
+            .save-col .history-outer li > *:not(:first-child), .save-col .history-outer .btn, .save-col .collapsable-col, .save-col #saving-area .btn-lista span {
+                max-width: 0;
+                opacity: 0;
+                overflow: hidden;
+            }
+
+            .save-col:hover {
+                max-width: 300px;
+            }
+
+            .save-col:hover .history-outer li > *:not(:first-child), .save-col:hover .history-outer .btn, .save-col:hover .collapsable-col, .save-col:hover #saving-area .btn-lista span {
+                max-width: 999px;
+                opacity: 1;
+                overflow: visible;
+            }
         }
 
         #search-list a.selected {

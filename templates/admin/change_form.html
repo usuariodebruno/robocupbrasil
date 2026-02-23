@@ -6,9 +6,9 @@
     <div class="save-col flex flex-col justify-between">
         <div>
             <a class="max-2xl:hidden block mb-2 font-bold text-center border rounded-lg border-base-300 p-2 hover:bg-base-300 transition mb-4" href="#saving-area">
-                Pular para salvar
+                <span class="collapsable-col">Pular para salvar</span> <i class="fas fa-arrow-down"></i>
             </a>
-            <div class="max-2xl:hidden border-t max-w-md border-base-300">
+            <div class="max-2xl:hidden border-t max-w-md border-base-300 history-outer">
                 {% if original and not is_popup %}
                     {% include "admin/includes/object_history_summary.html" %}
                 {% endif %}
@@ -16,7 +16,34 @@
         </div>
 
         <div id="saving-area" class="w-full z-20 border-t border-base-300  sticky lg:mb-3">
-            {% submit_row %}
+            <div class="text-start grid gap-2 btn-lista">
+                
+                    <button title="Salvar" type="submit" class="btn btn-block btn-success dark:btn-primary px-4 rounded-md legitRipple" name="_save">
+                        <span>Salvar</span>
+                        <i class="fas fa-save px-1"></i>
+                        <span></span>
+                    </button>
+
+                    <button title="Salvar e continuar editando" class="btn-info btn-block btn rounded-md legitRipple" type="submit" name="_continue">
+                        <span>Salvar e continuar editando</span>
+                        <i class="fas fa-sync"></i>
+                        <span></span>
+                    </button>
+                
+                    <button title="Salvar e adicionar outro" class="btn-soft btn-block rounded-md btn legitRipple" type="submit" name="_addanother">
+                        <span>Salvar e adicionar outro</span>
+                        <i class="fas fa-plus-circle"></i>
+                        <span></span>
+                    </button>
+                
+                    <div class="divider my-0 py-0"></div>
+                    
+                    <a title="Deletar" href="/admin/app/pagina/1/delete/" class="btn-block btn-error error-content btn rounded-md place-self-end">
+                        <span>Deletar</span>
+                        <i class="fa fa-xmark"></i>
+                        <span></span>
+                    </a>
+            </div>
         </div>
     </div>
 {% endblock %}

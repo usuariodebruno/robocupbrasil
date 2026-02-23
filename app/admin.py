@@ -500,16 +500,8 @@ class LogEntryAdmin(admin.ModelAdmin):
     def has_delete_permission(self, request, obj=None):
         return request.user.is_superuser
 
-
 class ComponentesWidget(forms.Textarea):
     template_name = 'admin/pagina/component_builder.html'
-
-    class Media:
-        js = ('js/component_builder.js',)
-        css = {
-            'all': ('css/component_builder.css',)
-        }
-
 
 @admin.register(Pagina)
 class PaginaAdmin(admin.ModelAdmin):

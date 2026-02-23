@@ -780,6 +780,7 @@ function renderNode(node, path, depth) {
   if (isSection || isContainer) {
     const addBtn = document.createElement('button');
     addBtn.innerHTML = '+';
+    addBtn.type = 'button';
     addBtn.title = 'Adicionar filho';
     addBtn.addEventListener('click', (e) => { e.stopPropagation(); showAddChildPicker(path, wrap); });
     actions.appendChild(addBtn);
@@ -1301,7 +1302,7 @@ function renderTabsList(form, node) {
       body.appendChild(field('Rótulo', '', textInput(tab.label, v => { tab.label=v; hdr.childNodes[1].textContent=v||'Tab '+i; syncTextarea(); })));
       body.appendChild(iconField('Ícone', tab.icon, v => { tab.icon=v; syncTextarea(); }));
       body.appendChild(field('Imagem', '(carrossel)', textInput(tab.image, v => { tab.image=v; syncTextarea(); })));
-      body.appendChild(field('Conteúdo', 'HTML/Markdown', textArea(tab.content, v => { tab.content=v; syncTextarea(); }, '<p>Conteúdo da aba...</p>')));
+      body.appendChild(field('Conteúdo', 'HTML/Markdown', textArea(tab.content, v => { tab.content=v; syncTextarea(); }, '# Conteúdo da aba... \n**negrito**, _italico_, [links](https://example.com), etc.')));
 
       item.appendChild(hdr);
       item.appendChild(body);

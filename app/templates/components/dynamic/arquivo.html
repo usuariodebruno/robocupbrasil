@@ -1,5 +1,7 @@
-{% if arquivo %}
-    <div class="border-radius shadow">
-        <div class="_df_book" id="flipbok_example" source="{{ arquivo.arquivo.url }}"></div>
-    </div>
+{% if arquivo and arquivo.arquivo %}
+<div class="pdf-viewer-container">
+    <div class="_df_book" source="{{ arquivo.arquivo.url }}"></div>
+</div>
+{% else %}
+    Arquivo PDF não encontrado.
 {% endif %}

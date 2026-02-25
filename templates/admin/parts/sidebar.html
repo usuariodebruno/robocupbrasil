@@ -85,7 +85,7 @@
                         {{ app.name }}
                     </a>
                 {% else %}
-                    <details {% if app.app_url in request.path|urlencode %} open {% endif %}>
+                    <details>
                         <summary>
                             <i class="{{ app.icon }}"></i>
                             {{ app.name }}

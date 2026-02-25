@@ -133,7 +133,7 @@
             {% include "components/content/button_rounded.html" with texto="Botão Red com Link Externo" theme="red" icon="external-link" href="https://robocup.org.br" blank=True %}
 
             <!-- 6. BUTTON SQUARE - Com ícone, título e descrição -->
-            {% include "components/content/button_square.html" with href="#" titulo="Robótica" descricao="Competições de robótica avançada" %}
+            {% include "components/content/button_square.html" with href="#" theme_primary='blue' theme_secondary='green' theme_foreground='yang' titulo="Robótica" descricao="Competições de robótica avançada" %}
         
             {% include "components/content/button_square.html" with href="#" icon="trophy" titulo="Prêmios" descricao="Conheça os reconhecimentos conquistados" %}
         
@@ -151,7 +151,7 @@
             {% include "components/content/button_inline.html" with texto="Botão Green" theme="yang" color="green" icon="check" href="/" blank=False %}
 
             <!-- 8. CONTEUDO SQUARE - Card com imagem, título, descrição e botão -->
-            {% include "components/content/conteudo_square.html" with imagem=imagem_estado titulo="Card com Imagem Esquerda" descricao="Este é um card de conteúdo com a imagem posicionada à esquerda no desktop." inline_text="Saiba Mais" inline_href="/" inline_color="blue" image_align_mobile='top' image_align_desktop='left' text_align="start" %}
+            {% include "components/content/conteudo_square.html" with theme_primary='blue' theme_secondary='green' theme_foreground='yang' imagem=imagem_estado titulo="Card com Imagem Esquerda" descricao="Este é um card de conteúdo com a imagem posicionada à esquerda no desktop." inline_text="Saiba Mais" inline_href="/" inline_color="blue" image_align_mobile='top' image_align_desktop='left' text_align="start" %}
             
             {% include "components/content/conteudo_square.html" with imagem=imagem_estado titulo="Card com Imagem Direita" descricao="Este é um card com a imagem posicionada à direita." inline_text="Clique Aqui" inline_href="https://robocup.org.br" inline_color="yellow" inline_theme="yang" image_align_mobile='bottom' image_align_desktop='right' text_align="start" %}
             

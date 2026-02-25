@@ -86,6 +86,14 @@ class Command(BaseCommand):
                     ('add_userprofile', 'app', 'userprofile'),
                     ('change_userprofile', 'app', 'userprofile'),
                     ('view_userprofile', 'app', 'userprofile'),
+                    ('add_atalhoglobal', 'app', 'atalhoglobal'),
+                    ('change_atalhoglobal', 'app', 'atalhoglobal'),
+                    ('delete_atalhoglobal', 'app', 'atalhoglobal'),
+                    ('view_atalhoglobal', 'app', 'atalhoglobal'),
+                    ('add_itemmenu', 'app', 'itemmenu'),
+                    ('change_itemmenu', 'app', 'itemmenu'),
+                    ('delete_itemmenu', 'app', 'itemmenu'),
+                    ('view_itemmenu', 'app', 'itemmenu'),
                 ]
             },
             'COORD': {
@@ -114,6 +122,10 @@ class Command(BaseCommand):
                     ('view_paginaestado', 'app', 'paginaestado'),
                     ('add_arquivo', 'app', 'arquivo'),
                     ('view_arquivo', 'app', 'arquivo'),
+                    ('add_data', 'app', 'data'),
+                    ('change_data', 'app', 'data'),
+                    ('view_data', 'app', 'data'),
+                    ('view_tagdata', 'app', 'tagdata'),
                 ]
             },
             'MARKETING': {
@@ -136,6 +148,14 @@ class Command(BaseCommand):
                     ('view_tagdata', 'app', 'tagdata'),
                     ('add_sede', 'app', 'sede'),
                     ('view_sede', 'app', 'sede'),
+                    ('add_atalhoglobal', 'app', 'atalhoglobal'),
+                    ('change_atalhoglobal', 'app', 'atalhoglobal'),
+                    ('delete_atalhoglobal', 'app', 'atalhoglobal'),
+                    ('view_atalhoglobal', 'app', 'atalhoglobal'),
+                    ('add_itemmenu', 'app', 'itemmenu'),
+                    ('change_itemmenu', 'app', 'itemmenu'),
+                    ('delete_itemmenu', 'app', 'itemmenu'),
+                    ('view_itemmenu', 'app', 'itemmenu'),
                 ]
             },
         }

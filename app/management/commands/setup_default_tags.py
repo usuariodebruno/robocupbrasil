@@ -86,6 +86,7 @@ class Command(BaseCommand):
         self.stdout.write(self.style.SUCCESS(f"Subeventos ensured ({created} created/updated)."))
 
     def create_tags(self):
+        from app.models import Regiao
         tag_arquivos = [
             'Revista Mundo Robótica',
             'Material do Organizador Regional (REP)',
@@ -121,6 +122,8 @@ class Command(BaseCommand):
             TagArquivo.objects.get_or_create(nome=nome)
         for nome in tag_datas:
             TagData.objects.get_or_create(nome=nome)
+        for code, name in Regiao.choices:
+            TagData.objects.get_or_create(nome=name)
         for nome in tag_funcionarios:
             TagFuncionario.objects.get_or_create(nome=nome)
         for nome in tag_noticias:

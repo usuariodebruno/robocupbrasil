@@ -95,7 +95,7 @@
                 position: fixed;
                 top: 0;
                 left: 0;
-                background: #5688be80;
+                background: #5688be;
                 height: 100vh;
                 width: 6px;
                 cursor: w-resize;
@@ -104,14 +104,14 @@
         }
 
         @media (min-width: 1536px) {
-            #smartToggle:hover { background: #5688be; }
+            #smartToggle:hover { background: #5688be80; }
             fieldset .collapse-content { max-width: unset !important; }
             .grid.grid-cols-1.\32 xl\:grid-cols-4.gap-3.auto-rows-auto { display: flex !important; }
             .save-col {
                 max-width: 64px;
             }
 
-            .save-col .history-outer li > *:not(:first-child), .save-col .history-outer .btn, .save-col .collapsable-col, .save-col #saving-area .btn-lista span {
+            .save-col .history-outer li > *:not(:first-child), .save-col .history-outer .opacity-60, .save-col .history-outer .btn, .save-col .collapsable-col, .save-col #saving-area .btn-lista span {
                 max-width: 0;
                 max-height: 0;
                 opacity: 0;
@@ -122,11 +122,15 @@
                 max-width: 350px;
             }
 
-            .save-col.pinned .history-outer li > *:not(:first-child), .save-col.pinned .history-outer .btn, .save-col.pinned .collapsable-col, .save-col.pinned #saving-area .btn-lista span {
+            .save-col.pinned .history-outer li > *:not(:first-child), .save-col.pinned .history-outer .opacity-60, .save-col.pinned .history-outer .btn, .save-col.pinned .collapsable-col, .save-col.pinned #saving-area .btn-lista span {
                 max-width: 999px;
                 max-height: 999px;
                 opacity: 1;
                 overflow: visible;
+            }
+
+            .save-col.pinned .history-outer .opacity-60 {
+                opacity: 0.6;
             }
         }
 
@@ -143,6 +147,10 @@
             display: none;
         }
 
+        .flex.items-center.max-md\:p-3.p-5.pb-0.flex-wrap.justify-between {
+            gap: 0.5rem;
+        }
+
         #search-list a.selected::after {
             content: "Enter";
             position: absolute;
@@ -157,6 +165,7 @@
             word-break: break-all;
         }
     </style>
+    <link rel="stylesheet" href="{% static 'css/font-awesome.min.css' %}">
     <link rel="icon" href="{% static 'images/favicon/rcb.png' %}" type="image/png"/>
     {{ block.super }}
 {% endblock %}
@@ -167,7 +176,17 @@
         document.addEventListener("DOMContentLoaded", function() {
             const fieldsets = document.querySelectorAll("form fieldset");
             if (fieldsets.length > 2) {
-                document.querySelectorAll("form fieldset input").forEach(input => input.click());
+                document.querySelectorAll("form fieldset > input").forEach(input => input.click());
+            }
+
+            const activeItem = document.querySelector("#sidebar details .menu-active");
+            if (activeItem) {
+                const parentDetails = activeItem.closest("details");
+                
+                if (parentDetails) {
+                    parentDetails.setAttribute("open", "");
+                    parentDetails.classList.add("open");
+                }
             }
 
             const searchInput = document.getElementById("sidebar-search");

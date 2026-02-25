@@ -602,6 +602,7 @@ header div:first-child.holding {
     opacity: 100%;
     object-fit: cover;
     position: relative;
+    background-color: var(--primary);
     border-radius: calc(var(--default-measure) * 0.5);
 }
 
@@ -658,6 +659,11 @@ header div:first-child.holding {
     width: 100%; height: 100%;
     overflow: hidden;
 }
+
+.file-extension .details.no-image {
+    position: relative;
+}
+
 
 .file-extension:hover img {
     opacity: 0;
@@ -1126,8 +1132,13 @@ header div:first-child.holding {
 
 /* Button Square */
 .button-square {
-    background-color: var(--yang);
-    border: 1px solid var(--gray);
+    --primary: var(--yang);
+    --secondary: var(--gray);
+    --foreground: var(--yin);
+
+    background-color: var(--primary);
+    color: var(--foreground);
+    border: 1px solid var(--secondary);
     border-radius: var(--default-measure);
     padding: calc(var(--default-measure) * 3);
     width: 100%;
@@ -1136,7 +1147,7 @@ header div:first-child.holding {
 }
 
 .button-square:hover {
-    border-color: var(--gray-secondary);
+    border-color: var(--foreground);
     opacity: 80%;
 }
 
@@ -1333,7 +1344,13 @@ header div:first-child.holding {
 
 /* Conteudo Square */
 .conteudo-square {
-    border: 1px solid var(--gray);
+    --primary: var(--yang);
+    --secondary: var(--gray);
+    --foreground: var(--yin);
+
+    border: 1px solid var(--secondary);
+    background-color: var(--primary);
+    color: var(--foreground);
     border-radius: var(--default-measure);
     padding: calc(var(--default-measure) * 2);
     gap: calc(var(--default-measure) * 2) !important;
@@ -1341,7 +1358,7 @@ header div:first-child.holding {
 }
 
 .conteudo-square:hover {
-    border-color: var(--gray-secondary);
+    border-color: var(--foreground);
 }
 
 .conteudo-square-image {

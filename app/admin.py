@@ -345,7 +345,7 @@ class TagArquivoAdmin(RolePermissionMixin, admin.ModelAdmin):
 
 @admin.register(Arquivo)
 class ArquivoAdmin(RolePermissionMixin, admin.ModelAdmin):
-    list_display = ['nome', 'arquivo', 'get_tags', 'descricao']
+    list_display = ['nome', 'id', 'arquivo', 'get_tags', 'descricao']
     list_filter = ['tags']
     search_fields = ['nome']
     filter_horizontal = ['tags']

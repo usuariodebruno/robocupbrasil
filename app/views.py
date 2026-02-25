@@ -1,6 +1,7 @@
 from django.shortcuts import render, get_object_or_404
 from django.http import Http404, HttpResponse
 from .models import Regiao, Pagina, Funcionario, Arquivo, Data, Noticia, PaginaEstado, Sede, Subevento
+from django.views.decorators.cache import cache_page
 
 import json
 from .utils.render_components import render_components_to_html
@@ -50,6 +51,7 @@ def component_preview(request):
     return render(request, 'component_preview.html', {'html': html, 'header_type_lower': header_lower})
 
 # Essa página eventualmente será excluída, mas por ora serve como exemplo de renderização de componentes dinâmicos
+@cache_page(60 * 60 * 24 * 7)
 def estado_view(request, sigla):
     sigla_upper = sigla.upper()
     if sigla_upper not in [choice[0] for choice in Regiao.choices]:
@@ -114,6 +116,7 @@ def estado_view(request, sigla):
     }
     return render(request, 'estado.html', context)
 
+@cache_page(60 * 60 * 24 * 7)
 def subevento_view(request, permalink):
     subevento = get_object_or_404(Subevento, permalink=permalink)
 
@@ -129,6 +132,7 @@ def subevento_view(request, permalink):
     }
     return render(request, 'subevento.html', context)
 
+@cache_page(60 * 60 * 24 * 7)
 def sede_view(request, ano):
     sede = get_object_or_404(Sede, ano=ano)
 
@@ -144,6 +148,7 @@ def sede_view(request, ano):
     }
     return render(request, 'sede.html', context)
 
+@cache_page(60 * 60 * 24 * 7)
 def pagina_dinamica_view(request, path):
     path = path.strip('/')
     # reserved paths that should not be treated as pages
@@ -228,6 +233,7 @@ def pagina_dinamica_view(request, path):
     }
     return render(request, 'base_dynamic.html', context)
 
+@cache_page(60 * 60 * 24 * 7)
 def noticia_detail(request, permalink):
     noticia = get_object_or_404(Noticia, permalink=permalink)
 

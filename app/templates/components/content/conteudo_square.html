@@ -9,7 +9,11 @@
         {% else %}
             desktop:flex-reverse-column
         {% endif %}
-    {% endif %}
+    {% endif %}"
+    style="
+        {% if theme_primary %}--primary: var(--{{ theme_primary }});{% endif %}
+        {% if theme_secondary %}--secondary: var(--{{ theme_secondary }});{% endif %}
+        {% if theme_foreground %}--foreground: var(--{{ theme_foreground }});{% endif %}
     ">
     {% if imagem %}
         <img 

@@ -5,13 +5,11 @@ from django.dispatch import receiver
 from django.core.exceptions import ValidationError
 from django.utils.text import slugify
 from django_resized import ResizedImageField
-# removed ckeditor import since rich text is no longer needed
-# from ckeditor.fields import RichTextField
+from django.core.cache import cache
 
 def validate_file_size(f):
     if f and getattr(f, 'size', 0) > 64 * 1024 * 1024:
         raise ValidationError("Tamanho máximo do arquivo: 64MB.")
-
 
 def _sanitize_recursive(value):
     """Walk through strings/lists/dicts raising ValidationError if forbidden patterns are found."""
@@ -33,14 +31,21 @@ class GlobalQueryMixin(models.Model):
         abstract = True
 
     @classmethod
-    def get_items(cls, tag_ids=None, limit=10, page_index=0):
+    def get_items(cls, tag_ids=None, limit=10, page_index=0, **kwargs):
         if not tag_ids:
             tag_ids = []
 
         qs = cls.objects.all()
 
-        # Tag filtering
+        # Filtros Específicos por Modelo
+        if cls.__name__ == 'Subevento':
+            evento = kwargs.get('evento')
+            if evento and evento.lower() != 'todos':
+                qs = qs.filter(evento__iexact=evento)
+
+        # Filtro por Tags (para modelos que possuem o campo 'tags')
         if tag_ids and hasattr(cls, 'tags'):
+            # O modelo Sede não tem tags, então este bloco será ignorado para ele.
             try:
                 valid_tag_ids = [int(tid) for tid in tag_ids]
                 if valid_tag_ids:
@@ -741,3 +746,23 @@ def delete_config_patrocinios(sender, instance, **kwargs):
         instance.patrocinio_vertical.delete(save=False)
     if instance.patrocinio_horizontal:
         instance.patrocinio_horizontal.delete(save=False)
+
+# Cacheing strategy:
+# Invalida o cache em qualquer alteração nos modelos que afetam o front-end
+RELEVANT_MODELS_FOR_CACHE = [
+    'Noticia', 'Funcionario', 'Arquivo', 'Data', 'ItemMenu', 'AtalhoGlobal', 
+    'ConfiguracaoGlobal', 'Pagina', 'PaginaEstado', 'Sede', 'Subevento', 
+    'TagNoticia', 'TagFuncionario', 'TagData', 'TagArquivo'
+]
+
+@receiver(post_save)
+def cache_invalidator_on_save(sender, instance, **kwargs):
+    """Limpa o cache em qualquer save (criação ou edição) de modelos relevantes."""
+    if sender.__name__ in RELEVANT_MODELS_FOR_CACHE:
+        cache.clear()
+
+@receiver(post_delete)
+def cache_invalidator_on_delete(sender, instance, **kwargs):
+    """Limpa o cache em qualquer delete de modelos relevantes."""
+    if sender.__name__ in RELEVANT_MODELS_FOR_CACHE:
+        cache.clear()

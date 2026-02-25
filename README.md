@@ -97,7 +97,15 @@ python manage.py createsuperuser
 # Suggested: Username: admin
 ```
 
-### 6. Production
+### 6. Caching
+
+To enhance performance, this project utilizes Django's file-based caching system. When a page is visited for the first time, its rendered HTML is stored in a file. Subsequent visits will be served directly from this file, significantly speeding up response times and reducing server load.
+
+- The cache files are stored in the `django_cache/` directory, which is created automatically in the project root.
+- Cache is automatically cleared whenever content is created, updated, or deleted in the admin panel.
+- This directory is intentionally not tracked by Git (and is listed in `.gitignore`).
+
+### 7. Production
 
 ```bash
 # Collectsatatic for production

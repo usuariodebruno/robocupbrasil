@@ -142,7 +142,59 @@ def render_components_to_html(componentes, extra_context=None):
             except Exception as e:
                 return f"<!-- error rendering {name}: {e} -->"
 
-        # dynamic components (prefix dynamic_)
+        # New specific slider components
+        if t.startswith('slider_'):
+            from app.models import Sede, Subevento, Funcionario, Arquivo
+
+            ctx = {**c}
+            items = []
+            item_template = ""
+            model = None
+            comp_type = t.split('slider_')[1]
+
+            if comp_type == 'sedes':
+                model = Sede
+                items = model.get_items(limit=c.get('limit', 50))
+                item_template = "components/dynamic/sliders/slider_item_sede.html"
+
+            elif comp_type == 'subeventos':
+                model = Subevento
+                items = model.get_items(limit=c.get('limit', 50), evento=c.get('evento'))
+                item_template = "components/dynamic/sliders/slider_item_subevento.html"
+
+            elif comp_type == 'funcionarios':
+                model = Funcionario
+                items = model.get_items(limit=c.get('limit', 10), tag_ids=c.get('tags'))
+                item_template = "components/dynamic/sliders/slider_item_funcionario.html"
+                ctx['size'] = c.get('size', 'medium') # Pass size to context
+
+            elif comp_type == 'arquivos':
+                model = Arquivo
+                items = model.get_items(limit=c.get('limit', 10), tag_ids=c.get('tags'))
+                item_template = "components/dynamic/sliders/slider_item_arquivo.html"
+
+            if items:
+                ctx['items'] = items
+                ctx['item_template'] = item_template
+                out.append(render_template("components/dynamic/slider.html", ctx))
+            
+            continue
+
+        if t == 'arquivo_viewer':
+            from app.models import Arquivo
+            ctx = {**c}
+            arquivo_id = c.get('arquivo_id')
+            if arquivo_id:
+                try:
+                    arquivo = Arquivo.objects.get(pk=int(arquivo_id))
+                    ctx['arquivo'] = arquivo
+                    out.append(render_template("components/dynamic/arquivo.html", ctx))
+                except (Arquivo.DoesNotExist, ValueError, TypeError):
+                    # Fail silently if the ID is invalid or not found
+                    pass
+            continue
+
+        # dynamic components (prefix dynamic_) - old slider logic is removed from here
         if t.startswith('dynamic_'):
             comp = t.split('dynamic_')[1]
             ctx = {}
@@ -155,25 +207,6 @@ def render_components_to_html(componentes, extra_context=None):
                     ctx[key] = extra_context[v]
                 else:
                     ctx[key] = v
-
-            # slider components need an item_template; try to infer a
-            # default when none is provided.  we look at the first element
-            # of the items list and pick a template based on its class name.
-            if comp == 'slider':
-                if not ctx.get('item_template'):
-                    items = ctx.get('items') or []
-                    if items and not isinstance(items, str):
-                        first = items[0]
-                        classname = first.__class__.__name__.lower()
-                        candidate = f"components/dynamic/sliders/slider_item_{classname}.html"
-                        # ensure template exists
-                        try:
-                            Engine.get_default().get_template(candidate)
-                            ctx['item_template'] = candidate
-                        except:
-                            # leave empty; template render will show error
-                            ctx['item_template'] = ''
-
 
             out.append(render_template(f"components/dynamic/{comp}.html", ctx))
             continue

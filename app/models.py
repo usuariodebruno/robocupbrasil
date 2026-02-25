@@ -1,4 +1,4 @@
-from django.db import models
+from django.db import models, transaction
 from django.contrib.auth.models import User
 from django.db.models.signals import post_save, post_delete
 from django.dispatch import receiver
@@ -752,17 +752,18 @@ def delete_config_patrocinios(sender, instance, **kwargs):
 RELEVANT_MODELS_FOR_CACHE = [
     'Noticia', 'Funcionario', 'Arquivo', 'Data', 'ItemMenu', 'AtalhoGlobal', 
     'ConfiguracaoGlobal', 'Pagina', 'PaginaEstado', 'Sede', 'Subevento', 
-    'TagNoticia', 'TagFuncionario', 'TagData', 'TagArquivo'
+    'TagNoticia', 'TagFuncionario', 'TagData', 'TagArquivo',
+    'ItemMenuRCB', 'ItemMenuCBR', 'ItemMenuMNR', 'ItemMenuOBR'
 ]
 
 @receiver(post_save)
 def cache_invalidator_on_save(sender, instance, **kwargs):
     """Limpa o cache em qualquer save (criação ou edição) de modelos relevantes."""
     if sender.__name__ in RELEVANT_MODELS_FOR_CACHE:
-        cache.clear()
+        transaction.on_commit(lambda: cache.clear())
 
 @receiver(post_delete)
 def cache_invalidator_on_delete(sender, instance, **kwargs):
     """Limpa o cache em qualquer delete de modelos relevantes."""
     if sender.__name__ in RELEVANT_MODELS_FOR_CACHE:
-        cache.clear()
+        transaction.on_commit(lambda: cache.clear())

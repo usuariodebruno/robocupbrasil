@@ -1,3 +1,4 @@
+{% load static %}
 <div id="component-builder-ui" data-source-id="{{ widget.attrs.id }}">
 
   <!-- Mobile message -->
@@ -15,18 +16,18 @@
         font-family: 'Inter', ui-sans-serif, system-ui, sans-serif;
         font-size: 13px;
         display: flex;
-        height: 600px;
+        height: 680px;
         border: 1px solid #e2e8f0;
-        border-radius: 8px;
+        border-radius: 10px;
         overflow: auto;
         background: #f8fafc;
       }
 
       /* ---- LEFT PANEL: Tree ---- */
       #cb-tree-panel {
-        width: 340px;
-        min-width: 260px;
-        max-width: 420px;
+        width: 280px;
+        min-width: 220px;
+        max-width: 360px;
         display: flex;
         flex-direction: column;
         border-right: 1px solid #e2e8f0;
@@ -37,13 +38,13 @@
         display: flex;
         align-items: center;
         justify-content: space-between;
-        padding: 10px 12px;
+        padding: 12px 14px;
         border-bottom: 1px solid #e2e8f0;
         background: #1e293b;
         color: #fff;
         flex-shrink: 0;
       }
-      #cb-tree-header span { font-weight: 600; font-size: 13px; letter-spacing:.3px; }
+      #cb-tree-header span { font-weight: 700; font-size: 13px; letter-spacing:.3px; }
       #cb-tree-scroll {
         overflow-y: auto;
         flex: 1;
@@ -53,10 +54,10 @@
         display: flex;
         align-items: center;
         gap: 4px;
-        padding: 4px 8px;
+        padding: 6px 10px;
         cursor: pointer;
-        border-radius: 4px;
-        margin: 1px 6px;
+        border-radius: 6px;
+        margin: 2px 6px;
         user-select: none;
         transition: background .1s;
         position: relative;
@@ -92,7 +93,7 @@
         background: none;
         border: 1px solid #e2e8f0;
         border-radius: 3px;
-        padding: 1px 4px;
+        padding: 2px 5px;
         cursor: pointer;
         font-size: 10px;
         color: #475569;
@@ -102,334 +103,367 @@
       .cb-node-actions button.danger { color: #dc2626; border-color: #fecaca; }
       .cb-node-actions button.danger:hover { background: #fee2e2; }
       .cb-node-toggle {
-        width: 14px;
-        height: 14px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 9px;
-        color: #94a3b8;
-        flex-shrink: 0;
-        cursor: pointer;
+        width: 14px; height: 14px;
+        display: flex; align-items: center; justify-content: center;
+        font-size: 9px; color: #94a3b8; flex-shrink: 0; cursor: pointer;
       }
       .cb-node-children { overflow: hidden; }
       .cb-node-children.collapsed { display: none; }
-      .cb-drag-handle {
-        cursor: grab;
-        color: #cbd5e1;
-        font-size: 10px;
-        flex-shrink: 0;
-      }
+      .cb-drag-handle { cursor: grab; color: #cbd5e1; font-size: 10px; flex-shrink: 0; }
       #cb-add-section-btn {
-        margin: 8px;
-        width: calc(100% - 16px);
-        padding: 7px;
+        margin: 10px;
+        width: calc(100% - 20px);
+        padding: 10px;
         background: #1e293b;
         color: #fff;
         border: none;
-        border-radius: 5px;
+        border-radius: 7px;
         cursor: pointer;
         font-size: 12px;
-        font-weight: 600;
+        font-weight: 700;
+        letter-spacing: .3px;
       }
       #cb-add-section-btn:hover { background: #334155; }
 
-      /* ---- RIGHT PANEL: Properties ---- */
-      #cb-props-panel {
-        flex: 1;
+      /* Empty section CTA in tree */
+      .cb-tree-empty-cta {
         display: flex;
-        flex-direction: column;
-        overflow: hidden;
+        align-items: center;
+        justify-content: center;
+        margin: 4px 8px 4px 32px;
+        padding: 8px;
+        border: 2px dashed #cbd5e1;
+        border-radius: 6px;
+        color: #94a3b8;
+        font-size: 11px;
+        cursor: pointer;
+        transition: all .15s;
+        gap: 4px;
       }
+      .cb-tree-empty-cta:hover { border-color: #3b82f6; color: #3b82f6; background: #eff6ff; }
+
+      /* ---- RIGHT PANEL: Properties ---- */
+      #cb-props-panel { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
       #cb-props-header {
-        padding: 10px 14px;
+        padding: 12px 16px;
         border-bottom: 1px solid #e2e8f0;
         background: #f8fafc;
         display: flex;
         align-items: center;
         justify-content: space-between;
         flex-shrink: 0;
-      }
-      #cb-props-title { font-weight: 600; color: #1e293b; }
-      #cb-props-scroll {
-        overflow-y: auto;
-        flex: 1;
-        padding: 12px 14px;
-      }
-      #cb-no-selection {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        height: 100%;
-        color: #94a3b8;
         gap: 8px;
+      }
+      #cb-props-title { font-weight: 700; color: #1e293b; font-size: 14px; }
+      #cb-props-scroll { overflow-y: auto; flex: 1; padding: 16px 18px; }
+      #cb-no-selection {
+        display: flex; flex-direction: column; align-items: center; justify-content: center;
+        height: 100%; color: #94a3b8; gap: 10px;
       }
       #cb-no-selection i { font-size: 2.5rem; }
 
-      /* Form fields */
-      .cb-field-group {
-        margin-bottom: 12px;
+      /* ---- Advanced toggle ---- */
+      #cb-advanced-toggle {
+        display: flex; align-items: center; gap: 6px; cursor: pointer;
+        background: none; border: 1px solid #e2e8f0; border-radius: 20px;
+        padding: 4px 12px; font-size: 11px; font-weight: 600; color: #475569;
+        transition: all .15s; white-space: nowrap;
       }
+      #cb-advanced-toggle:hover { background: #f1f5f9; }
+      #cb-advanced-toggle.active { background: #fef3c7; border-color: #f59e0b; color: #b45309; }
+      #cb-advanced-toggle .cb-adv-dot {
+        width: 7px; height: 7px; border-radius: 50%; background: #cbd5e1; transition: background .15s;
+      }
+      #cb-advanced-toggle.active .cb-adv-dot { background: #f59e0b; }
+
+      /* ---- Form fields ---- */
+      .cb-field-group { margin-bottom: 14px; }
       .cb-field-label {
-        display: block;
-        font-size: 11px;
-        font-weight: 600;
-        color: #475569;
-        margin-bottom: 4px;
-        text-transform: uppercase;
-        letter-spacing: .4px;
+        display: flex; align-items: center; gap: 5px;
+        font-size: 11px; font-weight: 700; color: #475569;
+        margin-bottom: 5px; text-transform: uppercase; letter-spacing: .4px;
       }
       .cb-field-label .cb-field-hint {
-        font-weight: 400;
-        color: #94a3b8;
-        text-transform: none;
-        letter-spacing: 0;
-        font-size: 10px;
-        margin-left: 4px;
+        font-weight: 400; color: #94a3b8; text-transform: none; letter-spacing: 0;
+        font-size: 10px; margin-left: 2px;
+      }
+      .cb-field-label .cb-tip {
+        width: 14px; height: 14px; border-radius: 50%; background: #e2e8f0;
+        display: inline-flex; align-items: center; justify-content: center;
+        font-size: 8px; color: #64748b; cursor: help; flex-shrink: 0;
       }
       .cb-input, .cb-select, .cb-textarea {
-        width: 100%;
-        padding: 5px 8px;
-        border: 1px solid #e2e8f0;
-        border-radius: 5px;
-        font-size: 12px;
-        color: #1e293b;
-        background: #fff;
-        box-sizing: border-box;
-        outline: none;
-        transition: border-color .15s;
+        width: 100%; padding: 7px 10px; border: 1px solid #e2e8f0;
+        border-radius: 6px; font-size: 12px; color: #1e293b; background: #fff;
+        box-sizing: border-box; outline: none; transition: border-color .15s;
       }
-      .cb-input:focus, .cb-select:focus, .cb-textarea:focus { border-color: #3b82f6; }
-      .cb-textarea { resize: vertical; min-height: 70px; font-family: monospace; font-size: 11px; }
-      .cb-checkbox-row { display: flex; align-items: center; gap: 6px; cursor: pointer; }
-      .cb-checkbox-row input[type=checkbox] { width: 14px; height: 14px; cursor: pointer; accent-color: #3b82f6; }
+      .cb-input:focus, .cb-select:focus, .cb-textarea:focus { border-color: #3b82f6; box-shadow: 0 0 0 2px #dbeafe; }
+      .cb-textarea { resize: vertical; min-height: 80px; font-family: monospace; font-size: 11px; line-height: 1.6; }
+      .cb-checkbox-row { display: flex; align-items: center; gap: 7px; cursor: pointer; padding: 3px 0; }
+      .cb-checkbox-row input[type=checkbox] { width: 15px; height: 15px; cursor: pointer; accent-color: #3b82f6; }
       .cb-checkbox-row span { font-size: 12px; color: #334155; }
 
-      /* Color picker row */
-      .cb-color-row {
-        display: flex;
-        align-items: center;
-        gap: 6px;
+      /* ---- Color swatches ---- */
+      .cb-color-swatches {
+        display: flex; flex-wrap: wrap; gap: 5px; padding: 8px;
+        background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px;
       }
-      .cb-color-swatch {
-        width: 20px;
-        height: 20px;
-        border-radius: 3px;
-        border: 1px solid #e2e8f0;
-        flex-shrink: 0;
+      .cb-color-swatch-btn {
+        width: 26px; height: 26px; border-radius: 5px; border: 2px solid transparent;
+        cursor: pointer; transition: all .1s; flex-shrink: 0;
+        position: relative;
       }
-      .cb-color-row .cb-select { flex: 1; }
+      .cb-color-swatch-btn:hover { transform: scale(1.1); }
+      .cb-color-swatch-btn.selected {
+        border-color: #e879f9 !important;
+        box-shadow: 0 0 0 1px #e879f9;
+      }
+      .cb-color-swatch-btn[data-color=""] {
+        background: repeating-linear-gradient(45deg, #e2e8f0, #e2e8f0 3px, #fff 3px, #fff 8px) !important;
+      }
+      .cb-color-swatch-btn[data-color=""].selected { border-color: #e879f9 !important; }
 
-      /* Icon picker */
+      /* ---- Icon picker ---- */
       .cb-icon-picker { position: relative; }
-      .cb-icon-picker-input { display: flex; gap: 4px; }
+      .cb-icon-picker-input { display: flex; gap: 5px; }
       .cb-icon-picker-input .cb-input { flex: 1; }
       .cb-icon-preview {
-        width: 32px;
-        height: 32px;
-        border: 1px solid #e2e8f0;
-        border-radius: 5px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        background: #f8fafc;
-        color: #334155;
-        flex-shrink: 0;
+        width: 34px; height: 34px; border: 1px solid #e2e8f0; border-radius: 6px;
+        display: flex; align-items: center; justify-content: center;
+        background: #f8fafc; color: #334155; flex-shrink: 0;
       }
       .cb-icon-dropdown {
-        position: absolute;
-        top: 100%;
-        left: 0;
-        right: 0;
-        z-index: 999;
-        background: #fff;
-        border: 1px solid #e2e8f0;
-        border-radius: 5px;
-        max-height: 160px;
-        overflow-y: auto;
-        box-shadow: 0 4px 16px rgba(0,0,0,.1);
-        display: none;
+        position: absolute; top: 100%; left: 0; right: 0; z-index: 999;
+        background: #fff; border: 1px solid #e2e8f0; border-radius: 6px;
+        max-height: 160px; overflow-y: auto; box-shadow: 0 4px 16px rgba(0,0,0,.1); display: none;
       }
       .cb-icon-dropdown.open { display: block; }
       .cb-icon-option {
-        display: flex;
-        align-items: center;
-        gap: 8px;
-        padding: 5px 8px;
-        cursor: pointer;
-        font-size: 12px;
-        color: #334155;
+        display: flex; align-items: center; gap: 8px; padding: 6px 10px;
+        cursor: pointer; font-size: 12px; color: #334155;
       }
       .cb-icon-option:hover { background: #f1f5f9; }
       .cb-icon-option i { width: 16px; text-align: center; }
 
-      /* Section divider */
+      /* ---- Section divider ---- */
       .cb-section-divider {
-        font-size: 10px;
-        font-weight: 700;
-        text-transform: uppercase;
-        letter-spacing: .5px;
-        color: #94a3b8;
-        border-bottom: 1px solid #f1f5f9;
-        padding-bottom: 4px;
-        margin: 14px 0 10px;
+        display: flex; align-items: center; gap: 8px;
+        font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .5px;
+        color: #334155; border-bottom: 2px solid #f1f5f9;
+        padding-bottom: 6px; margin: 20px 0 12px;
+      }
+      .cb-section-divider i { color: #3b82f6; }
+      .cb-section-divider:first-child { margin-top: 0; }
+
+      /* ---- Spacing visualizer ---- */
+      .cb-spacing-viz {
+        border: 2px solid #1e293b; border-radius: 6px; padding: 12px;
+        background: #fff; margin: 10px 0; position: relative; min-height: 80px;
+      }
+      .cb-spacing-viz-middle {
+        border: 2px solid #1e293b; border-radius: 4px; min-height: 50px;
+        padding: 8px; transition: all .2s;
+        display: flex; align-items: stretch;
+      }
+      .cb-spacing-viz-content {
+        border: 2px dashed #94a3b8; border-radius: 3px; flex: 1;
+        background: rgba(0,0,0,0.04); min-height: 30px;
+        display: flex; align-items: flex-start; padding: 4px 6px;
+        font-size: 10px; font-style: italic; color: #94a3b8;
+        transition: all .2s;
       }
 
-      /* Tabs in props */
+      /* ---- Tabs in props ---- */
       .cb-tabs-list {
-        border: 1px solid #e2e8f0;
-        border-radius: 6px;
-        overflow: hidden;
+        border: 1px solid #e2e8f0; border-radius: 8px; overflow: hidden;
       }
-      .cb-tab-item {
-        border-bottom: 1px solid #e2e8f0;
-        background: #fff;
-      }
+      .cb-tab-item { border-bottom: 1px solid #e2e8f0; background: #fff; }
       .cb-tab-item:last-child { border-bottom: none; }
       .cb-tab-item-header {
-        display: flex;
-        align-items: center;
-        padding: 6px 10px;
-        cursor: pointer;
-        background: #f8fafc;
-        gap: 6px;
-        font-size: 12px;
-        font-weight: 600;
-        color: #334155;
+        display: flex; align-items: center; padding: 9px 12px; cursor: pointer;
+        background: #f8fafc; gap: 7px; font-size: 12px; font-weight: 600; color: #334155;
       }
       .cb-tab-item-header:hover { background: #f1f5f9; }
       .cb-tab-item-body {
-        padding: 8px 10px;
-        display: none;
-        border-top: 1px solid #f1f5f9;
+        padding: 12px 14px; display: none; border-top: 1px solid #f1f5f9;
       }
       .cb-tab-item-body.open { display: block; }
       .cb-tab-item-actions { margin-left: auto; display: flex; gap: 4px; }
       .cb-tab-item-actions button {
         background: none; border: 1px solid #e2e8f0; border-radius: 3px;
-        padding: 1px 6px; cursor: pointer; font-size: 10px; color: #64748b;
+        padding: 2px 7px; cursor: pointer; font-size: 10px; color: #64748b;
       }
       .cb-tab-item-actions button.danger { color: #dc2626; border-color: #fecaca; }
       .cb-add-tab-btn {
-        width: 100%; margin-top: 6px; padding: 5px;
-        background: #f8fafc; border: 1px dashed #cbd5e1;
-        border-radius: 5px; cursor: pointer; color: #64748b;
-        font-size: 11px;
+        width: 100%; margin-top: 8px; padding: 8px;
+        background: #f8fafc; border: 2px dashed #cbd5e1;
+        border-radius: 6px; cursor: pointer; color: #64748b; font-size: 11px;
       }
-      .cb-add-tab-btn:hover { background: #f1f5f9; }
+      .cb-add-tab-btn:hover { background: #f1f5f9; border-color: #94a3b8; }
 
-      /* Border details */
+      /* ---- Border details ---- */
       .cb-bd-item {
-        border: 1px solid #e2e8f0;
-        border-radius: 5px;
-        padding: 8px;
-        margin-bottom: 6px;
-        background: #f8fafc;
+        border: 1px solid #e2e8f0; border-radius: 8px; padding: 12px;
+        margin-bottom: 8px; background: #f8fafc;
       }
       .cb-bd-item-header {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        font-size: 11px;
-        font-weight: 600;
-        color: #64748b;
-        margin-bottom: 6px;
+        display: flex; align-items: center; justify-content: space-between;
+        font-size: 11px; font-weight: 700; color: #64748b; margin-bottom: 10px;
       }
-      .cb-bd-item-header button {
-        background: none; border: none; cursor: pointer; color: #dc2626; font-size: 11px;
-      }
+      .cb-bd-item-header button { background: none; border: none; cursor: pointer; color: #dc2626; font-size: 12px; }
       .cb-add-bd-btn {
-        width: 100%; padding: 5px;
-        background: #f8fafc; border: 1px dashed #cbd5e1;
-        border-radius: 5px; cursor: pointer; color: #64748b;
-        font-size: 11px; margin-top: 4px;
+        width: 100%; padding: 7px; background: #f8fafc; border: 2px dashed #cbd5e1;
+        border-radius: 6px; cursor: pointer; color: #64748b; font-size: 11px; margin-top: 6px;
       }
 
-      /* Spacing grid */
-      .cb-spacing-grid {
-        display: grid;
-        grid-template-columns: 1fr 1fr 1fr;
-        gap: 6px;
-      }
+      /* ---- Spacing grid ---- */
+      .cb-spacing-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
 
-      /* Add component button */
+      /* ---- Add component button (top, big) ---- */
+      .cb-add-child-btn-top {
+        width: 100%; padding: 14px 16px;
+        background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
+        border: 2px dashed #60a5fa;
+        border-radius: 10px; cursor: pointer; color: #1d4ed8;
+        font-size: 14px; font-weight: 700; margin-bottom: 18px;
+        display: flex; align-items: center; justify-content: center;
+        transition: all .15s;
+      }
+      .cb-add-child-btn-top:hover { background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%); border-color: #3b82f6; }
+
+      /* ---- Add component button (bottom, smaller) ---- */
       .cb-add-child-btn {
-        width: 100%; padding: 6px;
-        background: #eff6ff; border: 1px dashed #93c5fd;
-        border-radius: 5px; cursor: pointer; color: #2563eb;
-        font-size: 11px; font-weight: 600; margin-top: 8px;
+        width: 100%; padding: 10px;
+        background: #eff6ff; border: 2px dashed #93c5fd;
+        border-radius: 8px; cursor: pointer; color: #2563eb;
+        font-size: 12px; font-weight: 700; margin-top: 10px;
       }
       .cb-add-child-btn:hover { background: #dbeafe; }
 
-      /* Tag IDs */
+      /* ---- Tags input ---- */
       .cb-tags-input { display: flex; gap: 4px; flex-wrap: wrap; }
       .cb-tag-chip {
         display: flex; align-items: center; gap: 4px;
         background: #dbeafe; color: #1d4ed8;
-        border-radius: 3px; padding: 2px 6px; font-size: 11px;
+        border-radius: 4px; padding: 3px 8px; font-size: 11px;
       }
-      .cb-tag-chip button {
-        background: none; border: none; cursor: pointer;
-        color: #3b82f6; padding: 0; line-height: 1; font-size: 11px;
-      }
+      .cb-tag-chip button { background: none; border: none; cursor: pointer; color: #3b82f6; padding: 0; line-height: 1; font-size: 11px; }
 
-      /* Two-col grid for inline fields */
-      .cb-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+      /* ---- Two-col grid ---- */
+      .cb-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+      .cb-grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; }
 
-      /* add-child modal inline */
+      /* ---- Type picker (add component) ---- */
       .cb-type-picker {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 6px;
-        margin-top: 8px;
+        display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 10px;
       }
       .cb-type-btn {
-        padding: 7px 6px;
-        border: 1px solid #e2e8f0;
-        border-radius: 5px;
-        background: #fff;
-        cursor: pointer;
-        font-size: 11px;
-        color: #334155;
-        text-align: center;
-        transition: all .1s;
+        padding: 12px 8px; border: 1px solid #e2e8f0; border-radius: 8px;
+        background: #fff; cursor: pointer; font-size: 11px; color: #334155;
+        text-align: center; transition: all .1s; display: flex;
+        flex-direction: column; align-items: center; gap: 6px; line-height: 1.2;
       }
       .cb-type-btn:hover { background: #eff6ff; border-color: #93c5fd; color: #1d4ed8; }
+      .cb-type-btn i, .cb-type-btn .cb-type-emoji { font-size: 20px; }
+      .cb-type-btn.texto-btn { grid-column: 1 / -1; flex-direction: row; gap: 10px; padding: 14px; }
+      .cb-type-btn.texto-btn i { font-size: 22px; }
+
+      /* ---- Style color tabs (yin/yang + colors) ---- */
+      .cb-style-picker { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+      .cb-style-picker-half { }
+      .cb-style-picker-half .cb-field-label { margin-bottom: 6px; }
+
+      /* ---- Advanced section wrapper ---- */
+      .cb-advanced-only { display: none; }
+      .cb-advanced-mode .cb-advanced-only { display: block; }
+      .cb-advanced-mode .cb-advanced-only.cb-field-group { display: block; }
+      .cb-advanced-mode .cb-advanced-inline { display: flex; }
+      .cb-advanced-inline { display: none; }
+
+      /* ---- Markdown help ---- */
+      .cb-md-help {
+        margin-top: 5px; border: 1px solid #e2e8f0; border-radius: 6px; overflow: hidden;
+      }
+      .cb-md-help-toggle {
+        padding: 6px 10px; background: #f8fafc; cursor: pointer; font-size: 11px;
+        color: #64748b; display: flex; align-items: center; gap: 5px;
+        border: none; width: 100%; text-align: left;
+      }
+      .cb-md-help-toggle:hover { background: #f1f5f9; }
+      .cb-md-help-body { display: none; padding: 10px; background: #fff; font-size: 11px; color: #334155; line-height: 1.7; }
+      .cb-md-help-body.open { display: block; }
+      .cb-md-help-body code { background: #f1f5f9; padding: 1px 5px; border-radius: 3px; font-family: monospace; }
+
+      /* ---- BD preview ---- */
+      .cb-bd-preview {
+        width: 60px; height: 60px; border-radius: 6px;
+        border: 1px solid #e2e8f0; display: flex; align-items: center;
+        justify-content: center; background: #f8fafc; overflow: hidden;
+      }
+      .cb-bd-preview-inner {
+        width: 48px; height: 48px;
+        -webkit-mask-size: contain;
+        -webkit-mask-repeat: no-repeat;
+        -webkit-mask-position: center;
+        mask-size: contain; mask-repeat: no-repeat; mask-position: center;
+      }
+
+      /* ---- Responsive tabs (Mobile/Desktop) ---- */
+      .cb-resp-tabs { display: flex; gap: 0; margin-bottom: 10px; border: 1px solid #e2e8f0; border-radius: 6px; overflow: hidden; }
+      .cb-resp-tab {
+        flex: 1; padding: 6px; text-align: center; cursor: pointer;
+        font-size: 11px; font-weight: 600; color: #64748b; background: #f8fafc;
+        border: none; transition: all .1s;
+      }
+      .cb-resp-tab.active { background: #1e293b; color: #fff; }
+      .cb-resp-panel { display: none; }
+      .cb-resp-panel.active { display: block; }
+
+      /* ---- Link button inline ---- */
+      .cb-link-btn {
+        font-size: 10px; color: #3b82f6; text-decoration: none; display: inline-flex;
+        align-items: center; gap: 3px; padding: 2px 6px; border: 1px solid #bfdbfe;
+        border-radius: 4px; background: #eff6ff; white-space: nowrap;
+      }
+      .cb-link-btn:hover { background: #dbeafe; }
+
+      /* ---- Input with link row ---- */
+      .cb-input-with-link { display: flex; gap: 6px; align-items: center; }
+      .cb-input-with-link .cb-input { flex: 1; }
     </style>
 
     <!-- preview iframe (resizeable overlay) -->
-    <div id="cb-preview-wrapper" style="display:none; position:fixed; top:100px; left:100px; width:500px; height:400px; resize:both; overflow:hidden; border:1px solid #94a3b8; box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3); z-index:2147483647; background:#fff; transition:none !important; border-radius: 6px;">
-      <div id="cb-preview-bar" style="position:absolute;top:0;left:0;right:0;height:24px;cursor:move;background:#f1f5f9;z-index:100000;">
-        <button type="button" id="cb-preview-maximize" title="Maximizar" style="position:absolute;top:0;right:24px;width:24px;height:24px;background:none;border:none;cursor:pointer;font-size:11px;color:#64748b;display:flex;align-items:center;justify-content:center;">🗖</button>
-        <button type="button" id="cb-preview-close" title="Fechar" style="position:absolute;top:0;right:0;width:24px;height:24px;background:none;border:none;cursor:pointer;font-size:13px;color:#64748b;display:flex;align-items:center;justify-content:center;">
-          <i class="fa fa-times"></i>
-        </button>
+    <div id="cb-preview-wrapper" style="display:none; position:fixed; top:100px; left:100px; width:500px; height:400px; resize:both; overflow:hidden; border:1px solid #94a3b8; box-shadow: 0 10px 25px -5px rgba(0,0,0,.3); z-index:2147483647; background:#fff; transition:none !important; border-radius:8px;">
+      <div id="cb-preview-bar" style="position:absolute;top:0;left:0;right:0;height:28px;cursor:move;background:#1e293b;z-index:100000;display:flex;align-items:center;padding:0 8px;gap:6px;">
+        <span style="color:#94a3b8;font-size:10px;flex:1;"><i class="fa fa-eye" style="margin-right:4px;"></i>Pré-visualizar</span>
+        <button type="button" id="cb-preview-maximize" title="Maximizar" style="background:none;border:none;cursor:pointer;font-size:11px;color:#94a3b8;width:20px;height:20px;display:flex;align-items:center;justify-content:center;">🗖</button>
+        <button type="button" id="cb-preview-close" title="Fechar" style="background:none;border:none;cursor:pointer;font-size:13px;color:#94a3b8;width:20px;height:20px;display:flex;align-items:center;justify-content:center;"><i class="fa fa-times"></i></button>
       </div>
-      <div id="cb-drag-overlay" style="display:none; position:absolute; top:24px; left:0; width:100%; height:calc(100% - 24px); z-index:100001; background:transparent;"></div>
-      <iframe id="cb-preview" style="width:100%; height:100%; border:0; margin-top:24px;"></iframe>
+      <div id="cb-drag-overlay" style="display:none; position:absolute; top:28px; left:0; width:100%; height:calc(100% - 28px); z-index:100001; background:transparent;"></div>
+      <iframe id="cb-preview" style="width:100%; height:100%; border:0; margin-top:28px;"></iframe>
     </div>
 
     <!-- Tree panel -->
     <div id="cb-tree-panel">
       <div id="cb-tree-header">
-        <span><i class="fa fa-sitemap" style="margin-right:6px;"></i>Estrutura</span>
+        <span><i class="fa fa-sitemap" style="margin-right:7px;"></i>Estrutura</span>
         <div style="display:flex;gap:6px;">
-          <button type="button" id="cb-collapse-all-btn" title="Colapsar tudo" style="background:none;border:1px solid rgba(255,255,255,.2);border-radius:4px;color:#fff;cursor:pointer;padding:2px 7px;font-size:11px;"><i class="fa fa-compress"></i></button>
+          <button type="button" id="cb-collapse-all-btn" title="Colapsar tudo" style="background:none;border:1px solid rgba(255,255,255,.2);border-radius:4px;color:#fff;cursor:pointer;padding:3px 8px;font-size:11px;"><i class="fa fa-compress"></i></button>
         </div>
       </div>
       <div id="cb-tree-scroll"></div>
-      <button type="button" id="cb-add-section-btn"><i class="fa fa-plus" style="margin-right:4px;"></i>Adicionar Seção</button>
+      <button type="button" id="cb-add-section-btn"><i class="fa fa-plus" style="margin-right:6px;"></i>Adicionar Seção</button>
     </div>
 
     <!-- Props panel -->
     <div id="cb-props-panel">
       <div id="cb-props-header">
         <span id="cb-props-title">Propriedades</span>
-        <div style="display:flex;gap:6px;align-items:center;">
-          <button type="button" id="cb-duplicate-btn" title="Duplicar" style="background:none;border:1px solid #e2e8f0;border-radius:4px;cursor:pointer;padding:2px 8px;font-size:11px;color:#475569;display:none;"><i class="fa fa-copy"></i></button>
-          <button type="button" id="cb-preview-btn" title="Visualizar" style="background:none;border:1px solid #e2e8f0;border-radius:4px;cursor:pointer;padding:2px 8px;font-size:11px;color:#475569;"><i class="fa fa-eye"></i></button>
-          <button type="button" id="cb-toggle-json-btn" title="JSON avançado" style="background:none;border:1px solid #e2e8f0;border-radius:4px;cursor:pointer;padding:2px 8px;font-size:11px;color:#475569;">Avançado</button>
+        <div style="display:flex;gap:7px;align-items:center;">
+          <button type="button" id="cb-duplicate-btn" title="Duplicar" style="background:none;border:1px solid #e2e8f0;border-radius:6px;cursor:pointer;padding:4px 10px;font-size:11px;color:#475569;display:none;gap:4px;align-items:center;"><i class="fa fa-copy" style="margin-right:4px;"></i>Duplicar</button>
+          <button type="button" id="cb-preview-btn" title="Pré-visualizar" style="background:none;border:1px solid #e2e8f0;border-radius:6px;cursor:pointer;padding:4px 10px;font-size:11px;color:#475569;display:flex;align-items:center;gap:4px;"><i class="fa fa-eye"></i>Pré-visualizar</button>
+          <button type="button" id="cb-advanced-toggle"><span class="cb-adv-dot"></span><i class="fa fa-cog"></i> Avançado</button>
+          <button type="button" id="cb-toggle-json-btn" title="JSON avançado" style="background:none;border:1px solid #e2e8f0;border-radius:6px;cursor:pointer;padding:4px 10px;font-size:11px;color:#475569;">JSON</button>
         </div>
       </div>
       <div id="cb-props-scroll">
@@ -448,7 +482,6 @@
     {% include "django/forms/widgets/textarea.html" %}
 </div>
 
-
 <script>
 (function() {
 // ============================================================
@@ -462,116 +495,118 @@ const COLOR_MAP = {
   'green':'#84C54F','green-secondary':'#71B13C','':`#5F95CF`
 };
 const SPACINGS = ['','0','0/','1','1/','2','2/','3','3/','4','4/','5'];
-const BD_TYPES = ['cbr','mnr','obr','rcb'];
-const BD_POSITIONS = ['','top','top_center','top_start','top_end','bottom','bottom_center','bottom_start','bottom_end','left','right','center'];
+const BD_TYPES = ['rcb','cbr','mnr','obr'];
+const BD_TYPE_LABELS = {'rcb':'Engrenagem RoboCup Brasil','cbr':'Braço robótico CBR','mnr':'Onda MNR','obr':'Engrenagem OBR'};
+const BD_POSITIONS = ['top center','top right','top left','bottom center','bottom right','bottom left'];
+const BD_POSITION_LABELS = {
+  'top center':    'Topo Centro',
+  'top right':     'Topo Direita',
+  'top left':      'Topo Esquerda',
+  'bottom center': 'Embaixo Centro',
+  'bottom right':  'Embaixo Direita',
+  'bottom left':   'Embaixo Esquerda'
+};
 const BD_SIZES = ['','small'];
 const THEMES = ['','rcb','obr','cbr','mnr'];
+const THEME_LABELS = {'':'Padrão','rcb':'RoboCup Brasil','obr':'OBR','cbr':'CBR','mnr':'MNR'};
 const ALIGNMENTS = ['','center','start','end'];
+const ALIGNMENT_LABELS = {'':'Padrão','center':'Centro','start':'Esquerda','end':'Direita'};
 const HEADER_SIZES = ['','small','medium','large','xlarge','xxlarge'];
+const HEADER_SIZE_LABELS = {'':'Padrão','small':'Pequena','medium':'Média','large':'Grande','xlarge':'Extra Grande','xxlarge':'Extra Extra Grande'};
 const FLEX_PROPS = ['flex_wrap','flex_row','flex_column','flex_center','flex_start','flex_end','flex_between','flex_around','flex_evenly','flex_reverse'];
+const FLEX_CLASS_MAP = {
+  'flex_wrap':'flex-wrap','flex_row':'flex-row','flex_column':'flex-column','flex_center':'flex-center',
+  'flex_start':'flex-start','flex_end':'flex-end','flex_between':'flex-between','flex_around':'flex-around',
+  'flex_evenly':'flex-evenly','flex_reverse':'flex-reverse'
+};
 
-// label translations for various UI elements
 const SPACING_LABELS = {
-  'padding': 'margem interior',
-  'padding_x': 'margem interior horizontal',
-  'padding_y': 'margem interior vertical',
-  'margin': 'margem exterior',
-  'margin_x': 'margem exterior horizontal',
-  'margin_y': 'margem exterior vertical'
+  'padding': 'Margem interior (padding)',
+  'padding_x': 'Margem interior horizontal',
+  'padding_y': 'Margem interior vertical',
+  'margin': 'Margem exterior',
+  'margin_x': 'Margem exterior horizontal',
+  'margin_y': 'Margem exterior vertical (margin Y)'
 };
 
 const FLEX_PROP_LABELS = {
-  'flex_wrap': 'quebra de linha',
-  'flex_row': 'horizontal',
-  'flex_column': 'vertical',
-  'flex_center': 'itens alinhados ao centro',
-  'flex_start': 'itens alinhados ao começo',
-  'flex_end': 'itens alinhados ao final',
-  'flex_between': 'espaçados entre si',
-  'flex_around': 'espaçados ao redor',
-  'flex_evenly': 'espaçados igualmente',
-  'flex_reverse': 'inverter ordem'
-};
-
-const BD_POSITION_LABELS = {
-  '': 'centro',
-  'top': 'topo',
-  'bottom': 'embaixo',
-  'left': 'esquerda',
-  'right': 'direita',
-  'top_center': 'topo centro',
-  'top_start': 'topo início',
-  'top_end': 'topo final',
-  'center': 'centro',
-  'bottom_center': 'embaixo centro',
-  'bottom_start': 'embaixo início',
-  'bottom_end': 'embaixo final'
+  'flex_wrap': 'Quebra de linha',
+  'flex_row': 'Itens na horizontal',
+  'flex_column': 'Itens na vertical',
+  'flex_center': 'Itens alinhados ao centro',
+  'flex_start': 'Itens alinhados ao começo',
+  'flex_end': 'Itens alinhados ao final',
+  'flex_between': 'Espaçados entre si',
+  'flex_around': 'Espaçados ao redor',
+  'flex_evenly': 'Espaçados igualmente',
+  'flex_reverse': 'Inverter ordem'
 };
 
 const COLOR_NAME_MAP = {
-  'yin': 'Yin',
-  'yang': 'Yang',
-  'blue': 'Azul',
-  'blue-secondary': 'Azul Secundário',
-  'red': 'Vermelho',
-  'red-secondary': 'Vermelho Secundário',
-  'yellow': 'Amarelo',
-  'yellow-secondary': 'Amarelo Secundário',
-  'gray': 'Cinza',
-  'gray-secondary': 'Cinza Secundário',
-  'orange': 'Laranja',
-  'orange-secondary': 'Laranja Secundário',
-  'green': 'Verde',
-  'green-secondary': 'Verde Secundário',
-  '': '(nenhum)'
+  'yin':'Yin (escuro)','yang':'Yang (claro)','blue':'Azul','blue-secondary':'Azul Secundário',
+  'red':'Vermelho','red-secondary':'Vermelho Secundário','yellow':'Amarelo','yellow-secondary':'Amarelo Secundário',
+  'gray':'Cinza','gray-secondary':'Cinza Secundário','orange':'Laranja','orange-secondary':'Laranja Secundário',
+  'green':'Verde','green-secondary':'Verde Secundário','':"(nenhum)"
 };
 
 function formatSpacingLabel(v) {
   if (!v) return '(nenhum)';
-  if (v.endsWith('/')) {
-    const num = v.slice(0,-1);
-    return (num ? num : '0') + '.5';
-  }
-  return v;
+  if (v.endsWith('/')) { const num = v.slice(0,-1); return (num ? num : '0') + '.5 rem'; }
+  return v + ' rem';
 }
 
-// FA4 icons (common subset)
 const FA_ICONS = ['adjust','anchor','archive','arrow-circle-down','arrow-circle-left','arrow-circle-right','arrow-circle-up','arrow-down','arrow-left','arrow-right','arrow-up','asterisk','at','ban','bar-chart','bars','bell','bolt','book','bookmark','briefcase','bug','building','bullhorn','calendar','camera','caret-down','caret-left','caret-right','caret-up','certificate','chain','check','check-circle','check-square','chevron-circle-down','chevron-circle-left','chevron-circle-right','chevron-circle-up','chevron-down','chevron-left','chevron-right','chevron-up','circle','clock-o','cloud','cog','cogs','comment','comments','compress','copy','cube','cubes','cut','dashboard','database','desktop','dot-circle-o','download','edit','envelope','envelope-open','exchange','exclamation','exclamation-circle','exclamation-triangle','expand','external-link','eye','eye-slash','facebook','file','file-code-o','file-pdf-o','file-text','filter','flag','flask','folder','folder-open','forward','gear','gift','github','globe','graduation-cap','group','hand-o-right','heart','history','home','image','inbox','info','info-circle','instagram','key','laptop','leaf','level-down','level-up','link','linkedin','list','location-arrow','lock','magic','map','map-marker','medal','minus','minus-circle','mobile','money','moon-o','newspaper-o','paint-brush','paper-plane','paperclip','pencil','phone','picture-o','pie-chart','play','play-circle','plug','plus','plus-circle','print','puzzle-piece','question','question-circle','random','recycle','refresh','remove','repeat','reply','rocket','rss','save','search','send','share','share-alt','shield','shopping-cart','sign-in','sign-out','signal','sitemap','sort','spinner','star','star-o','table','tag','tags','tasks','th','thumbs-down','thumbs-up','times','times-circle','toggle-off','toggle-on','trash','trophy','truck','twitter','unlock','upload','user','user-plus','users','video-camera','warning','wifi','wrench','youtube-play'];
 
 // COMPONENT TYPES
-const CONTENT_TYPES = ['header','imagem','mapa','youtube','button_rounded','button_square','button_inline','conteudo_square'];
-const DYNAMIC_TYPES = ['dynamic_slider','dynamic_arquivo','dynamic_noticias','dynamic_arquivos','dynamic_calendar','dynamic_texto'];
+const CONTENT_TYPES = ['header','imagem','mapa','youtube','button_rounded','button_square','button_inline','conteudo_square','arquivo_viewer'];
+const DYNAMIC_TYPES = ['dynamic_noticias','dynamic_arquivos','dynamic_calendar','slider_sedes','slider_subeventos','slider_funcionarios','slider_arquivos'];
+const TEXTO_TYPE = ['dynamic_texto'];
 const CONTAINER_TYPES = ['tabs','accordion','carousel'];
-const ALL_CHILD_TYPES = [...CONTENT_TYPES, ...DYNAMIC_TYPES, ...CONTAINER_TYPES];
+const ALL_CHILD_TYPES = [...TEXTO_TYPE, ...CONTENT_TYPES, ...DYNAMIC_TYPES, ...CONTAINER_TYPES];
+const SLIDER_TYPES = ['slider_sedes','slider_subeventos','slider_funcionarios','slider_arquivos'];
 
 const TYPE_LABELS = {
   section: 'Seção',
-  tabs: 'Abas',
-  accordion: 'Sanfona',
-  carousel: 'Carrossel',
+  tabs: '🗂️ Abas',
+  accordion: '🪗 Sanfona',
+  carousel: '🎠 Carrossel',
   header: 'Cabeçalho',
   imagem: 'Imagem',
   mapa: 'Mapa',
   youtube: 'YouTube',
-  button_rounded: 'Botão redondo',
-  button_square: 'Botão quadrado',
-  button_inline: 'Botão inline',
+  button_rounded: 'Botão Redondo',
+  button_square: 'Botão Quadrado',
+  button_inline: 'Botão Inline',
   conteudo_square: 'Cartão',
-  dynamic_slider: '⚡ Slider',
-  dynamic_arquivo: '⚡ Arquivo',
+  arquivo_viewer: '📄 Visualizador de PDF',
+  dynamic_texto: '📝 Texto',
   dynamic_noticias: '⚡ Notícias',
   dynamic_arquivos: '⚡ Arquivos',
   dynamic_calendar: '⚡ Calendário',
-  dynamic_texto: '⚡ Texto',
+  slider_sedes: '⚡ Slider de Sedes',
+  slider_subeventos: '⚡ Slider de Subeventos',
+  slider_funcionarios: '⚡ Slider de Funcionários',
+  slider_arquivos: '⚡ Slider de Arquivos',
+};
+
+const TYPE_ICONS = {
+  header: 'header', imagem: 'picture-o', mapa: 'map-marker', youtube: 'youtube-play',
+  button_rounded: 'dot-circle-o', button_square: 'square', button_inline: 'minus',
+  conteudo_square: 'th-large', arquivo_viewer: 'file-pdf-o',
+  tabs: '🗂️', accordion: '🪗', carousel: '🎠',
+  dynamic_texto: '✏️',
+  dynamic_noticias: 'newspaper-o', dynamic_arquivos: 'folder-open', dynamic_calendar: 'calendar',
+  slider_sedes: 'map-marker', slider_subeventos: 'list-ol', slider_funcionarios: 'users', slider_arquivos: 'files-o',
 };
 
 // ============================================================
 // STATE
 // ============================================================
-let state = [];          // top-level array of sections
-let selectedPath = null; // e.g. [0, 'components', 1, 'tabs', 2]
+let state = [];
+let selectedPath = null;
 let dragState = null;
-let previewRequiresReload = false; // whether preview needs manual reload
+let previewRequiresReload = false;
+let advancedMode = false;
 
 // ============================================================
 // INIT
@@ -588,59 +623,51 @@ function init() {
     desktop.style.display = 'none';
     return;
   }
-  // Load existing JSON
   if (jsonTextarea && jsonTextarea.value.trim()) {
-    try {
-      state = JSON.parse(jsonTextarea.value.trim());
-    } catch(e) {
-      state = [];
-    }
+    try { state = JSON.parse(jsonTextarea.value.trim()); } catch(e) { state = []; }
   }
-  
+
   document.getElementById('cb-add-section-btn').addEventListener('click', addRootSection);
   document.getElementById('cb-collapse-all-btn').addEventListener('click', () => {
     document.querySelectorAll('.cb-node-children').forEach(el => el.classList.add('collapsed'));
   });
   document.getElementById('cb-duplicate-btn').addEventListener('click', duplicateSelected);
+
+  const advToggle = document.getElementById('cb-advanced-toggle');
+  if (advToggle) {
+    advToggle.addEventListener('click', () => {
+      advancedMode = !advancedMode;
+      advToggle.classList.toggle('active', advancedMode);
+      const form = document.getElementById('cb-props-form');
+      if (form) form.classList.toggle('cb-advanced-mode', advancedMode);
+    });
+  }
+
   const jsonToggle = document.getElementById('cb-toggle-json-btn');
   if (jsonToggle) {
     jsonToggle.addEventListener('click', () => {
       const c = document.getElementById('collapsableJSON');
-      if (c.style.display === 'none') {
-        c.style.display = 'block';
-        jsonToggle.textContent = 'Básico';
-      } else {
-        c.style.display = 'none';
-        jsonToggle.textContent = 'Avançado';
-      }
+      if (c.style.display === 'none') { c.style.display = 'block'; jsonToggle.style.background='#fef3c7'; }
+      else { c.style.display = 'none'; jsonToggle.style.background=''; }
     });
   }
+
   const previewBtn = document.getElementById('cb-preview-btn');
-  let previewRequiresReload = false;
   if (previewBtn) {
     previewBtn.addEventListener('click', () => {
       const w = document.getElementById('cb-preview-wrapper');
       if (previewRequiresReload) {
-        updatePreview();
-        previewRequiresReload = false;
-        previewBtn.innerHTML = '<i class="fa fa-eye"></i>';
-        previewBtn.title = 'Visualizar';
+        updatePreview(); previewRequiresReload = false;
+        previewBtn.innerHTML = '<i class="fa fa-eye"></i> Pré-visualizar';
         return;
       }
       w.style.display = (w.style.display === 'none' ? 'block' : 'none');
     });
   }
   const previewClose = document.getElementById('cb-preview-close');
-  if (previewClose) {
-    previewClose.addEventListener('click', () => {
-      document.getElementById('cb-preview-wrapper').style.display = 'none';
-    });
-  }
+  if (previewClose) previewClose.addEventListener('click', () => { document.getElementById('cb-preview-wrapper').style.display = 'none'; });
 
-  renderTree();
-  syncTextarea();
-  // initial preview update
-  updatePreview();
+  renderTree(); syncTextarea(); updatePreview();
 }
 
 // ============================================================
@@ -650,11 +677,9 @@ function getNode(path) {
   if (!path || path.length === 0) return null;
   let cur = state;
   for (let i = 0; i < path.length; i++) {
-    if (Array.isArray(cur)) {
-      cur = cur[path[i]];
-    } else if (typeof cur === 'object') {
-      cur = cur[path[i]];
-    } else return null;
+    if (Array.isArray(cur)) cur = cur[path[i]];
+    else if (typeof cur === 'object') cur = cur[path[i]];
+    else return null;
     if (cur === undefined || cur === null) return null;
   }
   return cur;
@@ -671,12 +696,9 @@ function deleteNode(path) {
   if (!path || path.length === 0) return;
   const parent = path.length === 1 ? state : getNode(path.slice(0, -1));
   const key = path[path.length-1];
-  if (Array.isArray(parent)) {
-    parent.splice(key, 1);
-  }
+  if (Array.isArray(parent)) parent.splice(key, 1);
 }
 
-// Get components array for a node
 function getComponentsArray(node) {
   if (!node) return null;
   const t = node.type || node.tipo;
@@ -691,38 +713,50 @@ function getComponentsArray(node) {
 function renderTree() {
   const scroll = document.getElementById('cb-tree-scroll');
   scroll.innerHTML = '';
-  state.forEach((node, i) => {
-    scroll.appendChild(renderNode(node, [i], 0));
-  });
+  state.forEach((node, i) => scroll.appendChild(renderNode(node, [i], 0)));
 }
 
 function nodeLabel(node) {
   const t = node.type || node.tipo || '?';
-  if (t === 'section') return `Seção${node.id ? ' #'+node.id : ''}${node.bg ? ' ('+node.bg+')' : ''}`;
-  if (t === 'tabs') return `Abas`;
-  if (t === 'accordion') return `Sanfona`;
-  if (t === 'carousel') return `Carrossel`;
-  if (t === 'header') return `Cabeçalho: ${node.titulo || ''}`;
-  if (t === 'imagem') return `Imagem: ${node.titulo || ''}`;
-  if (t === 'youtube') return `YouTube${node.video_id ? ' ('+node.video_id+')' : ''}`;
-  if (t === 'mapa') return `Mapa`;
-  if (t === 'button_rounded') return `Botão redondo: ${node.texto || ''}`;
-  if (t === 'button_square') return `Botão quadrado: ${node.titulo || ''}`;
-  if (t === 'button_inline') return `Botão inline: ${node.texto || ''}`;
-  if (t === 'conteudo_square') return `Cartão: ${node.titulo || ''}`;
-  if (t.startsWith('dynamic_')) {
-    const comp = t.replace('dynamic_','');
-    const labels = {slider:'Slider',arquivo:'Arquivo',noticias:'Notícias',arquivos:'Arquivos',calendar:'Calendário',texto:'Texto'};
-    return '⚡ ' + (labels[comp] || comp);
+  if (t === 'section') {
+    const bg = node.bg || '';
+    const color = COLOR_MAP[bg] || '#e2e8f0';
+    return `📦 Seção <span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:${color};border:1px solid rgba(0,0,0,.2);vertical-align:middle;margin-left:2px;"></span>`;
   }
-  if (node.label) return node.label;
+  if (t === 'tabs') return `🗂️ Abas`;
+  if (t === 'accordion') return `🪗 Sanfona`;
+  if (t === 'carousel') return `🎠 Carrossel`;
+  if (t === 'header') return `📢 Cabeçalho${node.titulo ? ': '+node.titulo.slice(0,20) : ''}`;
+  if (t === 'imagem') return `🖼️ Imagem${node.titulo ? ': '+node.titulo.slice(0,15) : ''}`;
+  if (t === 'youtube') return `▶️ YouTube${node.video_id ? ' ('+node.video_id+')' : ''}`;
+  if (t === 'mapa') return `📍 Mapa`;
+  if (t === 'button_rounded') return `🔵 Botão Redondo${node.texto ? ': '+node.texto.slice(0,15) : ''}`;
+  if (t === 'button_square') return `⬛ Botão Quadrado${node.titulo ? ': '+node.titulo.slice(0,15) : ''}`;
+  if (t === 'button_inline') return `🔲 Botão Inline${node.texto ? ': '+node.texto.slice(0,15) : ''}`;
+  if (t === 'conteudo_square') return `🃏 Cartão${node.titulo ? ': '+node.titulo.slice(0,15) : ''}`;
+  if (t === 'arquivo_viewer') return `📄 PDF Visualizador`;
+  if (t === 'dynamic_texto') return `📝 Texto`;
+  if (t === 'dynamic_noticias') return `⚡ Notícias`;
+  if (t === 'dynamic_arquivos') return `⚡ Arquivos`;
+  if (t === 'dynamic_calendar') return `⚡ Calendário`;
+  if (t === 'slider_sedes') return `⚡ Slider Sedes`;
+  if (t === 'slider_subeventos') return `⚡ Slider Subeventos`;
+  if (t === 'slider_funcionarios') return `⚡ Slider Funcionários`;
+  if (t === 'slider_arquivos') return `⚡ Slider Arquivos`;
+  if (node.label) return '📄 ' + node.label;
   return t;
+}
+
+function nodeTypeLabel(node) {
+  // Only show in advanced mode
+  if (!advancedMode) return '';
+  return (node.type || node.tipo || '').replace('dynamic_','').replace('slider_','');
 }
 
 function nodeTypeClass(node) {
   const t = node.type || node.tipo || '';
   if (t === 'section') return 'section';
-  if (DYNAMIC_TYPES.includes(t)) return 'dynamic';
+  if ([...DYNAMIC_TYPES,...SLIDER_TYPES,...TEXTO_TYPE].includes(t)) return 'dynamic';
   if (CONTAINER_TYPES.includes(t)) return 'section';
   return 'content';
 }
@@ -734,26 +768,23 @@ function renderNode(node, path, depth) {
   const isContainer = CONTAINER_TYPES.includes(t);
   const hasTabs = node.tabs && node.tabs.length > 0;
   const hasComponents = node.components && node.components.length > 0;
-  const hasChildren = (isSection && (hasComponents || (node.main))) || (isContainer && hasTabs);
+  const hasChildren = (isSection && (hasComponents || node.main)) || (isContainer && hasTabs);
+  const isEmpty = (isSection && (!node.components || node.components.length === 0));
 
   const row = document.createElement('div');
   row.className = 'cb-node';
-  row.style.paddingLeft = (8 + depth * 16) + 'px';
+  row.style.paddingLeft = (10 + depth * 16) + 'px';
   row.dataset.path = JSON.stringify(path);
+  if (JSON.stringify(selectedPath) === JSON.stringify(path)) row.classList.add('selected');
 
-  const pathKey = JSON.stringify(path);
-  if (JSON.stringify(selectedPath) === pathKey) row.classList.add('selected');
-
-  // toggle
   const toggle = document.createElement('div');
   toggle.className = 'cb-node-toggle';
-  if (hasChildren || (isSection && (node.components || isContainer))) {
+  if (hasChildren || isSection || isContainer) {
     toggle.innerHTML = '<i class="fa fa-caret-down"></i>';
     toggle.addEventListener('click', (e) => { e.stopPropagation(); toggleChildren(wrap); });
   }
   row.appendChild(toggle);
 
-  // drag handle
   const drag = document.createElement('div');
   drag.className = 'cb-drag-handle';
   drag.innerHTML = '⠿';
@@ -761,55 +792,47 @@ function renderNode(node, path, depth) {
   drag.addEventListener('dragstart', (e) => startDrag(e, path));
   row.appendChild(drag);
 
-  // label
   const label = document.createElement('div');
   label.className = 'cb-node-label';
-  label.textContent = nodeLabel(node);
+  label.innerHTML = nodeLabel(node);
   row.appendChild(label);
 
-  // type badge
-  const badge = document.createElement('div');
-  badge.className = 'cb-node-type ' + nodeTypeClass(node);
-  badge.textContent = (t||'?').replace('dynamic_','');
-  row.appendChild(badge);
+  // Type badge — only in advanced mode
+  if (advancedMode) {
+    const badge = document.createElement('div');
+    badge.className = 'cb-node-type ' + nodeTypeClass(node);
+    badge.textContent = (t||'?').replace('dynamic_','').replace('slider_','');
+    row.appendChild(badge);
+  }
 
-  // actions
   const actions = document.createElement('div');
   actions.className = 'cb-node-actions';
 
   if (isSection || isContainer) {
     const addBtn = document.createElement('button');
-    addBtn.innerHTML = '+';
-    addBtn.type = 'button';
-    addBtn.title = 'Adicionar filho';
+    addBtn.innerHTML = '<i class="fa fa-plus"></i>';
+    addBtn.type = 'button'; addBtn.title = 'Adicionar filho';
     addBtn.addEventListener('click', (e) => { e.stopPropagation(); showAddChildPicker(path, wrap); });
     actions.appendChild(addBtn);
   }
 
-  // move up
   const upBtn = document.createElement('button');
-  upBtn.type = 'button';
-  upBtn.innerHTML = '↑';
+  upBtn.type = 'button'; upBtn.innerHTML = '↑';
   upBtn.addEventListener('click', (e) => { e.stopPropagation(); moveNode(path, -1); });
   actions.appendChild(upBtn);
 
-  // move down
   const downBtn = document.createElement('button');
-  downBtn.type = 'button';
-  downBtn.innerHTML = '↓';
+  downBtn.type = 'button'; downBtn.innerHTML = '↓';
   downBtn.addEventListener('click', (e) => { e.stopPropagation(); moveNode(path, 1); });
   actions.appendChild(downBtn);
 
   const delBtn = document.createElement('button');
-  delBtn.type = 'button';
-  delBtn.innerHTML = '✕';
-  delBtn.className = 'danger';
-  delBtn.title = 'Deletar';
+  delBtn.type = 'button'; delBtn.innerHTML = '<i class="fa fa-trash"></i>';
+  delBtn.className = 'danger'; delBtn.title = 'Deletar';
   delBtn.addEventListener('click', (e) => { e.stopPropagation(); confirmDelete(path); });
   actions.appendChild(delBtn);
 
   row.appendChild(actions);
-
   row.addEventListener('click', () => selectNode(path));
   row.addEventListener('dragover', (e) => { e.preventDefault(); row.style.background='#eff6ff'; });
   row.addEventListener('dragleave', () => { row.style.background=''; });
@@ -817,34 +840,53 @@ function renderNode(node, path, depth) {
 
   wrap.appendChild(row);
 
-  // children container
   const childWrap = document.createElement('div');
   childWrap.className = 'cb-node-children';
 
-  // section components
   if (isSection && node.components) {
     node.components.forEach((child, ci) => {
       childWrap.appendChild(renderNode(child, [...path, 'components', ci], depth+1));
     });
   }
 
-  // dynamic container: tabs are shown but managed in props panel
-  if (isContainer && node.tabs) {
-    node.tabs.forEach((tab, ti) => {
-      const tabWrap = document.createElement('div');
-      const tabRow = document.createElement('div');
-      tabRow.className = 'cb-node';
-      tabRow.style.paddingLeft = (8 + (depth+1) * 16) + 'px';
-      tabRow.dataset.path = JSON.stringify([...path, 'tabs', ti]);
-      
-      const tLabel = document.createElement('div');
-      tLabel.className = 'cb-node-label';
-      tLabel.textContent = '📄 ' + (tab.label || 'Tab '+ti);
-      tabRow.appendChild(tLabel);
-      tabRow.addEventListener('click', () => selectNode([...path, 'tabs', ti]));
-      tabWrap.appendChild(tabRow);
-      childWrap.appendChild(tabWrap);
+  // Empty section CTA
+  if (isEmpty) {
+    const emptyCta = document.createElement('div');
+    emptyCta.className = 'cb-tree-empty-cta';
+    emptyCta.innerHTML = '<i class="fa fa-plus"></i> Adicionar Conteúdo';
+    emptyCta.addEventListener('click', () => showAddChildPicker(path, wrap));
+    childWrap.appendChild(emptyCta);
+  }
+
+  if (isContainer) {
+    if (node.tabs) {
+      node.tabs.forEach((tab, ti) => {
+        const tabWrap = document.createElement('div');
+        const tabRow = document.createElement('div');
+        tabRow.className = 'cb-node';
+        tabRow.style.paddingLeft = (10 + (depth+1) * 16) + 'px';
+        tabRow.dataset.path = JSON.stringify([...path, 'tabs', ti]);
+        const tLabel = document.createElement('div');
+        tLabel.className = 'cb-node-label';
+        tLabel.textContent = '📄 ' + (tab.label || 'Tab '+ti);
+        tabRow.appendChild(tLabel);
+        tabRow.addEventListener('click', () => selectNode([...path, 'tabs', ti]));
+        tabWrap.appendChild(tabRow);
+        childWrap.appendChild(tabWrap);
+      });
+    }
+    // Add tab CTA
+    const addTabCta = document.createElement('div');
+    addTabCta.className = 'cb-tree-empty-cta';
+    const ctaLabel = t === 'tabs' ? ' Adicionar aba' : t === 'accordion' ? ' Adicionar item' : ' Adicionar slide';
+    addTabCta.innerHTML = `<i class="fa fa-plus"></i> ${ctaLabel}`;
+    addTabCta.addEventListener('click', () => {
+      const parent = getNode(path);
+      if (!parent.tabs) parent.tabs = [];
+      parent.tabs.push({id:'tab-'+(parent.tabs.length+1), label:'Nova aba', icon:'file-o', content:''});
+      syncTextarea(); renderTree();
     });
+    childWrap.appendChild(addTabCta);
   }
 
   wrap.appendChild(childWrap);
@@ -864,7 +906,7 @@ function selectNode(path) {
   renderTree();
   renderProps();
   const dupBtn = document.getElementById('cb-duplicate-btn');
-  dupBtn.style.display = path ? 'block' : 'none';
+  dupBtn.style.display = path ? 'flex' : 'none';
 }
 
 // ============================================================
@@ -875,11 +917,7 @@ function renderProps() {
   const form = document.getElementById('cb-props-form');
   const title = document.getElementById('cb-props-title');
 
-  if (!selectedPath) {
-    noSel.style.display = 'flex';
-    form.style.display = 'none';
-    return;
-  }
+  if (!selectedPath) { noSel.style.display = 'flex'; form.style.display = 'none'; return; }
 
   const node = getNode(selectedPath);
   if (!node) return;
@@ -887,25 +925,33 @@ function renderProps() {
   noSel.style.display = 'none';
   form.style.display = 'block';
   form.innerHTML = '';
+  if (advancedMode) form.classList.add('cb-advanced-mode');
+  else form.classList.remove('cb-advanced-mode');
 
   const t = node.type || node.tipo || '';
-  title.textContent = nodeLabel(node);
+  title.innerHTML = nodeLabel(node);
 
-  // Render the appropriate form
   if (t === 'section') renderSectionForm(form, node);
   else if (CONTAINER_TYPES.includes(t)) renderContainerForm(form, node, t);
-  else if (t.startsWith('dynamic_')) renderDynamicForm(form, node, t);
+  else if ([...DYNAMIC_TYPES,...TEXTO_TYPE,...SLIDER_TYPES].includes(t)) renderDynamicForm(form, node, t);
   else if (CONTENT_TYPES.includes(t)) renderContentForm(form, node, t);
   else renderTabItemForm(form, node);
 }
 
 // ---- FIELD BUILDERS ----
-function field(label, hint, child) {
+function field(label, hint, child, tip) {
   const g = document.createElement('div');
   g.className = 'cb-field-group';
   const lbl = document.createElement('label');
   lbl.className = 'cb-field-label';
   lbl.innerHTML = label + (hint ? `<span class="cb-field-hint">${hint}</span>` : '');
+  if (tip) {
+    const tipEl = document.createElement('span');
+    tipEl.className = 'cb-tip';
+    tipEl.title = tip;
+    tipEl.innerHTML = '<i class="fa fa-question"></i>';
+    lbl.appendChild(tipEl);
+  }
   g.appendChild(lbl);
   g.appendChild(child);
   return g;
@@ -913,9 +959,7 @@ function field(label, hint, child) {
 
 function textInput(val, onChange, placeholder) {
   const i = document.createElement('input');
-  i.type = 'text';
-  i.className = 'cb-input';
-  i.value = val || '';
+  i.type = 'text'; i.className = 'cb-input'; i.value = val || '';
   if (placeholder) i.placeholder = placeholder;
   i.addEventListener('input', () => onChange(i.value));
   return i;
@@ -923,8 +967,7 @@ function textInput(val, onChange, placeholder) {
 
 function textArea(val, onChange, placeholder) {
   const t = document.createElement('textarea');
-  t.className = 'cb-textarea';
-  t.value = val || '';
+  t.className = 'cb-textarea'; t.value = val || '';
   if (placeholder) t.placeholder = placeholder;
   t.addEventListener('input', () => onChange(t.value));
   return t;
@@ -944,37 +987,53 @@ function selectInput(options, val, onChange) {
   return s;
 }
 
-function colorField(label, val, onChange) {
-  const row = document.createElement('div');
-  row.className = 'cb-color-row';
-  const swatch = document.createElement('div');
-  swatch.className = 'cb-color-swatch';
-  swatch.style.background = COLOR_MAP[val||''] || '#f8fafc';
-  const sel = selectInput(COLORS.map(c => ({value:c, label:COLOR_NAME_MAP[c]||c||'(nenhum)'})), val, (v) => {
-    swatch.style.background = COLOR_MAP[v] || '#f8fafc';
-    onChange(v);
+// Color swatches picker
+function colorSwatchField(label, val, onChange, defaultVal) {
+  const g = document.createElement('div');
+  g.className = 'cb-field-group';
+  const lbl = document.createElement('div');
+  lbl.className = 'cb-field-label';
+  lbl.textContent = label;
+  g.appendChild(lbl);
+
+  const swatchContainer = document.createElement('div');
+  swatchContainer.className = 'cb-color-swatches';
+
+  const currentVal = (val === undefined || val === null) ? (defaultVal || '') : val;
+
+  COLORS.forEach(color => {
+    const btn = document.createElement('div');
+    btn.className = 'cb-color-swatch-btn';
+    btn.dataset.color = color;
+    btn.title = COLOR_NAME_MAP[color] || color || '(nenhum)';
+    if (color) btn.style.background = COLOR_MAP[color];
+    if (color === currentVal) btn.classList.add('selected');
+    btn.addEventListener('click', () => {
+      swatchContainer.querySelectorAll('.cb-color-swatch-btn').forEach(b => b.classList.remove('selected'));
+      btn.classList.add('selected');
+      onChange(color);
+    });
+    swatchContainer.appendChild(btn);
   });
-  row.appendChild(swatch);
-  row.appendChild(sel);
-  return field(label, '', row);
+
+  g.appendChild(swatchContainer);
+  return g;
 }
 
 function checkboxField(label, val, onChange) {
   const row = document.createElement('div');
   row.className = 'cb-checkbox-row';
   const cb = document.createElement('input');
-  cb.type = 'checkbox';
-  cb.checked = !!val;
+  cb.type = 'checkbox'; cb.checked = !!val;
   cb.addEventListener('change', () => onChange(cb.checked));
   const span = document.createElement('span');
   span.textContent = label;
-  row.appendChild(cb);
-  row.appendChild(span);
+  row.appendChild(cb); row.appendChild(span);
   return row;
 }
 
 function spacingField(label, val, onChange) {
-  const s = selectInput(SPACINGS.map(v => ({value:v, label: formatSpacingLabel(v)})), val, onChange);
+  const s = selectInput(SPACINGS.map(v => ({value:v, label:formatSpacingLabel(v)})), val, onChange);
   return field(label, '', s);
 }
 
@@ -984,16 +1043,18 @@ function iconField(label, val, onChange) {
   const row = document.createElement('div');
   row.className = 'cb-icon-picker-input';
   const inp = document.createElement('input');
-  inp.type = 'text';
-  inp.className = 'cb-input';
-  inp.value = val || '';
+  inp.type = 'text'; inp.className = 'cb-input'; inp.value = val || '';
   inp.placeholder = 'ex: star, cog, user...';
+  const linkEl = document.createElement('a');
+  linkEl.href = 'https://fontawesome.com/v4/icons/'; linkEl.target = '_blank';
+  linkEl.className = 'cb-link-btn';
+  linkEl.innerHTML = '<i class="fa fa-external-link"></i> Ícones';
   const preview = document.createElement('div');
   preview.className = 'cb-icon-preview';
   preview.innerHTML = val ? `<i class="fa fa-${val}"></i>` : '';
   const dropdown = document.createElement('div');
   dropdown.className = 'cb-icon-dropdown';
-  
+
   function updateDropdown(q) {
     dropdown.innerHTML = '';
     const results = FA_ICONS.filter(i => i.includes(q.toLowerCase())).slice(0,30);
@@ -1003,175 +1064,492 @@ function iconField(label, val, onChange) {
       opt.className = 'cb-icon-option';
       opt.innerHTML = `<i class="fa fa-${icon}"></i><span>${icon}</span>`;
       opt.addEventListener('click', () => {
-        inp.value = icon;
-        preview.innerHTML = `<i class="fa fa-${icon}"></i>`;
-        dropdown.classList.remove('open');
-        onChange(icon);
+        inp.value = icon; preview.innerHTML = `<i class="fa fa-${icon}"></i>`;
+        dropdown.classList.remove('open'); onChange(icon);
       });
       dropdown.appendChild(opt);
     });
     dropdown.classList.add('open');
   }
 
-  inp.addEventListener('input', () => {
-    preview.innerHTML = inp.value ? `<i class="fa fa-${inp.value}"></i>` : '';
-    updateDropdown(inp.value);
-    onChange(inp.value);
-  });
+  inp.addEventListener('input', () => { preview.innerHTML = inp.value ? `<i class="fa fa-${inp.value}"></i>` : ''; updateDropdown(inp.value); onChange(inp.value); });
   inp.addEventListener('blur', () => setTimeout(() => dropdown.classList.remove('open'), 200));
-
-  row.appendChild(inp);
-  row.appendChild(preview);
-  wrap.appendChild(row);
-  wrap.appendChild(dropdown);
+  row.appendChild(inp); row.appendChild(linkEl); row.appendChild(preview);
+  wrap.appendChild(row); wrap.appendChild(dropdown);
   return field(label, '', wrap);
 }
 
-function sectionDivider(label) {
+function sectionDivider(label, icon) {
   const d = document.createElement('div');
   d.className = 'cb-section-divider';
-  d.textContent = label;
+  d.innerHTML = (icon ? `<i class="fa fa-${icon}"></i> ` : '') + label;
   return d;
+}
+
+function markdownHelp() {
+  const wrap = document.createElement('div');
+  wrap.className = 'cb-md-help';
+  const toggle = document.createElement('button');
+  toggle.type = 'button'; toggle.className = 'cb-md-help-toggle';
+  toggle.innerHTML = '<i class="fa fa-question-circle"></i> Ajuda com o texto';
+  const body = document.createElement('div');
+  body.className = 'cb-md-help-body';
+  body.innerHTML = `
+    <strong>Formatação básica:</strong><br>
+    <code>**negrito**</code> → <strong>negrito</strong><br>
+    <code>_itálico_</code> → <em>itálico</em><br>
+    <code># Título</code> → Título grande<br>
+    <code>## Título 2</code> → Título médio<br>
+    <code>[texto](https://link.com)</code> → Link clicável<br>
+    <code>- item</code> → Lista com marcador<br>
+    <br><strong>Imagens:</strong><br>
+    <code>![descrição](https://url-da-imagem.png)</code> → Imagem simples<br>
+    <code>[![descrição](https://url-da-imagem.png)](https://link.com)</code> → Imagem clicável<br>
+    <br><strong>Ícones (Font Awesome 4):</strong><br>
+    <code>&lt;icon=cog&gt;</code> → <i class="fa fa-cog"></i> (engrenagem)<br>
+    <code>&lt;icon=star&gt;</code> → <i class="fa fa-star"></i> (estrela)<br>
+    <code>&lt;icon=check&gt;</code> → <i class="fa fa-check"></i> (check)<br>
+    <a href="https://fontawesome.com/v4/icons/" target="_blank" class="cb-link-btn"><i class="fa fa-external-link"></i> Ver todos os ícones disponíveis</a>
+  `;
+  toggle.addEventListener('click', () => body.classList.toggle('open'));
+  wrap.appendChild(toggle); wrap.appendChild(body);
+  return wrap;
 }
 
 function updateNodeField(key, val) {
   const node = getNode(selectedPath);
   if (!node) return;
-  if (val === '' || val === null || val === undefined || val === false) {
-    delete node[key];
-  } else {
-    node[key] = val;
+  if (val === '' || val === null || val === undefined || val === false) delete node[key];
+  else node[key] = val;
+  syncTextarea(); renderTree();
+}
+
+// Tags field
+function renderTagsField(form, node, fieldName, adminUrl) {
+  const key = fieldName || 'tag_ids';
+  if (!node[key]) node[key] = [];
+  const wrap = document.createElement('div');
+  wrap.className = 'cb-field-group';
+
+  const lbl = document.createElement('div'); lbl.className = 'cb-field-label';
+  lbl.innerHTML = 'Tags de filtro';
+  if (adminUrl) {
+    const link = document.createElement('a');
+    link.href = adminUrl; link.target = '_blank'; link.className = 'cb-link-btn';
+    link.innerHTML = '<i class="fa fa-external-link"></i> Ver tags';
+    lbl.appendChild(link);
   }
-  syncTextarea();
-  // re-render tree label only
-  renderTree();
+  wrap.appendChild(lbl);
+
+  const container = document.createElement('div');
+  function rebuild() {
+    container.innerHTML = '';
+    const chips = document.createElement('div'); chips.className = 'cb-tags-input';
+    (node[key] || []).forEach((id, i) => {
+      const chip = document.createElement('div'); chip.className = 'cb-tag-chip';
+      chip.innerHTML = `<i class="fa fa-tag" style="font-size:10px;"></i> ${id}<button type="button">✕</button>`;
+      chip.querySelector('button').addEventListener('click', () => { node[key].splice(i,1); syncTextarea(); rebuild(); });
+      chips.appendChild(chip);
+    });
+    const addRow = document.createElement('div');
+    addRow.style.cssText = 'display:flex;gap:6px;margin-top:6px;align-items:center;';
+    const inp = document.createElement('input');
+    inp.type = 'number'; inp.className = 'cb-input'; inp.style.width = '80px'; inp.placeholder = 'ID...';
+    const addBtn = document.createElement('button'); addBtn.type = 'button';
+    addBtn.innerHTML = '<i class="fa fa-plus"></i> Adicionar';
+    addBtn.style.cssText = 'padding:6px 10px;border:1px solid #e2e8f0;border-radius:5px;cursor:pointer;background:#f8fafc;font-size:11px;white-space:nowrap;';
+    addBtn.addEventListener('click', () => {
+      const v = parseInt(inp.value);
+      if (!isNaN(v)) { node[key].push(v); inp.value=''; syncTextarea(); rebuild(); }
+    });
+    addRow.appendChild(inp); addRow.appendChild(addBtn);
+    container.appendChild(chips); container.appendChild(addRow);
+  }
+  rebuild();
+  wrap.appendChild(container);
+  form.appendChild(wrap);
+}
+
+// Style picker (yin/yang + colors)
+function stylePickerField(label, val, onChange) {
+  const g = document.createElement('div');
+  g.className = 'cb-field-group';
+  const lbl = document.createElement('div'); lbl.className = 'cb-field-label';
+  lbl.innerHTML = `<i class="fa fa-paint-brush"></i> ${label}`;
+  g.appendChild(lbl);
+
+  const grid = document.createElement('div');
+  grid.className = 'cb-style-picker';
+
+  // Half 1: yin/yang dropdown
+  const h1 = document.createElement('div');
+  h1.innerHTML = '<div class="cb-field-label" style="font-size:10px;">Fundo</div>';
+  const yySel = document.createElement('select');
+  yySel.className = 'cb-select';
+  [['', '(nenhum)'], ['yin', '🌑 Escuro (yin)'], ['yang', '☀️ Claro (yang)']].forEach(([v, l]) => {
+    const o = document.createElement('option');
+    o.value = v; o.textContent = l;
+    if ((val || '').includes(v) && v) o.selected = true;
+    yySel.appendChild(o);
+  });
+  h1.appendChild(yySel);
+  grid.appendChild(h1);
+
+  // Half 2: color swatches
+  const h2 = document.createElement('div');
+  h2.innerHTML = '<div class="cb-field-label" style="font-size:10px;">Cor de destaque</div>';
+  const colorRow = document.createElement('div');
+  colorRow.style.cssText = 'display:flex;flex-wrap:wrap;gap:4px;margin-top:4px;';
+
+  const accentColors = COLORS.filter(c => c !== '' && c !== 'yin' && c !== 'yang');
+  let currentAccent = '';
+  accentColors.forEach(c => {
+    if (val && val.includes(c)) currentAccent = c;
+  });
+
+  accentColors.forEach(color => {
+    const btn = document.createElement('div');
+    btn.className = 'cb-color-swatch-btn'; btn.style.cssText = `background:${COLOR_MAP[color]};width:20px;height:20px;`;
+    btn.dataset.color = color; btn.title = COLOR_NAME_MAP[color] || color;
+    if (color === currentAccent) btn.classList.add('selected');
+    btn.addEventListener('click', () => {
+      colorRow.querySelectorAll('.cb-color-swatch-btn').forEach(b => b.classList.remove('selected'));
+      btn.classList.add('selected');
+      currentAccent = color;
+      fireChange();
+    });
+    colorRow.appendChild(btn);
+  });
+  // none option
+  const noneBtn = document.createElement('div');
+  noneBtn.className = 'cb-color-swatch-btn';
+  noneBtn.style.cssText = 'width:20px;height:20px;'; noneBtn.dataset.color = '';
+  noneBtn.title = '(nenhum)'; if (!currentAccent) noneBtn.classList.add('selected');
+  noneBtn.addEventListener('click', () => {
+    colorRow.querySelectorAll('.cb-color-swatch-btn').forEach(b => b.classList.remove('selected'));
+    noneBtn.classList.add('selected'); currentAccent = ''; fireChange();
+  });
+  colorRow.appendChild(noneBtn);
+  h2.appendChild(colorRow);
+  grid.appendChild(h2);
+
+  function fireChange() {
+    const parts = [];
+    if (yySel.value) parts.push(yySel.value);
+    if (currentAccent) parts.push(currentAccent);
+    onChange(parts.join(' '));
+  }
+  yySel.addEventListener('change', fireChange);
+
+  g.appendChild(grid);
+  return g;
+}
+
+// Spacing visualizer
+function createSpacingViz() {
+  const outer = document.createElement('div');
+  outer.className = 'cb-spacing-viz';
+  outer.id = 'cb-spacing-viz-' + Math.random().toString(36).slice(2);
+  const middle = document.createElement('div');
+  middle.className = 'cb-spacing-viz-middle';
+  middle.id = outer.id + '-middle';
+  const inner = document.createElement('div');
+  inner.className = 'cb-spacing-viz-content';
+  inner.id = outer.id + '-inner';
+  inner.textContent = 'conteúdo';
+  middle.appendChild(inner);
+  outer.appendChild(middle);
+  return {outer, middle, inner};
+}
+
+function updateSpacingViz(middle, inner, padding, margin, bg) {
+  const remVal = (v) => {
+    if (!v) return '0';
+    if (v.endsWith('/')) return (parseFloat(v) || 0) + 0.5 + 'rem';
+    return v + 'rem';
+  };
+  // margin on middle
+  const m = remVal(margin);
+  middle.style.margin = m;
+  middle.style.padding = remVal(padding);
+  if (bg && COLOR_MAP[bg]) middle.style.background = COLOR_MAP[bg];
+  else middle.style.background = '';
 }
 
 // ============================================================
 // SECTION FORM
 // ============================================================
 function renderSectionForm(form, node) {
-  form.appendChild(sectionDivider('Identificação'));
-  form.appendChild(field('ID', 'opcional', textInput(node.id, v => updateNodeField('id', v), 'ex: hero, sobre')));
+  // ---- ADICIONAR COMPONENTE (topo, grande) ----
+  const addBtnTop = document.createElement('button');
+  addBtnTop.className = 'cb-add-child-btn-top'; addBtnTop.type = 'button';
+  addBtnTop.innerHTML = '<i class="fa fa-plus-circle" style="font-size:18px;margin-right:10px;"></i><span style="font-size:14px;font-weight:700;">Adicionar componente nesta seção</span>';
+  addBtnTop.addEventListener('click', () => showAddChildPickerInline(form, selectedPath));
+  form.appendChild(addBtnTop);
+
+  // ---- IDENTIFICAÇÃO (advanced) ----
+  const idSection = document.createElement('div');
+  idSection.className = 'cb-advanced-only cb-field-group';
+  idSection.appendChild(sectionDivider('Identificação', 'hashtag'));
+  idSection.appendChild(field('ID da seção', '', textInput(node.id, v => updateNodeField('id', v), 'opcional, para links: https://site.com/pagina#id-escolhido')));
+  form.appendChild(idSection);
+
+  // ---- APARÊNCIA ----
+  form.appendChild(sectionDivider('Aparência', 'paint-brush'));
+  // colorSwatchField with live viz update: wrap the node.bg update to also refresh viz
+  form.appendChild(colorSwatchField('Cor de Fundo da Seção', node.bg, v => {
+    updateNodeField('bg', v);
+    refreshSpacingViz();
+  }, 'yang'));
+
+  const insideWrap = document.createElement('div');
+  insideWrap.className = 'cb-advanced-only';
+  insideWrap.style.marginTop = '8px';
+  const insideRow = document.createElement('div');
+  insideRow.style.cssText = 'display:flex;gap:12px;flex-wrap:wrap;';
+  insideRow.appendChild(checkboxField('Sobrepor à seção de cima', node.inside_top, v => updateNodeField('inside_top', v)));
+  insideRow.appendChild(checkboxField('Sobrepor à seção de baixo', node.inside_bottom, v => updateNodeField('inside_bottom', v)));
+  insideWrap.appendChild(insideRow);
+  form.appendChild(insideWrap);
+
+  // ---- ESPAÇAMENTO ----
+  form.appendChild(sectionDivider('Espaçamento', 'arrows-alt'));
+
+  // visualizer (created first so spacing selects can reference it)
+  const {outer: vizOuter, middle: vizMiddle, inner: vizInner} = createSpacingViz();
+  form.appendChild(vizOuter);
+
+  // All spacing values stored locally so viz can recalculate with cascade priority:
+  // margin -> margin_x -> (margin_t, margin_b) [for y axis: margin -> margin_y]
+  // padding -> padding_x -> (padding_t, padding_b) [for y axis: padding -> padding_y]
+  const spacingState = {
+    padding: node.padding || '', padding_x: node.padding_x || '', padding_y: node.padding_y || '',
+    margin: node.margin || '', margin_x: node.margin_x || '', margin_y: node.margin_y || ''
+  };
+
+  // Convert spacing key to rem number
+  function toRem(v) {
+    if (!v) return 0;
+    if (v.endsWith('/')) return (parseInt(v) || 0) + 0.5;
+    return parseInt(v) || 0;
+  }
+
+  // Apply cascade priority per RCB.CSS: margin beats margin_x/y, which beats t/b
+  function calcSpacing(all, x, y, t, b) {
+    const allR = toRem(all);
+    const pt = allR || toRem(y) || toRem(t) || 0;
+    const pb = allR || toRem(y) || toRem(b) || 0;
+    const pl = allR || toRem(x) || 0;
+    const pr = allR || toRem(x) || 0;
+    return { top: pt, bottom: pb, left: pl, right: pr };
+  }
+
+  function refreshSpacingViz() {
+    const n = getNode(selectedPath);
+    const bg = n ? (n.bg || '') : (node.bg || '');
+    const mainBg = (n && n.main) ? (n.main.bg || '') : '';
+    const mainPad = (n && n.main) ? (n.main.padding || '') : '';
+    const pad = calcSpacing(spacingState.padding, spacingState.padding_x, spacingState.padding_y, '', '');
+    const mar = calcSpacing(spacingState.margin, spacingState.margin_x, spacingState.margin_y, '', '');
+    // middle div = the section itself (bg + section padding/margin)
+    vizMiddle.style.paddingTop    = pad.top    + 'rem';
+    vizMiddle.style.paddingBottom = pad.bottom + 'rem';
+    vizMiddle.style.paddingLeft   = pad.left   + 'rem';
+    vizMiddle.style.paddingRight  = pad.right  + 'rem';
+    vizMiddle.style.marginTop     = mar.top    + 'rem';
+    vizMiddle.style.marginBottom  = mar.bottom + 'rem';
+    vizMiddle.style.marginLeft    = mar.left   + 'rem';
+    vizMiddle.style.marginRight   = mar.right  + 'rem';
+    vizMiddle.style.background    = (bg && COLOR_MAP[bg]) ? COLOR_MAP[bg] : '';
+    // inner div = the content container (main.bg + main.padding)
+    const mainPadRem = mainPad ? (mainPad.endsWith('/') ? ((parseInt(mainPad)||0)+0.5)+'rem' : (parseInt(mainPad)||0)+'rem') : '0';
+    vizInner.style.padding     = mainPadRem;
+    vizInner.style.background  = (mainBg && COLOR_MAP[mainBg]) ? COLOR_MAP[mainBg] : 'rgba(0,0,0,0.04)';
+    vizInner.style.borderColor = (mainBg && COLOR_MAP[mainBg]) ? 'rgba(0,0,0,.15)' : '#94a3b8';
+  }
+
+  // basic: padding + margin_y
+  const basicSpacing = document.createElement('div');
+  basicSpacing.className = 'cb-spacing-grid';
+  basicSpacing.style.marginTop = '10px';
   
-  form.appendChild(sectionDivider('Aparência'));
-  form.appendChild(colorField('Plano de Fundo', node.bg, v => updateNodeField('bg', v)));
-  form.appendChild(createCheckRow([
-    ['inside_top', 'inside-top', node.inside_top],
-    ['inside_bottom', 'inside-bottom', node.inside_bottom],
-  ]));
-
-  form.appendChild(sectionDivider('Espaçamento'));
-  const sg = document.createElement('div');
-  sg.className = 'cb-spacing-grid';
-  ['padding','padding_x','padding_y','margin','margin_x','margin_y'].forEach(k => {
-    const g = document.createElement('div');
-    const lbl = document.createElement('div');
-    lbl.className = 'cb-field-label';
-    lbl.style.marginBottom='2px';
-    lbl.textContent = SPACING_LABELS[k] || k;
-    g.appendChild(lbl);
-    g.appendChild(selectInput(SPACINGS.map(v=>({value:v,label:formatSpacingLabel(v)})), node[k], v => updateNodeField(k, v)));
-    sg.appendChild(g);
+  const padG = document.createElement('div');
+  const padLbl = document.createElement('div'); padLbl.className = 'cb-field-label'; padLbl.style.marginBottom='4px';
+  padLbl.textContent = 'Margem interior';
+  padG.appendChild(padLbl);
+  const padSel = selectInput(SPACINGS.map(v=>({value:v,label:formatSpacingLabel(v)})), node.padding, v => {
+    spacingState.padding = v; updateNodeField('padding', v); refreshSpacingViz();
   });
-  form.appendChild(sg);
+  padG.appendChild(padSel);
 
-  form.appendChild(sectionDivider('Objetos na borda'));
+  const myG = document.createElement('div');
+  const myLbl = document.createElement('div'); myLbl.className = 'cb-field-label'; myLbl.style.marginBottom='4px';
+  myLbl.textContent = 'Margem exterior vertical';
+  myG.appendChild(myLbl);
+  const mySel = selectInput(SPACINGS.map(v=>({value:v,label:formatSpacingLabel(v)})), node.margin_y, v => {
+    spacingState.margin_y = v; updateNodeField('margin_y', v); refreshSpacingViz();
+  });
+  myG.appendChild(mySel);
+
+  basicSpacing.appendChild(padG); basicSpacing.appendChild(myG);
+  form.appendChild(basicSpacing);
+
+  // advanced spacings
+  const advSpacing = document.createElement('div');
+  advSpacing.className = 'cb-advanced-only';
+  advSpacing.style.marginTop = '8px';
+  const advGrid = document.createElement('div'); advGrid.className = 'cb-spacing-grid';
+  [
+    ['padding_x', 'Margem interior horizontal'],
+    ['padding_y', 'Margem interior vertical'],
+    ['margin',    'Margem exterior (todos lados)'],
+    ['margin_x',  'Margem exterior horizontal'],
+  ].forEach(([k, label]) => {
+    const g = document.createElement('div');
+    const lbl = document.createElement('div'); lbl.className = 'cb-field-label'; lbl.style.marginBottom='4px';
+    lbl.textContent = label;
+    g.appendChild(lbl);
+    g.appendChild(selectInput(SPACINGS.map(v=>({value:v,label:formatSpacingLabel(v)})), node[k], v => {
+      spacingState[k] = v; updateNodeField(k, v); refreshSpacingViz();
+    }));
+    advGrid.appendChild(g);
+  });
+  advSpacing.appendChild(advGrid);
+  form.appendChild(advSpacing);
+
+  // init viz
+  refreshSpacingViz();
+  // expose so renderMainForm (called below) can also trigger it
+  form._refreshViz = refreshSpacingViz;
+
+  // ---- OBJETOS NA BORDA ----
+  form.appendChild(sectionDivider('Objetos (detalhes, engrenagens) na borda', 'cog'));
   renderBorderDetails(form, node);
 
-  form.appendChild(sectionDivider('Conteúdo'));
-  renderMainForm(form, node);
-
-  form.appendChild(sectionDivider('Adicionar Componente'));
-  const addBtn = document.createElement('button');
-  addBtn.className = 'cb-add-child-btn';
-  addBtn.type = 'button';
-  addBtn.innerHTML = '<i class="fa fa-plus" style="margin-right:4px;"></i>Adicionar componente nesta seção';
-  addBtn.addEventListener('click', () => showAddChildPickerInline(form, selectedPath));
-  form.appendChild(addBtn);
+  // ---- CONTEÚDO ----
+  form.appendChild(sectionDivider('Conteúdo da seção', 'th-large'));
+  renderMainForm(form, node, form);
 }
 
 function createCheckRow(items) {
   const row = document.createElement('div');
-  row.style.display='flex';row.style.gap='12px';row.style.flexWrap='wrap';
-  row.className='cb-field-group';
-  items.forEach(([key, label, val]) => {
-    const cb = checkboxField(label, val, v => updateNodeField(key, v));
-    row.appendChild(cb);
-  });
+  row.style.cssText = 'display:flex;gap:14px;flex-wrap:wrap;'; row.className = 'cb-field-group';
+  items.forEach(([key, label, val]) => row.appendChild(checkboxField(label, val, v => updateNodeField(key, v))));
   return row;
 }
 
-function renderMainForm(form, node) {
+function renderMainForm(form, node, formRef) {
   const main = node.main || {};
-  
   function updateMain(key, val) {
     if (!node.main) node.main = {};
-    if (val === '' || val === null || val === undefined || val === false) {
-      delete node.main[key];
-    } else {
-      node.main[key] = val;
-    }
+    if (val === '' || val === null || val === undefined || val === false) delete node.main[key];
+    else node.main[key] = val;
     syncTextarea();
+    // refresh spacing viz if it exists (only when called from section form)
+    if (formRef && formRef._refreshViz) formRef._refreshViz();
   }
 
-  const bgRow = document.createElement('div');
-  bgRow.className = 'cb-color-row';
-  const swatch = document.createElement('div');
-  swatch.className = 'cb-color-swatch';
-  swatch.style.background = COLOR_MAP[main.bg||''] || '#f8fafc';
-  const bgSel = selectInput(COLORS.map(c=>({value:c,label:COLOR_NAME_MAP[c]||c||'(nenhum)'})), main.bg, v => {
-    swatch.style.background = COLOR_MAP[v]||'#f8fafc';
-    updateMain('bg', v);
+  form.appendChild(colorSwatchField('Plano de Fundo do conteúdo', main.bg, v => updateMain('bg', v)));
+
+  const containerRow = document.createElement('div');
+  containerRow.className = 'cb-field-group';
+  containerRow.appendChild(checkboxField('Seção respeita o contêiner da página', main.container !== false, v => updateMain('container', v)));
+  form.appendChild(containerRow);
+
+  // Flex: basic
+  const flexRow = document.createElement('div');
+  flexRow.className = 'cb-field-group';
+  const flexLbl = document.createElement('div'); flexLbl.className = 'cb-field-label';
+  flexLbl.innerHTML = 'Organização dos componentes';
+  flexRow.appendChild(flexLbl);
+  const flexSel = document.createElement('select'); flexSel.className = 'cb-select';
+  [['', 'Empilhados (padrão)'], ['flex', 'Componentes do container lado-a-lado'], ['flex flex-soft', 'Lado a lado (adaptável)']].forEach(([v, l]) => {
+    const o = document.createElement('option'); o.value = v; o.textContent = l;
+    if ((main.flex ? (main.flex_soft ? 'flex flex-soft' : 'flex') : '') === v) o.selected = true;
+    flexSel.appendChild(o);
   });
-  bgRow.appendChild(swatch);
-  bgRow.appendChild(bgSel);
-  form.appendChild(field('Plano de Fundo do conteúdo', '', bgRow));
+  flexSel.addEventListener('change', () => {
+    const v = flexSel.value;
+    updateMain('flex', v.includes('flex') || null);
+    updateMain('flex_soft', v.includes('flex-soft') || null);
+  });
+  flexRow.appendChild(flexSel);
+  form.appendChild(flexRow);
 
-  const checkItems = [
-    ['container','respeita o container',main.container],
-    ['flex','lado-a-lado',main.flex],
-  ];
-  form.appendChild(createCheckRow(checkItems));
+  // Advanced flex toggles — wrapped in a single box so tabs visually connect to their panels
+  const flexAdvanced = document.createElement('div');
+  flexAdvanced.className = 'cb-advanced-only';
+  flexAdvanced.style.marginTop = '10px';
 
-  // Flex props
-  const flexWrap = document.createElement('div');
-  flexWrap.style.display='flex';flexWrap.style.flexWrap='wrap';flexWrap.style.gap='6px';
-  flexWrap.className='cb-field-group';
+  // Wrapper box that groups tabs + panels together
+  const respWrapper = document.createElement('div');
+  respWrapper.style.cssText = 'border:1px solid #e2e8f0;border-radius:8px;overflow:hidden;';
+
+  // Title bar above tabs
+  const respTitle = document.createElement('div');
+  respTitle.style.cssText = 'background:#f1f5f9;padding:6px 12px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.4px;color:#64748b;border-bottom:1px solid #e2e8f0;';
+  respTitle.innerHTML = '<i class="fa fa-sliders" style="margin-right:5px;"></i>Comportamento dos itens por dispositivo';
+  respWrapper.appendChild(respTitle);
+
+  // Responsive tabs
+  const respTabs = document.createElement('div'); respTabs.className = 'cb-resp-tabs'; respTabs.style.borderRadius = '0'; respTabs.style.border = 'none'; respTabs.style.borderBottom = '1px solid #e2e8f0';
+  const tabMobile = document.createElement('button'); tabMobile.type='button'; tabMobile.className='cb-resp-tab active'; tabMobile.textContent='📱 Celular';
+  const tabDesktop = document.createElement('button'); tabDesktop.type='button'; tabDesktop.className='cb-resp-tab'; tabDesktop.textContent='🖥️ Desktop';
+  respTabs.appendChild(tabMobile); respTabs.appendChild(tabDesktop);
+  respWrapper.appendChild(respTabs);
+
+  const panelMobile = document.createElement('div'); panelMobile.className = 'cb-resp-panel active'; panelMobile.style.padding = '10px 12px';
+  const panelDesktop = document.createElement('div'); panelDesktop.className = 'cb-resp-panel'; panelDesktop.style.padding = '10px 12px';
+
+  tabMobile.addEventListener('click', () => { tabMobile.classList.add('active'); tabDesktop.classList.remove('active'); panelMobile.classList.add('active'); panelDesktop.classList.remove('active'); });
+  tabDesktop.addEventListener('click', () => { tabDesktop.classList.add('active'); tabMobile.classList.remove('active'); panelDesktop.classList.add('active'); panelMobile.classList.remove('active'); });
+
+  // Mobile flex props
+  const mobWrap = document.createElement('div'); mobWrap.style.cssText='display:flex;flex-wrap:wrap;gap:6px;';
   FLEX_PROPS.forEach(fp => {
-    const row = document.createElement('div');
-    row.className='cb-checkbox-row';
-    const cb = document.createElement('input');
-    cb.type='checkbox';
-    cb.checked = !!(main[fp]);
+    const row = document.createElement('div'); row.className = 'cb-checkbox-row';
+    const cb = document.createElement('input'); cb.type='checkbox'; cb.checked = !!(main[fp]);
     cb.addEventListener('change', () => updateMain(fp, cb.checked));
-    const span = document.createElement('span');
-    span.style.fontSize='10px';
-    span.textContent = FLEX_PROP_LABELS[fp] || fp.replace('flex_','-');
-    row.appendChild(cb);row.appendChild(span);
-    flexWrap.appendChild(row);
+    const span = document.createElement('span'); span.style.fontSize='11px'; span.textContent = FLEX_PROP_LABELS[fp];
+    row.appendChild(cb); row.appendChild(span); mobWrap.appendChild(row);
   });
-  form.appendChild(flexWrap);
+  panelMobile.appendChild(mobWrap);
+
+  // Desktop flex props
+  const deskWrap = document.createElement('div'); deskWrap.style.cssText='display:flex;flex-wrap:wrap;gap:6px;';
+  FLEX_PROPS.forEach(fp => {
+    const dkey = 'desktop_' + fp;
+    const row = document.createElement('div'); row.className = 'cb-checkbox-row';
+    const cb = document.createElement('input'); cb.type='checkbox'; cb.checked = !!(main[dkey]);
+    cb.addEventListener('change', () => updateMain(dkey, cb.checked));
+    const span = document.createElement('span'); span.style.fontSize='11px'; span.textContent = FLEX_PROP_LABELS[fp];
+    row.appendChild(cb); row.appendChild(span); deskWrap.appendChild(row);
+  });
+  panelDesktop.appendChild(deskWrap);
+
+  respWrapper.appendChild(panelMobile); respWrapper.appendChild(panelDesktop);
+  flexAdvanced.appendChild(respWrapper);
+  form.appendChild(flexAdvanced);
 
   // gap, padding
-  const g2 = document.createElement('div');
-  g2.className='cb-grid-2';
-  const gapLabel = document.createElement('div');gapLabel.className='cb-field-label';gapLabel.style.marginBottom='2px';gapLabel.textContent='Espaçamento';
-  const paddingLabel = document.createElement('div');paddingLabel.className='cb-field-label';paddingLabel.style.marginBottom='2px';paddingLabel.textContent='Margem interna do conteúdo';
-  const gapWrap=document.createElement('div');gapWrap.appendChild(gapLabel);
-  gapWrap.appendChild(selectInput(SPACINGS.map(v=>({value:v,label:formatSpacingLabel(v)})), main.gap, v=>updateMain('gap',v)));
-  const padWrap=document.createElement('div');padWrap.appendChild(paddingLabel);
-  padWrap.appendChild(selectInput(SPACINGS.map(v=>({value:v,label:formatSpacingLabel(v)})), main.padding, v=>updateMain('padding',v)));
-  g2.appendChild(gapWrap);g2.appendChild(padWrap);
+  const g2 = document.createElement('div'); g2.className = 'cb-grid-2'; g2.style.marginTop = '14px';
+  const gapLabel = document.createElement('div'); gapLabel.className='cb-field-label'; gapLabel.style.marginBottom='4px'; gapLabel.textContent='Espaçamento entre itens';
+  const paddingLabel = document.createElement('div'); paddingLabel.className='cb-field-label'; paddingLabel.style.marginBottom='4px'; paddingLabel.textContent='Margem interna do conteúdo';
+  const gapWrap = document.createElement('div'); gapWrap.appendChild(gapLabel);
+  gapWrap.appendChild(selectInput(SPACINGS.map(v=>({value:v,label:formatSpacingLabel(v)})), main.gap, v => updateMain('gap', v)));
+  const padWrap = document.createElement('div'); padWrap.appendChild(paddingLabel);
+  padWrap.appendChild(selectInput(SPACINGS.map(v=>({value:v,label:formatSpacingLabel(v)})), main.padding, v => updateMain('padding', v)));
+  g2.appendChild(gapWrap); g2.appendChild(padWrap);
   form.appendChild(g2);
 
-  // extra classes on main
-  form.appendChild(field('Classes extras', 'separadas por espaço', textInput(main.classes, v => updateMain('classes', v))));
+  // extra classes (advanced)
+  const classesAdv = document.createElement('div'); classesAdv.className = 'cb-advanced-only cb-field-group'; classesAdv.style.marginTop = '14px';
+  classesAdv.appendChild(field('Classes extras', 'separadas por espaço', textInput(main.classes, v => updateMain('classes', v))));
+  form.appendChild(classesAdv);
 }
 
 function renderBorderDetails(form, node) {
   if (!node.border_details) node.border_details = [];
-
   const container = document.createElement('div');
 
   function rebuild() {
@@ -1180,67 +1558,83 @@ function renderBorderDetails(form, node) {
       const item = document.createElement('div');
       item.className = 'cb-bd-item';
 
-      const hdr = document.createElement('div');
-      hdr.className = 'cb-bd-item-header';
-      hdr.innerHTML = `<span>Objeto na borda #${i+1}</span>`;
-      const del = document.createElement('button');
-      del.type = 'button';
+      const hdr = document.createElement('div'); hdr.className = 'cb-bd-item-header';
+      hdr.innerHTML = `<span><i class="fa fa-cog" style="margin-right:5px;"></i>Objeto na borda #${i+1}</span>`;
+      const del = document.createElement('button'); del.type = 'button';
       del.innerHTML = '<i class="fa fa-trash"></i>';
-      del.addEventListener('click', () => {
-        node.border_details.splice(i,1);
-        syncTextarea();
-        rebuild();
-      });
-      hdr.appendChild(del);
-      item.appendChild(hdr);
+      del.addEventListener('click', () => { node.border_details.splice(i,1); syncTextarea(); rebuild(); });
+      hdr.appendChild(del); item.appendChild(hdr);
 
       function updateBD(key, val) {
         if (val === '' || val === null || val === undefined || val === false) delete bd[key];
         else bd[key] = val;
-        syncTextarea();
+        syncTextarea(); rebuild();
       }
 
-      const g1 = document.createElement('div');g1.className='cb-grid-2';
-      const typeG=document.createElement('div');
-      typeG.appendChild(Object.assign(document.createElement('div'),{className:'cb-field-label',textContent:'Tipo'}));
-      typeG.appendChild(selectInput(BD_TYPES.map(v=>({value:v,label:v})), bd.type, v=>updateBD('type',v)));
-      const posG=document.createElement('div');
-      posG.appendChild(Object.assign(document.createElement('div'),{className:'cb-field-label',textContent:'Posição'}));
-      posG.appendChild(selectInput(BD_POSITIONS.map(v=>({value:v,label:BD_POSITION_LABELS[v]||v||'centro'})), bd.position, v=>updateBD('position',v)));
-      g1.appendChild(typeG);g1.appendChild(posG);
-      item.appendChild(g1);
+      // 3 column grid: type, position, preview
+      const g3 = document.createElement('div'); g3.className = 'cb-grid-3';
 
-      // color
-      const colorRow = document.createElement('div');colorRow.className='cb-color-row';
-      const sw=document.createElement('div');sw.className='cb-color-swatch';sw.style.background=COLOR_MAP[bd.color||'']||'#f8fafc';
-      const cSel=selectInput(COLORS.map(c=>({value:c,label:c||'(nenhum)'})),bd.color,v=>{sw.style.background=COLOR_MAP[v]||'#f8fafc';updateBD('color',v);});
-      colorRow.appendChild(sw);colorRow.appendChild(cSel);
-      item.appendChild(field('Cor','',colorRow));
+      const typeG = document.createElement('div');
+      typeG.appendChild(Object.assign(document.createElement('div'), {className:'cb-field-label', style:'margin-bottom:4px', textContent:'Tipo'}));
+      const typeSel = selectInput(BD_TYPES.map(v => ({value:v, label:BD_TYPE_LABELS[v]||v})), bd.type, v => { bd.type = v; syncTextarea(); rebuild(); });
+      typeG.appendChild(typeSel);
 
-      const g2=document.createElement('div');g2.className='cb-grid-2';
-      const szG=document.createElement('div');szG.appendChild(Object.assign(document.createElement('div'),{className:'cb-field-label',textContent:'Tamanho'}));
-      szG.appendChild(selectInput(['','small'].map(v=>({value:v,label:v||'normal'})),bd.size,v=>updateBD('size',v)));
-      const mtG=document.createElement('div');mtG.appendChild(Object.assign(document.createElement('div'),{className:'cb-field-label',textContent:'Margem topo'}));
-      mtG.appendChild(textInput(bd.margin_t,v=>updateBD('margin_t',v),'ex: 1/'));
-      g2.appendChild(szG);g2.appendChild(mtG);
-      item.appendChild(g2);
+      const posG = document.createElement('div');
+      posG.appendChild(Object.assign(document.createElement('div'), {className:'cb-field-label', style:'margin-bottom:4px', textContent:'Posição'}));
+      posG.appendChild(selectInput(BD_POSITIONS.map(v => ({value:v, label:BD_POSITION_LABELS[v]||v})), bd.position, v => updateBD('position', v)));
 
-      const checks=document.createElement('div');checks.style.display='flex';checks.style.flexWrap='wrap';checks.style.gap='8px';checks.style.marginTop='4px';
-      [['container','respeita o container',bd.container],['spin','girar',bd.spin],['desktop_only','apenas computadores',bd.desktop_only],['mobile_only','apenas celulares',bd.mobile_only]].forEach(([k,l,v])=>{
-        checks.appendChild(checkboxField(l,v,nv=>updateBD(k,nv)));
+      // Preview
+      const prevG = document.createElement('div');
+      prevG.style.display = 'flex'; prevG.style.flexDirection = 'column'; prevG.style.alignItems = 'center';
+      prevG.appendChild(Object.assign(document.createElement('div'), {className:'cb-field-label', style:'margin-bottom:4px;font-size:9px', textContent:'Prévia'}));
+      const bdPreview = document.createElement('div');
+      bdPreview.className = 'cb-bd-preview';
+      const bdInner = document.createElement('div');
+      bdInner.className = 'cb-bd-preview-inner';
+      const bdType = bd.type || 'rcb';
+      bdInner.style.cssText = `-webkit-mask-image:url('/static/images/header/detail-${bdType}.png');mask-image:url('/static/images/header/detail-${bdType}.png');background:${COLOR_MAP[bd.color||'yin']||'#2c2e35'};width:48px;height:48px;`;
+      bdPreview.appendChild(bdInner); prevG.appendChild(bdPreview);
+
+      g3.appendChild(typeG); g3.appendChild(posG); g3.appendChild(prevG);
+      item.appendChild(g3);
+
+      // Color swatches
+      const colorG = colorSwatchField('Cor', bd.color, v => { updateBD('color', v); bdInner.style.background = COLOR_MAP[v] || '#2c2e35'; });
+      item.appendChild(colorG);
+
+      // Size
+      const szRow = document.createElement('div'); szRow.className = 'cb-grid-2';
+      const szG = document.createElement('div');
+      szG.appendChild(Object.assign(document.createElement('div'), {className:'cb-field-label', style:'margin-bottom:4px', textContent:'Tamanho'}));
+      szG.appendChild(selectInput([{value:'',label:'Normal'},{value:'small',label:'Pequeno'}], bd.size, v => updateBD('size', v)));
+      szRow.appendChild(szG);
+
+      // Margin top (advanced)
+      const mtG = document.createElement('div'); mtG.className = 'cb-advanced-only';
+      mtG.appendChild(Object.assign(document.createElement('div'), {className:'cb-field-label', style:'margin-bottom:4px', textContent:'Margem topo'}));
+      mtG.appendChild(textInput(bd.margin_t, v => updateBD('margin_t', v), '0, 0/, 1, 1/, 2, 2/, 3, 3/, 4, 4/, 5'));
+      szRow.appendChild(mtG);
+      item.appendChild(szRow);
+
+      // Spin (advanced)
+      const checksWrap = document.createElement('div'); checksWrap.className = 'cb-advanced-only';
+      checksWrap.style.cssText = 'display:flex;flex-wrap:wrap;gap:8px;margin-top:6px;';
+      [['container','Respeita o container',bd.container],['spin','Girar',bd.spin],['desktop_only','Apenas computadores',bd.desktop_only],['mobile_only','Apenas celulares',bd.mobile_only]].forEach(([k,l,v]) => {
+        checksWrap.appendChild(checkboxField(l, v, nv => updateBD(k, nv)));
       });
-      item.appendChild(checks);
+      item.appendChild(checksWrap);
+
       container.appendChild(item);
     });
 
     const addBtn = document.createElement('button');
-    addBtn.type = 'button';
-    addBtn.className = 'cb-add-bd-btn';
+    addBtn.type = 'button'; addBtn.className = 'cb-add-bd-btn';
     addBtn.innerHTML = '<i class="fa fa-plus"></i> Adicionar objeto na borda';
     addBtn.addEventListener('click', () => {
-      node.border_details.push({type:'rcb', color:'yin', position:'top'});
-      syncTextarea();
-      rebuild();
+      const accentColors = COLORS.filter(c => c && c !== 'yin' && c !== 'yang');
+      const randomColor = accentColors[Math.floor(Math.random() * accentColors.length)];
+      node.border_details.push({type:'rcb', color: randomColor, position:'top center'});
+      syncTextarea(); rebuild();
     });
     container.appendChild(addBtn);
   }
@@ -1253,73 +1647,73 @@ function renderBorderDetails(form, node) {
 // CONTAINER FORM (tabs/accordion/carousel)
 // ============================================================
 function renderContainerForm(form, node, t) {
-  form.appendChild(sectionDivider('Estilo'));
-  form.appendChild(field('Classes de estilo', 'ex: yin blue-secondary', textInput(node.style, v => updateNodeField('style', v))));
-  
+  form.appendChild(sectionDivider('Estilo', 'paint-brush'));
+  form.appendChild(stylePickerField('Estilo visual', node.style, v => updateNodeField('style', v)));
+
   if (t === 'accordion') {
-    const row = document.createElement('div');
-    row.className = 'cb-field-group';
-    row.appendChild(checkboxField('manter apenas um aberto por favor', node.opened, v => updateNodeField('opened', v)));
+    const row = document.createElement('div'); row.className = 'cb-field-group';
+    row.appendChild(checkboxField('Apenas uma aba aberta por vez', node.opened, v => updateNodeField('opened', v)));
     form.appendChild(row);
   }
 
-  form.appendChild(sectionDivider('Abas / Slides'));
-  renderTabsList(form, node);
+  form.appendChild(sectionDivider(t === 'tabs' ? '🗂️ Abas' : t === 'accordion' ? '🪗 Itens da Sanfona' : '🎠 Slides', ''));
+  renderTabsList(form, node, t);
 }
 
-function renderTabsList(form, node) {
+function renderTabsList(form, node, containerType) {
   if (!node.tabs) node.tabs = [];
-
   const container = document.createElement('div');
+  const isCarousel = containerType === 'carousel';
 
   function rebuild() {
     container.innerHTML = '';
-    const list = document.createElement('div');
-    list.className = 'cb-tabs-list';
+    const list = document.createElement('div'); list.className = 'cb-tabs-list';
 
     node.tabs.forEach((tab, i) => {
-      const item = document.createElement('div');
-      item.className = 'cb-tab-item';
-      const hdr = document.createElement('div');
-      hdr.className = 'cb-tab-item-header';
-      hdr.innerHTML = `<i class="fa fa-${tab.icon||'file-o'}" style="margin-right:4px;"></i>${tab.label || 'Tab '+i}`;
-      
-      const acts = document.createElement('div');
-      acts.className = 'cb-tab-item-actions';
-      const up = document.createElement('button');up.type='button';up.textContent='↑';up.addEventListener('click',e=>{e.stopPropagation();if(i>0){[node.tabs[i-1],node.tabs[i]]=[node.tabs[i],node.tabs[i-1]];syncTextarea();rebuild();}});
-      const dn = document.createElement('button');dn.type='button';dn.textContent='↓';dn.addEventListener('click',e=>{e.stopPropagation();if(i<node.tabs.length-1){[node.tabs[i],node.tabs[i+1]]=[node.tabs[i+1],node.tabs[i]];syncTextarea();rebuild();}});
-      const del = document.createElement('button');del.type='button';del.textContent='✕';del.className='danger';del.addEventListener('click',e=>{e.stopPropagation();node.tabs.splice(i,1);syncTextarea();rebuild();renderTree();});
+      const item = document.createElement('div'); item.className = 'cb-tab-item';
+      const hdr = document.createElement('div'); hdr.className = 'cb-tab-item-header';
+      hdr.innerHTML = `<i class="fa fa-${tab.icon||'file-o'}" style="margin-right:5px;"></i>${tab.label || 'Aba '+(i+1)}`;
+
+      const acts = document.createElement('div'); acts.className = 'cb-tab-item-actions';
+      const up = document.createElement('button'); up.type='button'; up.innerHTML='↑';
+      up.addEventListener('click', e => { e.stopPropagation(); if(i>0){[node.tabs[i-1],node.tabs[i]]=[node.tabs[i],node.tabs[i-1]];syncTextarea();rebuild();} });
+      const dn = document.createElement('button'); dn.type='button'; dn.innerHTML='↓';
+      dn.addEventListener('click', e => { e.stopPropagation(); if(i<node.tabs.length-1){[node.tabs[i],node.tabs[i+1]]=[node.tabs[i+1],node.tabs[i]];syncTextarea();rebuild();} });
+      const del = document.createElement('button'); del.type='button'; del.innerHTML='<i class="fa fa-trash"></i>'; del.className='danger';
+      del.addEventListener('click', e => { e.stopPropagation(); node.tabs.splice(i,1);syncTextarea();rebuild();renderTree(); });
       acts.appendChild(up);acts.appendChild(dn);acts.appendChild(del);
       hdr.appendChild(acts);
 
-      const body = document.createElement('div');
-      body.className = 'cb-tab-item-body';
-
+      const body = document.createElement('div'); body.className = 'cb-tab-item-body';
       hdr.addEventListener('click', () => body.classList.toggle('open'));
 
-      // Tab fields
-      body.appendChild(field('ID', '', textInput(tab.id, v => { tab.id=v; syncTextarea(); })));
-      body.appendChild(field('Rótulo', '', textInput(tab.label, v => { tab.label=v; hdr.childNodes[1].textContent=v||'Tab '+i; syncTextarea(); })));
+      // ID (advanced only)
+      const idWrap = document.createElement('div'); idWrap.className = 'cb-advanced-only cb-field-group';
+      idWrap.appendChild(field('ID', '', textInput(tab.id, v => { tab.id=v; syncTextarea(); })));
+      body.appendChild(idWrap);
+
+      body.appendChild(field('Rótulo', '', textInput(tab.label, v => { tab.label=v; hdr.childNodes[1] && (hdr.childNodes[1].textContent=' '+v||' Aba '+(i+1)); syncTextarea(); })));
       body.appendChild(iconField('Ícone', tab.icon, v => { tab.icon=v; syncTextarea(); }));
-      body.appendChild(field('Imagem', '(carrossel)', textInput(tab.image, v => { tab.image=v; syncTextarea(); })));
-      body.appendChild(field('Conteúdo', 'HTML/Markdown', textArea(tab.content, v => { tab.content=v; syncTextarea(); }, '# Conteúdo da aba... \n**negrito**, _italico_, [links](https://example.com), etc.')));
 
-      item.appendChild(hdr);
-      item.appendChild(body);
-      list.appendChild(item);
+      // Image only for carousel
+      if (isCarousel) {
+        body.appendChild(field('Imagem', 'URL da imagem do slide', textInput(tab.image, v => { tab.image=v; syncTextarea(); })));
+      }
+
+      const contentTA = textArea(tab.content, v => { tab.content=v; syncTextarea(); }, '# Conteúdo...\n**negrito**, _itálico_, [link](https://exemplo.com)');
+      body.appendChild(field('Conteúdo', '', contentTA));
+      body.appendChild(markdownHelp());
+
+      item.appendChild(hdr); item.appendChild(body); list.appendChild(item);
     });
-
     container.appendChild(list);
 
-    const addBtn = document.createElement('button');
-    addBtn.type = 'button';
-    addBtn.className = 'cb-add-tab-btn';
-    addBtn.innerHTML = '<i class="fa fa-plus"></i> Adicionar aba';
+    const addBtn = document.createElement('button'); addBtn.type='button'; addBtn.className='cb-add-tab-btn';
+    const addLabel = containerType === 'tabs' ? 'Adicionar aba' : containerType === 'accordion' ? 'Adicionar item' : 'Adicionar slide';
+    addBtn.innerHTML = `<i class="fa fa-plus"></i> ${addLabel}`;
     addBtn.addEventListener('click', () => {
-      node.tabs.push({ id: 'tab-'+(node.tabs.length+1), label: 'Nova Aba', icon: 'file-o', content: '' });
-      syncTextarea();
-      rebuild();
-      renderTree();
+      node.tabs.push({id:'tab-'+(node.tabs.length+1), label:'Nova Aba', icon:'file-o', content:''});
+      syncTextarea(); rebuild(); renderTree();
     });
     container.appendChild(addBtn);
   }
@@ -1332,72 +1726,105 @@ function renderTabsList(form, node) {
 // DYNAMIC FORM
 // ============================================================
 function renderDynamicForm(form, node, t) {
-  const comp = t.replace('dynamic_','');
-  form.appendChild(sectionDivider('Dados'));
-
-  // tag_ids
-  renderTagsField(form, node);
-
-  if (['slider','noticias','arquivo','arquivos','calendar','texto'].includes(comp)) {
-    if (['noticias','arquivos'].includes(comp)) {
-      form.appendChild(checkboxField('Paginação', node.pagination, v => updateNodeField('pagination', v)));
-    }
-    if (comp === 'slider') {
-      form.appendChild(field('Modelo de Item', '', textInput(node.item_template, v => updateNodeField('item_template', v), 'ex: components/dynamic/sliders/slider_item_sede.html')));
-      form.appendChild(field('Tamanho', '', selectInput([{value:'',label:'(padrão)'},{value:'small',label:'small'},{value:'medium',label:'medium'},{value:'large',label:'large'}], node.size, v => updateNodeField('size', v))));
-    }
-    if (comp === 'texto') {
-      form.appendChild(field('Conteúdo Markdown', '', textArea(node.conteudo, v => updateNodeField('conteudo', v))));
-    }
+  // TEXTO (now treated as content)
+  if (t === 'dynamic_texto') {
+    form.appendChild(sectionDivider('📝 Texto', ''));
+    const contentTA = textArea(node.conteudo, v => updateNodeField('conteudo', v), '# Título\n**negrito**, _itálico_, <icon=cog> ícone...');
+    form.appendChild(field('Conteúdo', '', contentTA));
+    form.appendChild(markdownHelp());
+    form.appendChild(sectionDivider('Tema', 'paint-brush'));
+    form.appendChild(colorSwatchField('Cor do texto (foreground)', node.theme_foreground, v => updateNodeField('theme_foreground', v), 'yin'));
+    return;
   }
 
-  form.appendChild(sectionDivider('Tema'));
-  form.appendChild(colorField('Primário', node.theme_primary, v => updateNodeField('theme_primary', v)));
-  form.appendChild(colorField('Secundário', node.theme_secondary, v => updateNodeField('theme_secondary', v)));
-  form.appendChild(colorField('Foreground', node.theme_foreground, v => updateNodeField('theme_foreground', v)));
-}
-
-function renderTagsField(form, node) {
-  if (!node.tag_ids) node.tag_ids = [];
-  const wrap = document.createElement('div');
-  wrap.className = 'cb-field-group';
-  const lbl = document.createElement('div');lbl.className='cb-field-label';lbl.textContent='Tag IDs';
-  wrap.appendChild(lbl);
-
-  const container = document.createElement('div');
-  
-  function rebuild() {
-    container.innerHTML = '';
-    const chips = document.createElement('div');
-    chips.className = 'cb-tags-input';
-    (node.tag_ids || []).forEach((id, i) => {
-      const chip = document.createElement('div');
-      chip.className = 'cb-tag-chip';
-      chip.innerHTML = `${id}<button type="button">✕</button>`;
-      chip.querySelector('button').addEventListener('click', () => {
-        node.tag_ids.splice(i,1); syncTextarea(); rebuild();
-      });
-      chips.appendChild(chip);
-    });
-    // add input
-    const addRow = document.createElement('div');
-    addRow.style.display='flex';addRow.style.gap='4px';addRow.style.marginTop='4px';
-    const inp = document.createElement('input');
-    inp.type='number';inp.className='cb-input';inp.style.width='80px';inp.placeholder='ID';
-    const addBtn = document.createElement('button');
-    addBtn.type='button';
-    addBtn.textContent='+';addBtn.style.cssText='padding:4px 8px;border:1px solid #e2e8f0;border-radius:4px;cursor:pointer;background:#f8fafc;font-size:12px;';
-    addBtn.addEventListener('click', () => {
-      const v = parseInt(inp.value);
-      if (!isNaN(v)) { node.tag_ids.push(v); inp.value=''; syncTextarea(); rebuild(); }
-    });
-    addRow.appendChild(inp);addRow.appendChild(addBtn);
-    container.appendChild(chips);container.appendChild(addRow);
+  // SLIDER_SEDES
+  if (t === 'slider_sedes') {
+    form.appendChild(sectionDivider('⚡ Slider de Sedes', ''));
+    form.appendChild(field('Título', 'opcional', textInput(node.title, v => updateNodeField('title', v))));
+    return;
   }
-  
-  rebuild();
-  wrap.appendChild(container);
-  form.appendChild(wrap);
+
+  // SLIDER_SUBEVENTOS
+  if (t === 'slider_subeventos') {
+    form.appendChild(sectionDivider('⚡ Slider de Subeventos (Ligas)', ''));
+    form.appendChild(field('Título', 'opcional', textInput(node.title, v => updateNodeField('title', v))));
+    const eventoOpts = [
+      {value:'',label:'Todos'},
+      {value:'MNR',label:'MNR'},
+      {value:'CBR',label:'CBR'},
+      {value:'OBR',label:'OBR'},
+      {value:'Robotica',label:'Robótica'},
+      {value:'RoboCup Brasil',label:'RoboCup Brasil'},
+    ];
+    form.appendChild(field('Evento', 'filtra por evento', selectInput(eventoOpts, node.evento, v => updateNodeField('evento', v))));
+    return;
+  }
+
+  // SLIDER_FUNCIONARIOS
+  if (t === 'slider_funcionarios') {
+    form.appendChild(sectionDivider('⚡ Slider de Funcionários', ''));
+    form.appendChild(field('Título', 'opcional', textInput(node.title, v => updateNodeField('title', v))));
+    renderTagsField(form, node, 'tags', '/admin/app/tagfuncionario/');
+    const sizeOpts = [{value:'small',label:'Pequeno'},{value:'medium',label:'Médio'},{value:'large',label:'Grande'}];
+    form.appendChild(field('Tamanho dos cartões', '', selectInput(sizeOpts, node.size || 'medium', v => updateNodeField('size', v))));
+    return;
+  }
+
+  // SLIDER_ARQUIVOS
+  if (t === 'slider_arquivos') {
+    form.appendChild(sectionDivider('⚡ Slider de Arquivos', ''));
+    form.appendChild(field('Título', 'opcional', textInput(node.title, v => updateNodeField('title', v))));
+    renderTagsField(form, node, 'tags', '/admin/app/tagarquivo/');
+    return;
+  }
+
+  // DYNAMIC_NOTICIAS
+  if (t === 'dynamic_noticias') {
+    form.appendChild(sectionDivider('⚡ Notícias', ''));
+    renderTagsField(form, node, 'tag_ids', '/admin/app/tagnoticia/');
+    const limWrap = document.createElement('div'); limWrap.className = 'cb-grid-2';
+    limWrap.appendChild(field('Número de itens', 'máx. 20', (() => {
+      const inp = document.createElement('input'); inp.type='number'; inp.className='cb-input';
+      inp.value = node.limit || ''; inp.placeholder = 'ex: 6'; inp.min='1'; inp.max='20';
+      inp.addEventListener('input', () => updateNodeField('limit', inp.value ? Math.min(20, parseInt(inp.value)) : null));
+      return inp;
+    })()));
+    const paginacaoWrap = document.createElement('div');
+    paginacaoWrap.className = 'cb-field-group';
+    paginacaoWrap.appendChild(checkboxField('Paginação', node.pagination, v => updateNodeField('pagination', v)));
+    limWrap.appendChild(paginacaoWrap);
+    form.appendChild(limWrap);
+  }
+
+  // DYNAMIC_ARQUIVOS
+  if (t === 'dynamic_arquivos') {
+    form.appendChild(sectionDivider('⚡ Arquivos', ''));
+    renderTagsField(form, node, 'tag_ids', '/admin/app/tagarquivo/');
+    const limWrap = document.createElement('div'); limWrap.className = 'cb-grid-2';
+    limWrap.appendChild(field('Número de itens', 'máx. 20', (() => {
+      const inp = document.createElement('input'); inp.type='number'; inp.className='cb-input';
+      inp.value = node.limit || ''; inp.placeholder = 'ex: 6'; inp.min='1'; inp.max='20';
+      inp.addEventListener('input', () => updateNodeField('limit', inp.value ? Math.min(20, parseInt(inp.value)) : null));
+      return inp;
+    })()));
+    const paginacaoWrap = document.createElement('div');
+    paginacaoWrap.className = 'cb-field-group';
+    paginacaoWrap.appendChild(checkboxField('Paginação', node.pagination, v => updateNodeField('pagination', v)));
+    limWrap.appendChild(paginacaoWrap);
+    form.appendChild(limWrap);
+  }
+
+  // DYNAMIC_CALENDAR
+  if (t === 'dynamic_calendar') {
+    form.appendChild(sectionDivider('⚡ Calendário', ''));
+    renderTagsField(form, node, 'tag_ids', '/admin/app/tagdata/');
+  }
+
+  // Theme for all dynamics
+  form.appendChild(sectionDivider('Tema de cores', 'paint-brush'));
+  form.appendChild(colorSwatchField('Primário', node.theme_primary, v => updateNodeField('theme_primary', v)));
+  form.appendChild(colorSwatchField('Secundário', node.theme_secondary, v => updateNodeField('theme_secondary', v)));
+  form.appendChild(colorSwatchField('Foreground (texto)', node.theme_foreground, v => updateNodeField('theme_foreground', v), 'yin'));
 }
 
 // ============================================================
@@ -1412,158 +1839,215 @@ function renderContentForm(form, node, t) {
   else if (t === 'button_square') renderBtnSquareForm(form, node);
   else if (t === 'button_inline') renderBtnInlineForm(form, node);
   else if (t === 'conteudo_square') renderConteudoSquareForm(form, node);
+  else if (t === 'arquivo_viewer') renderArquivoViewerForm(form, node);
 }
 
 function renderHeaderForm(form, node) {
-  form.appendChild(field('Título', '', textInput(node.titulo, v => updateNodeField('titulo', v))));
-  form.appendChild(field('Tema', '', selectInput(THEMES.map(v=>({value:v,label:v||'padrão'})), node.theme, v => updateNodeField('theme', v))));
-  form.appendChild(field('Alinhamento', '', selectInput(ALIGNMENTS.map(v=>({value:v,label:v||'padrão'})), node.alignment, v => updateNodeField('alignment', v))));
-  form.appendChild(field('Tamanho', '', selectInput(HEADER_SIZES.map(v=>({value:v,label:v||'padrão'})), node.size, v => updateNodeField('size', v))));
-  const row = document.createElement('div');row.className='cb-field-group';
-  row.appendChild(checkboxField('Full Width', node.fullwidth, v => updateNodeField('fullwidth', v)));
-  form.appendChild(row);
+  form.appendChild(sectionDivider('Cabeçalho', 'header'));
+  form.appendChild(field('Texto do cabeçalho', '', textInput(node.titulo, v => updateNodeField('titulo', v))));
+
+  const themeOpts = THEMES.map(v => ({value:v, label:THEME_LABELS[v]||v||'Padrão'}));
+  form.appendChild(field('Tema visual', '', selectInput(themeOpts, node.theme, v => updateNodeField('theme', v))));
+
+  const alignOpts = ALIGNMENTS.map(v => ({value:v, label:ALIGNMENT_LABELS[v]||v||'Padrão'}));
+  form.appendChild(field('Alinhamento', '', selectInput(alignOpts, node.alignment, v => updateNodeField('alignment', v))));
+
+  const sizeOpts = HEADER_SIZES.map(v => ({value:v, label:HEADER_SIZE_LABELS[v]||v||'Padrão'}));
+  form.appendChild(field('Tamanho da fonte', '', selectInput(sizeOpts, node.size, v => updateNodeField('size', v))));
+
+  const r = document.createElement('div'); r.className = 'cb-field-group';
+  r.appendChild(checkboxField('Ocupar todo o espaço horizontal', node.fullwidth, v => updateNodeField('fullwidth', v)));
+  form.appendChild(r);
 }
 
 function renderImagemForm(form, node) {
-  form.appendChild(field('URL da Imagem', '', textInput(node.imagem, v => updateNodeField('imagem', v))));
-  form.appendChild(field('Título (alt)', '', textInput(node.titulo, v => updateNodeField('titulo', v))));
-  const r1 = document.createElement('div');r1.className='cb-field-group';
-  r1.appendChild(checkboxField('Clicável', node.clicavel, v => updateNodeField('clicavel', v)));
-  form.appendChild(r1);
-  form.appendChild(field('Link', '', textInput(node.link, v => updateNodeField('link', v))));
-  const r2 = document.createElement('div');r2.className='cb-field-group';
-  r2.appendChild(checkboxField('Abrir em nova aba', node.blank, v => updateNodeField('blank', v)));
-  r2.appendChild(checkboxField('Arredondado', node.rounded, v => updateNodeField('rounded', v)));
+  form.appendChild(sectionDivider('Imagem', 'picture-o'));
+
+  const imgRow = document.createElement('div'); imgRow.className = 'cb-input-with-link';
+  const imgInp = textInput(node.imagem, v => updateNodeField('imagem', v)); imgInp.placeholder = 'https://... ou /static/...';
+  const uploadLink = document.createElement('a');
+  uploadLink.href = '/admin/app/arquivo'; uploadLink.target = '_blank'; uploadLink.className = 'cb-link-btn';
+  uploadLink.innerHTML = '<i class="fa fa-upload"></i> Upload';
+  imgRow.appendChild(imgInp); imgRow.appendChild(uploadLink);
+  form.appendChild(field('Link da imagem', '', imgRow));
+
+  form.appendChild(field('Descrição da imagem para leitores de tela', 'alt text', textInput(node.titulo, v => updateNodeField('titulo', v))));
+
+  const clickRow = document.createElement('div'); clickRow.className = 'cb-field-group';
+  const clicavelCb = checkboxField('Imagem Clicável', node.clicavel, v => {
+    updateNodeField('clicavel', v);
+    linkG.style.display = v ? '' : 'none';
+    blankG.style.display = v ? '' : 'none';
+  });
+  clickRow.appendChild(clicavelCb);
+  form.appendChild(clickRow);
+
+  const linkG = document.createElement('div');
+  linkG.style.display = node.clicavel ? '' : 'none';
+  linkG.appendChild(field('Link do clique na imagem', '', textInput(node.link, v => updateNodeField('link', v), 'https://...')));
+  form.appendChild(linkG);
+
+  const blankG = document.createElement('div');
+  blankG.style.display = node.clicavel ? '' : 'none'; blankG.className = 'cb-field-group';
+  blankG.appendChild(checkboxField('Abrir em nova aba', node.blank, v => updateNodeField('blank', v)));
+  form.appendChild(blankG);
+
+  const r2 = document.createElement('div'); r2.className = 'cb-field-group';
+  r2.appendChild(checkboxField('Cantos arredondados', node.rounded, v => updateNodeField('rounded', v)));
   form.appendChild(r2);
 }
 
 function renderMapaForm(form, node) {
-  form.appendChild(field('ID', '', textInput(node.id, v => updateNodeField('id', v), 'mapa-1')));
-  const g2 = document.createElement('div');g2.className='cb-grid-2';
+  form.appendChild(sectionDivider('Mapa', 'map-marker'));
+  const g2 = document.createElement('div'); g2.className = 'cb-grid-2';
   g2.appendChild(field('Latitude', '', textInput(node.latitude, v => updateNodeField('latitude', v), '-23.5505')));
   g2.appendChild(field('Longitude', '', textInput(node.longitude, v => updateNodeField('longitude', v), '-46.6333')));
   form.appendChild(g2);
+
+  // ID is advanced
+  const idWrap = document.createElement('div'); idWrap.className = 'cb-advanced-only cb-field-group';
+  idWrap.appendChild(field('ID do mapa', '', textInput(node.id, v => updateNodeField('id', v), 'mapa-1')));
+  form.appendChild(idWrap);
 }
 
 function renderYoutubeForm(form, node) {
-  form.appendChild(field('Video ID', 'ex: pcI8_HCMNSw', textInput(node.video_id, v => updateNodeField('video_id', v))));
-  const r = document.createElement('div');r.className='cb-field-group';
-  r.appendChild(checkboxField('Arredondado', node.rounded, v => updateNodeField('rounded', v)));
+  form.appendChild(sectionDivider('YouTube', 'youtube-play'));
+  form.appendChild(field('ID do Vídeo', 'ex: pcI8_HCMNSw', textInput(node.video_id, v => updateNodeField('video_id', v))));
+  const r = document.createElement('div'); r.className = 'cb-field-group';
+  r.appendChild(checkboxField('Cantos arredondados', node.rounded, v => updateNodeField('rounded', v)));
   form.appendChild(r);
 }
 
 function renderBtnRoundedForm(form, node) {
+  form.appendChild(sectionDivider('Botão Redondo', 'dot-circle-o'));
   form.appendChild(field('Texto', '', textInput(node.texto, v => updateNodeField('texto', v))));
-  form.appendChild(colorField('Tema', node.theme, v => updateNodeField('theme', v)));
+  form.appendChild(colorSwatchField('Tema de cor', node.theme, v => updateNodeField('theme', v), 'blue'));
   form.appendChild(iconField('Ícone', node.icon, v => updateNodeField('icon', v)));
-  form.appendChild(field('Link', '', textInput(node.href, v => updateNodeField('href', v))));
-  const r = document.createElement('div');r.className='cb-field-group';
-  r.appendChild(checkboxField('Nova aba', node.blank, v => updateNodeField('blank', v)));
+  form.appendChild(field('Link', '', textInput(node.href, v => updateNodeField('href', v), 'https://...')));
+  const r = document.createElement('div'); r.className = 'cb-field-group';
+  r.appendChild(checkboxField('Abrir em nova aba', node.blank, v => updateNodeField('blank', v)));
   form.appendChild(r);
 }
 
 function renderBtnSquareForm(form, node) {
+  form.appendChild(sectionDivider('Botão Quadrado', 'square'));
   form.appendChild(field('Título', '', textInput(node.titulo, v => updateNodeField('titulo', v))));
   form.appendChild(field('Descrição', '', textInput(node.descricao, v => updateNodeField('descricao', v))));
   form.appendChild(iconField('Ícone', node.icon, v => updateNodeField('icon', v)));
-  form.appendChild(field('Link', '', textInput(node.href, v => updateNodeField('href', v))));
+  form.appendChild(field('Link', '', textInput(node.href, v => updateNodeField('href', v), 'https://...')));
+  form.appendChild(sectionDivider('Cores', 'paint-brush'));
+  form.appendChild(colorSwatchField('Primário', node.color_primary, v => updateNodeField('color_primary', v)));
+  form.appendChild(colorSwatchField('Secundário', node.color_secondary, v => updateNodeField('color_secondary', v)));
+  form.appendChild(colorSwatchField('Foreground (texto)', node.color_foreground, v => updateNodeField('color_foreground', v), 'yin'));
 }
 
 function renderBtnInlineForm(form, node) {
+  form.appendChild(sectionDivider('Botão Inline', 'minus'));
   form.appendChild(field('Texto', '', textInput(node.texto, v => updateNodeField('texto', v))));
-  form.appendChild(colorField('Tema', node.theme, v => updateNodeField('theme', v)));
-  form.appendChild(colorField('Cor', node.color, v => updateNodeField('color', v)));
+  form.appendChild(colorSwatchField('Tema', node.theme, v => updateNodeField('theme', v)));
+  form.appendChild(colorSwatchField('Cor', node.color, v => updateNodeField('color', v)));
   form.appendChild(iconField('Ícone', node.icon, v => updateNodeField('icon', v)));
-  form.appendChild(field('Link', '', textInput(node.href, v => updateNodeField('href', v))));
-  const r = document.createElement('div');r.className='cb-field-group';
-  r.appendChild(checkboxField('Nova aba', node.blank, v => updateNodeField('blank', v)));
-  r.appendChild(checkboxField('Shrink', node.shrink, v => updateNodeField('shrink', v)));
+  form.appendChild(field('Link', '', textInput(node.href, v => updateNodeField('href', v), 'https://...')));
+  const r = document.createElement('div'); r.className = 'cb-field-group';
+  r.appendChild(checkboxField('Abrir em nova aba', node.blank, v => updateNodeField('blank', v)));
+  r.appendChild(checkboxField('Deixar botão do tamanho do texto, e não da dimensão completa da seção', node.shrink !== false, v => updateNodeField('shrink', v)));
   form.appendChild(r);
 }
 
 function renderConteudoSquareForm(form, node) {
-  form.appendChild(field('URL da Imagem', '', textInput(node.imagem, v => updateNodeField('imagem', v))));
+  form.appendChild(sectionDivider('Cartão', 'th-large'));
+  const imgRow = document.createElement('div'); imgRow.className = 'cb-input-with-link';
+  const imgInp = textInput(node.imagem, v => updateNodeField('imagem', v)); imgInp.placeholder = 'https://... ou /static/...';
+  const uploadLink = document.createElement('a');
+  uploadLink.href = '/admin/app/arquivo'; uploadLink.target = '_blank'; uploadLink.className = 'cb-link-btn';
+  uploadLink.innerHTML = '<i class="fa fa-upload"></i> Upload';
+  imgRow.appendChild(imgInp); imgRow.appendChild(uploadLink);
+  form.appendChild(field('Link da imagem lateral', '', imgRow));
+
   form.appendChild(field('Título', '', textInput(node.titulo, v => updateNodeField('titulo', v))));
-  form.appendChild(field('Descrição', '', textArea(node.descricao, v => updateNodeField('descricao', v))));
-  form.appendChild(sectionDivider('Botão Inline'));
-  form.appendChild(field('Texto Inline', '', textInput(node.inline_text, v => updateNodeField('inline_text', v))));
-  form.appendChild(field('Link Inline', '', textInput(node.inline_href, v => updateNodeField('inline_href', v))));
-  form.appendChild(colorField('Cor Inline', node.inline_color, v => updateNodeField('inline_color', v)));
-  form.appendChild(colorField('Tema Inline', node.inline_theme, v => updateNodeField('inline_theme', v)));
-  form.appendChild(sectionDivider('Alinhamento'));
-  const g2 = document.createElement('div');g2.className='cb-grid-2';
-  const mobileOpts=[{value:'top',label:'top'},{value:'bottom',label:'bottom'},{value:'center',label:'center'}];
-  const desktopOpts=[{value:'left',label:'left'},{value:'right',label:'right'},{value:'center',label:'center'},{value:'top',label:'top'},{value:'bottom',label:'bottom'}];
-  g2.appendChild(field('Mobile', '', selectInput(mobileOpts, node.image_align_mobile, v => updateNodeField('image_align_mobile', v))));
-  g2.appendChild(field('Desktop', '', selectInput(desktopOpts, node.image_align_desktop, v => updateNodeField('image_align_desktop', v))));
+  const descTA = textArea(node.descricao, v => updateNodeField('descricao', v));
+  form.appendChild(field('Descrição', '', descTA));
+  form.appendChild(markdownHelp());
+
+  form.appendChild(sectionDivider('Botão do Cartão', 'mouse-pointer'));
+  form.appendChild(field('Texto do botão', '', textInput(node.inline_text, v => updateNodeField('inline_text', v))));
+  form.appendChild(field('Link do botão', '', textInput(node.inline_href, v => updateNodeField('inline_href', v), 'https://...')));
+  form.appendChild(colorSwatchField('Cor do botão', node.inline_color, v => updateNodeField('inline_color', v)));
+  form.appendChild(colorSwatchField('Tema do botão', node.inline_theme, v => updateNodeField('inline_theme', v)));
+
+  form.appendChild(sectionDivider('Cores do Cartão', 'paint-brush'));
+  form.appendChild(colorSwatchField('Primário', node.color_primary, v => updateNodeField('color_primary', v)));
+  form.appendChild(colorSwatchField('Secundário', node.color_secondary, v => updateNodeField('color_secondary', v)));
+  form.appendChild(colorSwatchField('Foreground (texto)', node.color_foreground, v => updateNodeField('color_foreground', v), 'yin'));
+
+  form.appendChild(sectionDivider('Alinhamento', 'align-left'));
+  const g2 = document.createElement('div'); g2.className = 'cb-grid-2';
+  const mobileOpts = [{value:'top',label:'Topo'},{value:'bottom',label:'Baixo'},{value:'center',label:'Centro'}];
+  const desktopOpts = [{value:'left',label:'Esquerda'},{value:'right',label:'Direita'},{value:'center',label:'Centro'},{value:'top',label:'Topo'},{value:'bottom',label:'Baixo'}];
+  g2.appendChild(field('Imagem (Celular)', '', selectInput(mobileOpts, node.image_align_mobile, v => updateNodeField('image_align_mobile', v))));
+  g2.appendChild(field('Imagem (Desktop)', '', selectInput(desktopOpts, node.image_align_desktop, v => updateNodeField('image_align_desktop', v))));
   form.appendChild(g2);
-  form.appendChild(field('Alinhamento Texto', '', selectInput(ALIGNMENTS.map(v=>({value:v,label:v||'padrão'})), node.text_align, v => updateNodeField('text_align', v))));
-  const r=document.createElement('div');r.className='cb-field-group';
-  r.appendChild(checkboxField('Texto Centralizado Vertical', node.text_middle, v => updateNodeField('text_middle', v)));
+
+  const alignOpts = [{value:'',label:'Padrão'},{value:'start',label:'Esquerda'},{value:'center',label:'Centro'},{value:'end',label:'Direita'}];
+  form.appendChild(field('Alinhamento horizontal do texto', '', selectInput(alignOpts, node.text_align, v => updateNodeField('text_align', v))));
+  const r = document.createElement('div'); r.className = 'cb-field-group';
+  r.appendChild(checkboxField('Alinhamento vertical do texto (centralizado)', node.text_middle, v => updateNodeField('text_middle', v)));
   form.appendChild(r);
 }
 
-// Tab item form (when a tab is selected)
+function renderArquivoViewerForm(form, node) {
+  form.appendChild(sectionDivider('📄 Visualizador de PDF', ''));
+  const idRow = document.createElement('div'); idRow.className = 'cb-input-with-link';
+  const idInp = document.createElement('input');
+  idInp.type='number'; idInp.className='cb-input'; idInp.value = node.arquivo_id || ''; idInp.placeholder = 'ex: 42';
+  idInp.addEventListener('input', () => updateNodeField('arquivo_id', idInp.value ? parseInt(idInp.value) : null));
+  const adminLink = document.createElement('a');
+  adminLink.href = '/admin/app/arquivo/'; adminLink.target = '_blank'; adminLink.className = 'cb-link-btn';
+  adminLink.innerHTML = '<i class="fa fa-external-link"></i> Ver arquivos';
+  idRow.appendChild(idInp); idRow.appendChild(adminLink);
+  form.appendChild(field('ID do Arquivo PDF', '', idRow));
+}
+
+// Tab item form
 function renderTabItemForm(form, node) {
-  form.appendChild(field('ID', '', textInput(node.id, v => { node.id=v; syncTextarea(); renderTree(); })));
-  form.appendChild(field('Label', '', textInput(node.label, v => { node.label=v; syncTextarea(); renderTree(); })));
+  // ID (advanced)
+  const idWrap = document.createElement('div'); idWrap.className = 'cb-advanced-only cb-field-group';
+  idWrap.appendChild(field('ID', '', textInput(node.id, v => { node.id=v; syncTextarea(); renderTree(); })));
+  form.appendChild(idWrap);
+
+  form.appendChild(field('Rótulo', '', textInput(node.label, v => { node.label=v; syncTextarea(); renderTree(); })));
   form.appendChild(iconField('Ícone', node.icon, v => { node.icon=v; syncTextarea(); }));
-  form.appendChild(field('Imagem', '(carrossel)', textInput(node.image, v => { node.image=v; syncTextarea(); })));
-  form.appendChild(field('Conteúdo', 'HTML/Markdown', textArea(node.content, v => { node.content=v; syncTextarea(); })));
+  const contentTA = textArea(node.content, v => { node.content=v; syncTextarea(); });
+  form.appendChild(field('Conteúdo', '', contentTA));
+  form.appendChild(markdownHelp());
 }
 
 // ============================================================
 // ADD CHILD PICKER
 // ============================================================
 function showAddChildPicker(parentPath, treeNodeWrap) {
-  // Remove any existing picker
   document.querySelectorAll('.cb-inline-picker').forEach(e => e.remove());
 
   const picker = document.createElement('div');
   picker.className = 'cb-inline-picker';
-  picker.style.cssText = 'background:#fff;border:1px solid #e2e8f0;border-radius:6px;padding:8px;margin:4px 6px;box-shadow:0 4px 12px rgba(0,0,0,.08);';
+  picker.style.cssText = 'background:#fff;border:1px solid #e2e8f0;border-radius:8px;padding:12px;margin:6px 6px 6px 20px;box-shadow:0 4px 16px rgba(0,0,0,.1);';
 
   const title = document.createElement('div');
-  title.style.cssText='font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.4px;color:#64748b;margin-bottom:6px;';
-  title.textContent='Escolha o tipo:';
+  title.style.cssText = 'font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.4px;color:#334155;margin-bottom:8px;';
+  title.innerHTML = '<i class="fa fa-plus-circle" style="margin-right:5px;color:#3b82f6;"></i>Adicionar:';
   picker.appendChild(title);
 
   const grid = document.createElement('div');
-  grid.className='cb-type-picker';
+  grid.className = 'cb-type-picker';
 
-  // sections within section = tabs/accordion/carousel
-  const groups = [
-    {label:'Contêineres', items:CONTAINER_TYPES},
-    {label:'Conteúdo', items:CONTENT_TYPES},
-    {label:'Dinâmico', items:DYNAMIC_TYPES},
-  ];
-
-  groups.forEach(g => {
-    const sec = document.createElement('div');
-    sec.style.cssText='grid-column:1/-1;font-size:9px;font-weight:700;text-transform:uppercase;color:#94a3b8;margin-top:4px;';
-    sec.textContent=g.label;
-    grid.appendChild(sec);
-    g.items.forEach(type => {
-      const btn = document.createElement('button');
-      btn.type = 'button';
-      btn.className='cb-type-btn';
-      btn.textContent = TYPE_LABELS[type] || type.replace('dynamic_','⚡ ');
-      btn.addEventListener('click', () => {
-        addChildToNode(parentPath, type);
-        picker.remove();
-      });
-      grid.appendChild(btn);
-    });
-  });
+  _buildTypePicker(grid, parentPath, () => picker.remove());
 
   picker.appendChild(grid);
   const close = document.createElement('button');
-  close.type='button';
-  close.textContent='Cancelar';
-  close.style.cssText='margin-top:6px;width:100%;padding:4px;background:none;border:1px solid #e2e8f0;border-radius:4px;cursor:pointer;font-size:11px;color:#64748b;';
+  close.type = 'button'; close.textContent = 'Cancelar';
+  close.style.cssText = 'margin-top:8px;width:100%;padding:5px;background:none;border:1px solid #e2e8f0;border-radius:5px;cursor:pointer;font-size:11px;color:#64748b;';
   close.addEventListener('click', () => picker.remove());
   picker.appendChild(close);
-
   treeNodeWrap.appendChild(picker);
 }
 
@@ -1571,51 +2055,83 @@ function showAddChildPickerInline(form, parentPath) {
   document.querySelectorAll('.cb-inline-picker-form').forEach(e => e.remove());
 
   const picker = document.createElement('div');
-  picker.className='cb-inline-picker-form';
-  picker.style.cssText='border:1px solid #dbeafe;border-radius:6px;padding:10px;background:#eff6ff;';
+  picker.className = 'cb-inline-picker-form';
+  picker.style.cssText = 'border:2px solid #bfdbfe;border-radius:8px;padding:14px;background:#eff6ff;margin-top:10px;';
 
   const title = document.createElement('div');
-  title.style.cssText='font-size:11px;font-weight:700;color:#1d4ed8;margin-bottom:8px;';
-  title.textContent='Adicionar componente:';
+  title.style.cssText = 'font-size:11px;font-weight:700;color:#1d4ed8;margin-bottom:10px;';
+  title.innerHTML = '<i class="fa fa-plus-circle" style="margin-right:5px;"></i>Adicionar componente:';
   picker.appendChild(title);
 
   const grid = document.createElement('div');
-  grid.className='cb-type-picker';
+  grid.className = 'cb-type-picker';
 
-  const groups = [
-    {label:'Contêineres', items:CONTAINER_TYPES},
-    {label:'Conteúdo', items:CONTENT_TYPES},
-    {label:'Dinâmico', items:DYNAMIC_TYPES},
-  ];
-
-  groups.forEach(g => {
-    const sec=document.createElement('div');
-    sec.style.cssText='grid-column:1/-1;font-size:9px;font-weight:700;text-transform:uppercase;color:#94a3b8;margin-top:4px;';
-    sec.textContent=g.label;
-    grid.appendChild(sec);
-    g.items.forEach(type => {
-      const btn=document.createElement('button');
-      btn.type='button';
-      btn.className='cb-type-btn';
-      btn.textContent = TYPE_LABELS[type] || type.replace('dynamic_','⚡ ');
-      btn.addEventListener('click', () => {
-        addChildToNode(parentPath, type);
-        picker.remove();
-      });
-      grid.appendChild(btn);
-    });
-  });
+  _buildTypePicker(grid, parentPath, () => picker.remove());
 
   picker.appendChild(grid);
   form.appendChild(picker);
 }
 
+function _buildTypePicker(grid, parentPath, onClose) {
+  const groups = [
+    {label:'📝 Texto', icon:'pencil', items:TEXTO_TYPE},
+    {label:'Contêineres', icon:'th-large', items:CONTAINER_TYPES},
+    {label:'Conteúdo', icon:'file-o', items:CONTENT_TYPES},
+    {label:'⚡ Dinâmico', icon:'bolt', items:DYNAMIC_TYPES},
+  ];
+
+  const typeEmojis = {
+    'dynamic_texto':'✏️','tabs':'🗂️','accordion':'🪗','carousel':'🎠',
+    'header':'📢','imagem':'🖼️','mapa':'📍','youtube':'▶️',
+    'button_rounded':'🔵','button_square':'⬛','button_inline':'🔲',
+    'conteudo_square':'🃏','arquivo_viewer':'📄',
+    'dynamic_noticias':'📰','dynamic_arquivos':'📁','dynamic_calendar':'📅',
+    'slider_sedes':'🗺️','slider_subeventos':'🏆','slider_funcionarios':'👥','slider_arquivos':'📂',
+  };
+
+  const typeFAIcons = {
+    'header':'header','imagem':'picture-o','mapa':'map-marker','youtube':'youtube-play',
+    'button_rounded':'dot-circle-o','button_square':'square','button_inline':'minus',
+    'conteudo_square':'th-large','arquivo_viewer':'file-pdf-o',
+    'dynamic_noticias':'newspaper-o','dynamic_arquivos':'folder-open','dynamic_calendar':'calendar',
+    'slider_sedes':'map-marker','slider_subeventos':'list','slider_funcionarios':'users','slider_arquivos':'file-o',
+  };
+
+  groups.forEach(g => {
+    const sec = document.createElement('div');
+    sec.style.cssText = 'grid-column:1/-1;font-size:9px;font-weight:700;text-transform:uppercase;color:#94a3b8;margin-top:6px;padding-top:4px;border-top:1px solid #e2e8f0;';
+    sec.innerHTML = `<i class="fa fa-${g.icon}" style="margin-right:4px;"></i>${g.label}`;
+    grid.appendChild(sec);
+
+    g.items.forEach(type => {
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'cb-type-btn' + (type === 'dynamic_texto' ? ' texto-btn' : '');
+
+      const emoji = typeEmojis[type] || '';
+      const faIcon = typeFAIcons[type];
+      const label = TYPE_LABELS[type] || type.replace('dynamic_','').replace('slider_','Slider ');
+
+      if (type === 'dynamic_texto') {
+        btn.innerHTML = `<i class="fa fa-pencil" style="font-size:18px;color:#334155;"></i> <span>${label}</span>`;
+      } else if (emoji) {
+        btn.innerHTML = `<span class="cb-type-emoji">${emoji}</span><span>${label}</span>`;
+      } else if (faIcon) {
+        btn.innerHTML = `<i class="fa fa-${faIcon}" style="font-size:18px;"></i><span>${label}</span>`;
+      } else {
+        btn.textContent = label;
+      }
+
+      btn.addEventListener('click', () => { addChildToNode(parentPath, type); onClose(); });
+      grid.appendChild(btn);
+    });
+  });
+}
+
 function addChildToNode(parentPath, type) {
   const parent = getNode(parentPath);
   if (!parent) return;
-
   const newNode = createDefaultNode(type);
-
   if (parent.type === 'section' || parent.tipo === 'section') {
     if (!parent.components) parent.components = [];
     parent.components.push(newNode);
@@ -1623,14 +2139,12 @@ function addChildToNode(parentPath, type) {
     if (!parent.tabs) parent.tabs = [];
     parent.tabs.push(newNode);
   }
-
-  syncTextarea();
-  renderTree();
+  syncTextarea(); renderTree();
 }
 
 function createDefaultNode(type) {
   const base = { type };
-  if (type === 'section') return { type:'section', bg:'yin', main:{container:true}, components:[] };
+  if (type === 'section') return { type:'section', bg:'yang', main:{container:true}, components:[] };
   if (type === 'tabs') return { type:'tabs', style:'yin blue-secondary', tabs:[{id:'tab-1',label:'Tab 1',icon:'file-o',content:''}] };
   if (type === 'accordion') return { type:'accordion', style:'yang red-secondary', tabs:[{id:'ac-1',label:'Accordion 1',icon:'cog',content:''}] };
   if (type === 'carousel') return { type:'carousel', style:'yin orange', tabs:[{id:'slide-1',label:'Slide 1',image:'',content:''}] };
@@ -1640,14 +2154,17 @@ function createDefaultNode(type) {
   if (type === 'mapa') return { type:'mapa', latitude:'', longitude:'', id:'mapa-' + Date.now() };
   if (type === 'button_rounded') return { type:'button_rounded', texto:'Botão', theme:'blue', href:'/' };
   if (type === 'button_square') return { type:'button_square', href:'#', titulo:'Título', descricao:'' };
-  if (type === 'button_inline') return { type:'button_inline', texto:'Botão', theme:'yang', color:'blue', href:'/' };
+  if (type === 'button_inline') return { type:'button_inline', texto:'Botão', theme:'yang', color:'blue', href:'/', shrink:true };
   if (type === 'conteudo_square') return { type:'conteudo_square', imagem:'', titulo:'Card', descricao:'', text_align:'start', image_align_mobile:'top', image_align_desktop:'left' };
-  if (type === 'dynamic_slider') return { type:'dynamic_slider', tag_ids:[], size:'medium' };
+  if (type === 'arquivo_viewer') return { type:'arquivo_viewer', arquivo_id: null };
   if (type === 'dynamic_texto') return { type:'dynamic_texto', conteudo:'', theme_foreground:'yin' };
   if (type === 'dynamic_noticias') return { type:'dynamic_noticias', tag_ids:[], pagination:false };
   if (type === 'dynamic_arquivos') return { type:'dynamic_arquivos', tag_ids:[], pagination:false };
-  if (type === 'dynamic_arquivo') return { type:'dynamic_arquivo', tag_ids:[] };
   if (type === 'dynamic_calendar') return { type:'dynamic_calendar', tag_ids:[] };
+  if (type === 'slider_sedes') return { type:'slider_sedes' };
+  if (type === 'slider_subeventos') return { type:'slider_subeventos', evento:'' };
+  if (type === 'slider_funcionarios') return { type:'slider_funcionarios', tags:[], size:'medium' };
+  if (type === 'slider_arquivos') return { type:'slider_arquivos', tags:[] };
   return base;
 }
 
@@ -1655,9 +2172,8 @@ function createDefaultNode(type) {
 // ADD ROOT SECTION
 // ============================================================
 function addRootSection() {
-  state.push({ type:'section', bg:'yin', main:{ container:true }, components:[] });
-  syncTextarea();
-  renderTree();
+  state.push({ type:'section', bg:'yang', main:{ container:true }, components:[] });
+  syncTextarea(); renderTree();
 }
 
 // ============================================================
@@ -1665,11 +2181,8 @@ function addRootSection() {
 // ============================================================
 function confirmDelete(path) {
   if (!confirm('Deletar este elemento?')) return;
-  deleteNode(path);
-  selectedPath = null;
-  syncTextarea();
-  renderTree();
-  renderProps();
+  deleteNode(path); selectedPath = null;
+  syncTextarea(); renderTree(); renderProps();
 }
 
 function duplicateSelected() {
@@ -1679,14 +2192,9 @@ function duplicateSelected() {
   const clone = JSON.parse(JSON.stringify(node));
   const parentPath = selectedPath.slice(0,-1);
   const idx = selectedPath[selectedPath.length-1];
-  if (parentPath.length === 0) {
-    state.splice(idx+1, 0, clone);
-  } else {
-    const parent = getNode(parentPath);
-    if (Array.isArray(parent)) parent.splice(idx+1, 0, clone);
-  }
-  syncTextarea();
-  renderTree();
+  if (parentPath.length === 0) state.splice(idx+1, 0, clone);
+  else { const parent = getNode(parentPath); if (Array.isArray(parent)) parent.splice(idx+1, 0, clone); }
+  syncTextarea(); renderTree();
 }
 
 function moveNode(path, dir) {
@@ -1697,8 +2205,7 @@ function moveNode(path, dir) {
   const newIdx = idx + dir;
   if (newIdx < 0 || newIdx >= parent.length) return;
   [parent[idx], parent[newIdx]] = [parent[newIdx], parent[idx]];
-  syncTextarea();
-  renderTree();
+  syncTextarea(); renderTree();
 }
 
 // ============================================================
@@ -1711,24 +2218,17 @@ function startDrag(e, path) {
 
 function endDrag(targetPath) {
   if (!dragState) return;
-  const from = dragState.path;
-  dragState = null;
+  const from = dragState.path; dragState = null;
   if (JSON.stringify(from) === JSON.stringify(targetPath)) return;
-
-  // Only support same-parent reorder for now
   const fromParent = from.slice(0,-1);
   const toParent = targetPath.slice(0,-1);
   if (JSON.stringify(fromParent) !== JSON.stringify(toParent)) return;
-
   const parent = fromParent.length === 0 ? state : getNode(fromParent);
   if (!Array.isArray(parent)) return;
-
-  const fi = from[from.length-1];
-  const ti = targetPath[targetPath.length-1];
+  const fi = from[from.length-1]; const ti = targetPath[targetPath.length-1];
   const item = parent.splice(fi, 1)[0];
   parent.splice(ti, 0, item);
-  syncTextarea();
-  renderTree();
+  syncTextarea(); renderTree();
 }
 
 // ============================================================
@@ -1741,17 +2241,10 @@ function syncTextarea() {
   }
   const w = document.getElementById('cb-preview-wrapper');
   if (w && w.style.display !== 'none') {
-    // do not reload immediately, just mark that we need a manual refresh
     previewRequiresReload = true;
     const previewBtn = document.getElementById('cb-preview-btn');
-    if (previewBtn) {
-      previewBtn.innerHTML = '<i class="fa fa-sync-alt"></i>';
-      previewBtn.title = 'Recarregue para ver as alterações';
-    }
-  } else {
-    // preview hidden, keep iframe up to date so it shows when opened
-    updatePreview();
-  }
+    if (previewBtn) { previewBtn.innerHTML = '<i class="fa fa-sync-alt"></i> Recarregar'; previewBtn.title = 'Clique para atualizar a prévia'; }
+  } else updatePreview();
 }
 
 function updatePreview() {
@@ -1759,15 +2252,10 @@ function updatePreview() {
   if (!iframe) return;
   try {
     let url = '/component-preview/?json=' + encodeURIComponent(JSON.stringify(state));
-    // try to read the page header type from a form field if present
     const hdrInput = document.querySelector('select[name="header_type"], input[name="header_type"]');
-    if (hdrInput && hdrInput.value) {
-      url += '&header=' + encodeURIComponent(hdrInput.value);
-    }
+    if (hdrInput && hdrInput.value) url += '&header=' + encodeURIComponent(hdrInput.value);
     iframe.src = url;
-  } catch(e) {
-    // ignore
-  }
+  } catch(e) {}
 }
 
 function setupPreviewLinks() {
@@ -1775,102 +2263,44 @@ function setupPreviewLinks() {
   if (!iframe) return;
   try {
     const doc = iframe.contentDocument || iframe.contentWindow.document;
-    doc.querySelectorAll('a').forEach(a => {
-      a.addEventListener('click', e => {
-        e.preventDefault();
-        alert('você não pode clicar em links no modo editor');
-      });
-    });
-  } catch(e) {
-    // may not be loaded yet
-  }
+    doc.querySelectorAll('a').forEach(a => { a.addEventListener('click', e => { e.preventDefault(); alert('Você não pode clicar em links no modo editor'); }); });
+  } catch(e) {}
 }
 
-// attach listener when iframe loads
 const previewIframe = document.getElementById('cb-preview');
-if (previewIframe) {
-  previewIframe.addEventListener('load', setupPreviewLinks);
-}
+if (previewIframe) previewIframe.addEventListener('load', setupPreviewLinks);
 
-// dragging logic for the preview wrapper
 (function(){
   const w = document.getElementById('cb-preview-wrapper');
   const bar = document.getElementById('cb-preview-bar');
   const overlay = document.getElementById('cb-drag-overlay');
-  
-  // Move wrapper to body to avoid z-index stacking context issues
   if (w && document.body) document.body.appendChild(w);
-
   if (!w || !bar) return;
   let dragging=false, offsetX=0, offsetY=0;
   bar.addEventListener('mousedown', e => {
-    dragging = true;
-    offsetX = e.clientX - w.offsetLeft;
-    offsetY = e.clientY - w.offsetTop;
-    document.body.style.userSelect = 'none';
-    if (overlay) overlay.style.display = 'block'; // Enable overlay to catch mouse events over iframe
+    dragging=true; offsetX=e.clientX-w.offsetLeft; offsetY=e.clientY-w.offsetTop;
+    document.body.style.userSelect='none';
+    if (overlay) overlay.style.display='block';
   });
-  document.addEventListener('mousemove', e => {
-    if (dragging) {
-      w.style.left = (e.clientX - offsetX) + 'px';
-      w.style.top  = (e.clientY - offsetY) + 'px';
-    }
-  });
-  document.addEventListener('mouseup', () => {
-    dragging = false;
-    document.body.style.userSelect = '';
-    if (overlay) overlay.style.display = 'none'; // Disable overlay so user can interact with iframe
-  });
-
-  // maximize toggle
+  document.addEventListener('mousemove', e => { if (dragging) { w.style.left=(e.clientX-offsetX)+'px'; w.style.top=(e.clientY-offsetY)+'px'; } });
+  document.addEventListener('mouseup', () => { dragging=false; document.body.style.userSelect=''; if(overlay) overlay.style.display='none'; });
   const maxBtn = document.getElementById('cb-preview-maximize');
-  let maximized = false;
-  const prev = {};
+  let maximized=false; const prev={};
   if (maxBtn) {
     maxBtn.addEventListener('click', () => {
-      if (!maximized) {
-        prev.top = w.style.top;
-        prev.left = w.style.left;
-        prev.width = w.style.width;
-        prev.height = w.style.height;
-        w.style.top = '5%';
-        w.style.left = '5%';
-        w.style.width = '90%';
-        w.style.height = '90%';
-      } else {
-        w.style.top = prev.top;
-        w.style.left = prev.left;
-        w.style.width = prev.width;
-        w.style.height = prev.height;
-      }
-      maximized = !maximized;
+      if (!maximized) { prev.top=w.style.top;prev.left=w.style.left;prev.width=w.style.width;prev.height=w.style.height; w.style.top='5%';w.style.left='5%';w.style.width='90%';w.style.height='90%'; }
+      else { w.style.top=prev.top;w.style.left=prev.left;w.style.width=prev.width;w.style.height=prev.height; }
+      maximized=!maximized;
     });
   }
-
-  // prevent wrapper transitions during user resize
-  w.addEventListener('mousedown', e => {
-    if (e.target === w) {
-      w.style.transition = 'none';
-    }
-  });
-  w.addEventListener('mouseup', () => {
-    w.style.transition = 'none'; // keep it off until closed/reopened
-  });
 })();
 
-// if the administrator can choose a header on the page form, make
-// sure the preview updates when they change it
 const hdrInput = document.querySelector('select[name="header_type"], input[name="header_type"]');
 if (hdrInput) {
   hdrInput.addEventListener('change', () => {
-    // immediately refresh the iframe and reset reload state
-    updatePreview();
-    previewRequiresReload = false;
+    updatePreview(); previewRequiresReload=false;
     const previewBtn = document.getElementById('cb-preview-btn');
-    if (previewBtn) {
-      previewBtn.innerHTML = '<i class="fa fa-eye"></i>';
-      previewBtn.title = 'Visualizar';
-    }
+    if (previewBtn) previewBtn.innerHTML = '<i class="fa fa-eye"></i> Pré-visualizar';
   });
 }
 

@@ -482,6 +482,18 @@
     {% include "django/forms/widgets/textarea.html" %}
 </div>
 
+<div id="cb-classes-help" style="display:none;margin-top:10px;">
+  <div class="cb-md-help" style="border:1px solid #e2e8f0;border-radius:8px;overflow:hidden;">
+    <div class="cb-md-help-toggle cb-classes-help-header" style="cursor:pointer;padding:10px 14px;background:#f8fafc;border:none;width:100%;text-align:left;font-size:12px;font-weight:700;display:flex;align-items:center;gap:7px;" onclick="document.getElementById('cb-classes-help-body').classList.toggle('open')">
+      <i class="fa fa-book"></i> Referência de classes CSS disponíveis
+      <span style="margin-left:auto;font-size:10px;color:#94a3b8;">clique para expandir</span>
+    </div>
+    <div id="cb-classes-help-body" class="cb-md-help-body" style="padding:0;">
+      <!-- Content injected by JS -->
+    </div>
+  </div>
+</div>
+
 <script>
 (function() {
 // ============================================================
@@ -581,12 +593,12 @@ const TYPE_LABELS = {
   arquivo_viewer: '📄 Visualizador de PDF',
   dynamic_texto: '📝 Texto',
   dynamic_noticias: '⚡ Notícias',
-  dynamic_arquivos: '⚡ Arquivos',
+  dynamic_arquivos: '⚡ Lista de Arquivos',
   dynamic_calendar: '⚡ Calendário',
-  slider_sedes: '⚡ Slider de Sedes',
-  slider_subeventos: '⚡ Slider de Subeventos',
-  slider_funcionarios: '⚡ Slider de Funcionários',
-  slider_arquivos: '⚡ Slider de Arquivos',
+  slider_sedes: '⚡ Carrossel de Sedes',
+  slider_subeventos: '⚡ Carrossel de Subeventos',
+  slider_funcionarios: '⚡ Carrossel de Funcionários',
+  slider_arquivos: '⚡ Carrossel de Arquivos',
 };
 
 const TYPE_ICONS = {
@@ -640,6 +652,15 @@ function init() {
       advToggle.classList.toggle('active', advancedMode);
       const form = document.getElementById('cb-props-form');
       if (form) form.classList.toggle('cb-advanced-mode', advancedMode);
+      // Show/hide CSS classes help panel
+      const helpPanel = document.getElementById('cb-classes-help');
+      if (helpPanel) {
+        helpPanel.style.display = advancedMode ? 'block' : 'none';
+        if (advancedMode && !helpPanel.dataset.built) {
+          buildClassesHelp();
+          helpPanel.dataset.built = '1';
+        }
+      }
     });
   }
 
@@ -720,8 +741,10 @@ function nodeLabel(node) {
   const t = node.type || node.tipo || '?';
   if (t === 'section') {
     const bg = node.bg || '';
-    const color = COLOR_MAP[bg] || '#e2e8f0';
-    return `📦 Seção <span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:${color};border:1px solid rgba(0,0,0,.2);vertical-align:middle;margin-left:2px;"></span>`;
+    if (bg && COLOR_MAP[bg]) {
+      return `📦 Seção <span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:${COLOR_MAP[bg]};border:1px solid rgba(0,0,0,.2);vertical-align:middle;margin-left:2px;"></span>`;
+    }
+    return `📦 Seção`;
   }
   if (t === 'tabs') return `🗂️ Abas`;
   if (t === 'accordion') return `🪗 Sanfona`;
@@ -737,12 +760,12 @@ function nodeLabel(node) {
   if (t === 'arquivo_viewer') return `📄 PDF Visualizador`;
   if (t === 'dynamic_texto') return `📝 Texto`;
   if (t === 'dynamic_noticias') return `⚡ Notícias`;
-  if (t === 'dynamic_arquivos') return `⚡ Arquivos`;
+  if (t === 'dynamic_arquivos') return `⚡ Lista de Arquivos`;
   if (t === 'dynamic_calendar') return `⚡ Calendário`;
-  if (t === 'slider_sedes') return `⚡ Slider Sedes`;
-  if (t === 'slider_subeventos') return `⚡ Slider Subeventos`;
-  if (t === 'slider_funcionarios') return `⚡ Slider Funcionários`;
-  if (t === 'slider_arquivos') return `⚡ Slider Arquivos`;
+  if (t === 'slider_sedes') return `⚡ Carrossel de Sedes`;
+  if (t === 'slider_subeventos') return `⚡ Carrossel de Subeventos`;
+  if (t === 'slider_funcionarios') return `⚡ Carrossel de Funcionários`;
+  if (t === 'slider_arquivos') return `⚡ Carrossel de Arquivos`;
   if (node.label) return '📄 ' + node.label;
   return t;
 }
@@ -878,7 +901,7 @@ function renderNode(node, path, depth) {
     // Add tab CTA
     const addTabCta = document.createElement('div');
     addTabCta.className = 'cb-tree-empty-cta';
-    const ctaLabel = t === 'tabs' ? ' Adicionar aba' : t === 'accordion' ? ' Adicionar item' : ' Adicionar slide';
+    const ctaLabel = t === 'tabs' ? '+ Adicionar aba' : t === 'accordion' ? '+ Adicionar item' : '+ Adicionar slide';
     addTabCta.innerHTML = `<i class="fa fa-plus"></i> ${ctaLabel}`;
     addTabCta.addEventListener('click', () => {
       const parent = getNode(path);
@@ -1247,34 +1270,68 @@ function stylePickerField(label, val, onChange) {
 
 // Spacing visualizer
 function createSpacingViz() {
+  // 3 boxes:
+  // outer  = page (white, fixed) — reference for "the page around"
+  // section = the <section> element — bg, margin, padding from node fields
+  // inner   = the <main> content — bg and padding from main fields
   const outer = document.createElement('div');
-  outer.className = 'cb-spacing-viz';
-  outer.id = 'cb-spacing-viz-' + Math.random().toString(36).slice(2);
-  const middle = document.createElement('div');
-  middle.className = 'cb-spacing-viz-middle';
-  middle.id = outer.id + '-middle';
+  outer.style.cssText = [
+    'background:#fff',
+    'border:2px solid #334155',
+    'border-radius:6px',
+    'padding:10px',
+    'margin:10px 0',
+    'box-sizing:border-box',
+    'min-height:80px',
+    'position:relative',
+    'overflow:auto',
+    'display:grid'
+  ].join(';');
+
+  const section = document.createElement('div');
+  section.style.cssText = [
+    'border:2px solid #3b82f6',
+    'border-radius:4px',
+    'box-sizing:border-box',
+    'transition:all .2s',
+    'min-height:44px',
+    'display:flex',
+    'align-items:stretch',
+    'position:relative',
+  ].join(';');
+
+  // Label badges
+  function badge(text, color) {
+    const b = document.createElement('span');
+    b.style.cssText = `position:absolute;top:2px;left:4px;font-size:8px;font-weight:700;color:${color};opacity:.7;pointer-events:none;`;
+    b.textContent = text;
+    return b;
+  }
+  outer.appendChild(badge('página', '#334155'));
+  section.appendChild(badge('seção', '#3b82f6'));
+
   const inner = document.createElement('div');
-  inner.className = 'cb-spacing-viz-content';
-  inner.id = outer.id + '-inner';
-  inner.textContent = 'conteúdo';
-  middle.appendChild(inner);
-  outer.appendChild(middle);
-  return {outer, middle, inner};
+  inner.style.cssText = [
+    'border:2px dashed #10b981',
+    'border-radius:3px',
+    'flex:1',
+    'box-sizing:border-box',
+    'transition:all .2s',
+    'min-height:28px',
+    'display:flex',
+    'align-items:flex-end',
+    'justify-content:flex-end',
+    'position:relative',
+    'overflow:hidden',
+  ].join(';');
+  inner.appendChild(badge('conteúdo', '#10b981'));
+
+  section.appendChild(inner);
+  outer.appendChild(section);
+  return { outer, section, inner };
 }
 
-function updateSpacingViz(middle, inner, padding, margin, bg) {
-  const remVal = (v) => {
-    if (!v) return '0';
-    if (v.endsWith('/')) return (parseFloat(v) || 0) + 0.5 + 'rem';
-    return v + 'rem';
-  };
-  // margin on middle
-  const m = remVal(margin);
-  middle.style.margin = m;
-  middle.style.padding = remVal(padding);
-  if (bg && COLOR_MAP[bg]) middle.style.background = COLOR_MAP[bg];
-  else middle.style.background = '';
-}
+function updateSpacingViz() {} // legacy stub
 
 // ============================================================
 // SECTION FORM
@@ -1284,7 +1341,7 @@ function renderSectionForm(form, node) {
   const addBtnTop = document.createElement('button');
   addBtnTop.className = 'cb-add-child-btn-top'; addBtnTop.type = 'button';
   addBtnTop.innerHTML = '<i class="fa fa-plus-circle" style="font-size:18px;margin-right:10px;"></i><span style="font-size:14px;font-weight:700;">Adicionar componente nesta seção</span>';
-  addBtnTop.addEventListener('click', () => showAddChildPickerInline(form, selectedPath));
+  addBtnTop.addEventListener('click', () => showAddChildPickerInline(form, selectedPath, addBtnTop));
   form.appendChild(addBtnTop);
 
   // ---- IDENTIFICAÇÃO (advanced) ----
@@ -1292,6 +1349,7 @@ function renderSectionForm(form, node) {
   idSection.className = 'cb-advanced-only cb-field-group';
   idSection.appendChild(sectionDivider('Identificação', 'hashtag'));
   idSection.appendChild(field('ID da seção', '', textInput(node.id, v => updateNodeField('id', v), 'opcional, para links: https://site.com/pagina#id-escolhido')));
+  idSection.appendChild(field('Classes da seção', 'ex: shadow flex-center', textInput(node.classes, v => updateNodeField('classes', v))));
   form.appendChild(idSection);
 
   // ---- APARÊNCIA ----
@@ -1300,7 +1358,7 @@ function renderSectionForm(form, node) {
   form.appendChild(colorSwatchField('Cor de Fundo da Seção', node.bg, v => {
     updateNodeField('bg', v);
     refreshSpacingViz();
-  }, 'yang'));
+  }, ''));
 
   const insideWrap = document.createElement('div');
   insideWrap.className = 'cb-advanced-only';
@@ -1316,56 +1374,55 @@ function renderSectionForm(form, node) {
   form.appendChild(sectionDivider('Espaçamento', 'arrows-alt'));
 
   // visualizer (created first so spacing selects can reference it)
-  const {outer: vizOuter, middle: vizMiddle, inner: vizInner} = createSpacingViz();
+  const {outer: vizOuter, section: vizSection, inner: vizInner} = createSpacingViz();
   form.appendChild(vizOuter);
 
   // All spacing values stored locally so viz can recalculate with cascade priority:
-  // margin -> margin_x -> (margin_t, margin_b) [for y axis: margin -> margin_y]
-  // padding -> padding_x -> (padding_t, padding_b) [for y axis: padding -> padding_y]
+  // margin -> margin_x/y beats individual t/b
   const spacingState = {
     padding: node.padding || '', padding_x: node.padding_x || '', padding_y: node.padding_y || '',
     margin: node.margin || '', margin_x: node.margin_x || '', margin_y: node.margin_y || ''
   };
 
-  // Convert spacing key to rem number
   function toRem(v) {
     if (!v) return 0;
-    if (v.endsWith('/')) return (parseInt(v) || 0) + 0.5;
+    if (String(v).endsWith('/')) return (parseInt(v) || 0) + 0.5;
     return parseInt(v) || 0;
   }
 
-  // Apply cascade priority per RCB.CSS: margin beats margin_x/y, which beats t/b
-  function calcSpacing(all, x, y, t, b) {
+  // Cascade: all > axis (x/y) > individual (t/b)
+  function calcSpacing(all, x, y) {
     const allR = toRem(all);
-    const pt = allR || toRem(y) || toRem(t) || 0;
-    const pb = allR || toRem(y) || toRem(b) || 0;
-    const pl = allR || toRem(x) || 0;
-    const pr = allR || toRem(x) || 0;
-    return { top: pt, bottom: pb, left: pl, right: pr };
+    return {
+      top:    allR || toRem(y) || 0,
+      bottom: allR || toRem(y) || 0,
+      left:   allR || toRem(x) || 0,
+      right:  allR || toRem(x) || 0,
+    };
   }
 
   function refreshSpacingViz() {
     const n = getNode(selectedPath);
-    const bg = n ? (n.bg || '') : (node.bg || '');
-    const mainBg = (n && n.main) ? (n.main.bg || '') : '';
+    // section box: bg, padding, margin from node
+    const bg      = n ? (n.bg || '') : (node.bg || '');
+    const pad     = calcSpacing(spacingState.padding, spacingState.padding_x, spacingState.padding_y);
+    const mar     = calcSpacing(spacingState.margin,  spacingState.margin_x,  spacingState.margin_y);
+    vizSection.style.background    = (bg && COLOR_MAP[bg]) ? COLOR_MAP[bg] : 'transparent';
+    vizSection.style.paddingTop    = pad.top    + 'rem';
+    vizSection.style.paddingBottom = pad.bottom + 'rem';
+    vizSection.style.paddingLeft   = pad.left   + 'rem';
+    vizSection.style.paddingRight  = pad.right  + 'rem';
+    vizSection.style.marginTop     = mar.top    + 'rem';
+    vizSection.style.marginBottom  = mar.bottom + 'rem';
+    vizSection.style.marginLeft    = mar.left   + 'rem';
+    vizSection.style.marginRight   = mar.right  + 'rem';
+    // inner/content box: main.bg + main.padding
+    const mainBg  = (n && n.main) ? (n.main.bg  || '') : '';
     const mainPad = (n && n.main) ? (n.main.padding || '') : '';
-    const pad = calcSpacing(spacingState.padding, spacingState.padding_x, spacingState.padding_y, '', '');
-    const mar = calcSpacing(spacingState.margin, spacingState.margin_x, spacingState.margin_y, '', '');
-    // middle div = the section itself (bg + section padding/margin)
-    vizMiddle.style.paddingTop    = pad.top    + 'rem';
-    vizMiddle.style.paddingBottom = pad.bottom + 'rem';
-    vizMiddle.style.paddingLeft   = pad.left   + 'rem';
-    vizMiddle.style.paddingRight  = pad.right  + 'rem';
-    vizMiddle.style.marginTop     = mar.top    + 'rem';
-    vizMiddle.style.marginBottom  = mar.bottom + 'rem';
-    vizMiddle.style.marginLeft    = mar.left   + 'rem';
-    vizMiddle.style.marginRight   = mar.right  + 'rem';
-    vizMiddle.style.background    = (bg && COLOR_MAP[bg]) ? COLOR_MAP[bg] : '';
-    // inner div = the content container (main.bg + main.padding)
-    const mainPadRem = mainPad ? (mainPad.endsWith('/') ? ((parseInt(mainPad)||0)+0.5)+'rem' : (parseInt(mainPad)||0)+'rem') : '0';
-    vizInner.style.padding     = mainPadRem;
-    vizInner.style.background  = (mainBg && COLOR_MAP[mainBg]) ? COLOR_MAP[mainBg] : 'rgba(0,0,0,0.04)';
-    vizInner.style.borderColor = (mainBg && COLOR_MAP[mainBg]) ? 'rgba(0,0,0,.15)' : '#94a3b8';
+    const mpRem   = toRem(mainPad) + 'rem';
+    vizInner.style.background   = (mainBg && COLOR_MAP[mainBg]) ? COLOR_MAP[mainBg] : 'transparent';
+    vizInner.style.padding      = mpRem;
+    vizInner.style.borderColor  = (mainBg && COLOR_MAP[mainBg]) ? 'rgba(0,0,0,.2)' : '#10b981';
   }
 
   // basic: padding + margin_y
@@ -1544,7 +1601,7 @@ function renderMainForm(form, node, formRef) {
 
   // extra classes (advanced)
   const classesAdv = document.createElement('div'); classesAdv.className = 'cb-advanced-only cb-field-group'; classesAdv.style.marginTop = '14px';
-  classesAdv.appendChild(field('Classes extras', 'separadas por espaço', textInput(main.classes, v => updateMain('classes', v))));
+  classesAdv.appendChild(field('Classes do conteúdo principal', 'ex: flex-center shadow', textInput(main.classes, v => updateMain('classes', v))));
   form.appendChild(classesAdv);
 }
 
@@ -1739,14 +1796,14 @@ function renderDynamicForm(form, node, t) {
 
   // SLIDER_SEDES
   if (t === 'slider_sedes') {
-    form.appendChild(sectionDivider('⚡ Slider de Sedes', ''));
+    form.appendChild(sectionDivider('⚡ Carrossel de Sedes', ''));
     form.appendChild(field('Título', 'opcional', textInput(node.title, v => updateNodeField('title', v))));
     return;
   }
 
   // SLIDER_SUBEVENTOS
   if (t === 'slider_subeventos') {
-    form.appendChild(sectionDivider('⚡ Slider de Subeventos (Ligas)', ''));
+    form.appendChild(sectionDivider('⚡ Carrossel de Subeventos (Ligas)', ''));
     form.appendChild(field('Título', 'opcional', textInput(node.title, v => updateNodeField('title', v))));
     const eventoOpts = [
       {value:'',label:'Todos'},
@@ -1762,7 +1819,7 @@ function renderDynamicForm(form, node, t) {
 
   // SLIDER_FUNCIONARIOS
   if (t === 'slider_funcionarios') {
-    form.appendChild(sectionDivider('⚡ Slider de Funcionários', ''));
+    form.appendChild(sectionDivider('⚡ Carrossel de Funcionários', ''));
     form.appendChild(field('Título', 'opcional', textInput(node.title, v => updateNodeField('title', v))));
     renderTagsField(form, node, 'tags', '/admin/app/tagfuncionario/');
     const sizeOpts = [{value:'small',label:'Pequeno'},{value:'medium',label:'Médio'},{value:'large',label:'Grande'}];
@@ -1772,7 +1829,7 @@ function renderDynamicForm(form, node, t) {
 
   // SLIDER_ARQUIVOS
   if (t === 'slider_arquivos') {
-    form.appendChild(sectionDivider('⚡ Slider de Arquivos', ''));
+    form.appendChild(sectionDivider('⚡ Carrossel de Arquivos', ''));
     form.appendChild(field('Título', 'opcional', textInput(node.title, v => updateNodeField('title', v))));
     renderTagsField(form, node, 'tags', '/admin/app/tagarquivo/');
     return;
@@ -1782,7 +1839,7 @@ function renderDynamicForm(form, node, t) {
   if (t === 'dynamic_noticias') {
     form.appendChild(sectionDivider('⚡ Notícias', ''));
     renderTagsField(form, node, 'tag_ids', '/admin/app/tagnoticia/');
-    const limWrap = document.createElement('div'); limWrap.className = 'cb-grid-2';
+    const limWrap = document.createElement('div'); limWrap.className = 'cb-grid-2'; limWrap.style.alignItems = 'end';
     limWrap.appendChild(field('Número de itens', 'máx. 20', (() => {
       const inp = document.createElement('input'); inp.type='number'; inp.className='cb-input';
       inp.value = node.limit || ''; inp.placeholder = 'ex: 6'; inp.min='1'; inp.max='20';
@@ -1791,6 +1848,7 @@ function renderDynamicForm(form, node, t) {
     })()));
     const paginacaoWrap = document.createElement('div');
     paginacaoWrap.className = 'cb-field-group';
+    paginacaoWrap.style.cssText = 'display:flex;align-items:center;padding-bottom:4px;';
     paginacaoWrap.appendChild(checkboxField('Paginação', node.pagination, v => updateNodeField('pagination', v)));
     limWrap.appendChild(paginacaoWrap);
     form.appendChild(limWrap);
@@ -1798,9 +1856,9 @@ function renderDynamicForm(form, node, t) {
 
   // DYNAMIC_ARQUIVOS
   if (t === 'dynamic_arquivos') {
-    form.appendChild(sectionDivider('⚡ Arquivos', ''));
+    form.appendChild(sectionDivider('⚡ Lista de Arquivos', ''));
     renderTagsField(form, node, 'tag_ids', '/admin/app/tagarquivo/');
-    const limWrap = document.createElement('div'); limWrap.className = 'cb-grid-2';
+    const limWrap = document.createElement('div'); limWrap.className = 'cb-grid-2'; limWrap.style.alignItems = 'end';
     limWrap.appendChild(field('Número de itens', 'máx. 20', (() => {
       const inp = document.createElement('input'); inp.type='number'; inp.className='cb-input';
       inp.value = node.limit || ''; inp.placeholder = 'ex: 6'; inp.min='1'; inp.max='20';
@@ -1809,6 +1867,7 @@ function renderDynamicForm(form, node, t) {
     })()));
     const paginacaoWrap = document.createElement('div');
     paginacaoWrap.className = 'cb-field-group';
+    paginacaoWrap.style.cssText = 'display:flex;align-items:center;padding-bottom:4px;';
     paginacaoWrap.appendChild(checkboxField('Paginação', node.pagination, v => updateNodeField('pagination', v)));
     limWrap.appendChild(paginacaoWrap);
     form.appendChild(limWrap);
@@ -2051,25 +2110,31 @@ function showAddChildPicker(parentPath, treeNodeWrap) {
   treeNodeWrap.appendChild(picker);
 }
 
-function showAddChildPickerInline(form, parentPath) {
+function showAddChildPickerInline(form, parentPath, triggerBtn) {
   document.querySelectorAll('.cb-inline-picker-form').forEach(e => e.remove());
 
   const picker = document.createElement('div');
   picker.className = 'cb-inline-picker-form';
-  picker.style.cssText = 'border:2px solid #bfdbfe;border-radius:8px;padding:14px;background:#eff6ff;margin-top:10px;';
+  picker.style.cssText = 'border:2px solid #bfdbfe;border-radius:8px;padding:14px;background:#eff6ff;margin-top:8px;';
 
-  const title = document.createElement('div');
-  title.style.cssText = 'font-size:11px;font-weight:700;color:#1d4ed8;margin-bottom:10px;';
-  title.innerHTML = '<i class="fa fa-plus-circle" style="margin-right:5px;"></i>Adicionar componente:';
-  picker.appendChild(title);
+  const titleEl = document.createElement('div');
+  titleEl.style.cssText = 'font-size:11px;font-weight:700;color:#1d4ed8;margin-bottom:10px;';
+  titleEl.innerHTML = '<i class="fa fa-plus-circle" style="margin-right:5px;"></i>Adicionar componente:';
+  picker.appendChild(titleEl);
 
   const grid = document.createElement('div');
   grid.className = 'cb-type-picker';
-
   _buildTypePicker(grid, parentPath, () => picker.remove());
-
   picker.appendChild(grid);
-  form.appendChild(picker);
+
+  // Insert right after the trigger button so it appears directly below it
+  const anchor = triggerBtn || null;
+  if (anchor && anchor.parentNode) {
+    anchor.parentNode.insertBefore(picker, anchor.nextSibling);
+  } else {
+    form.appendChild(picker);
+  }
+  picker.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
 }
 
 function _buildTypePicker(grid, parentPath, onClose) {
@@ -2144,7 +2209,7 @@ function addChildToNode(parentPath, type) {
 
 function createDefaultNode(type) {
   const base = { type };
-  if (type === 'section') return { type:'section', bg:'yang', main:{container:true}, components:[] };
+  if (type === 'section') return { type:'section', bg:'', main:{container:true}, components:[] };
   if (type === 'tabs') return { type:'tabs', style:'yin blue-secondary', tabs:[{id:'tab-1',label:'Tab 1',icon:'file-o',content:''}] };
   if (type === 'accordion') return { type:'accordion', style:'yang red-secondary', tabs:[{id:'ac-1',label:'Accordion 1',icon:'cog',content:''}] };
   if (type === 'carousel') return { type:'carousel', style:'yin orange', tabs:[{id:'slide-1',label:'Slide 1',image:'',content:''}] };
@@ -2172,7 +2237,7 @@ function createDefaultNode(type) {
 // ADD ROOT SECTION
 // ============================================================
 function addRootSection() {
-  state.push({ type:'section', bg:'yang', main:{ container:true }, components:[] });
+  state.push({ type:'section', bg:'', main:{ container:true }, components:[] });
   syncTextarea(); renderTree();
 }
 
@@ -2302,6 +2367,154 @@ if (hdrInput) {
     const previewBtn = document.getElementById('cb-preview-btn');
     if (previewBtn) previewBtn.innerHTML = '<i class="fa fa-eye"></i> Pré-visualizar';
   });
+}
+
+// ============================================================
+// CSS CLASSES HELP PANEL
+// ============================================================
+function buildClassesHelp() {
+  const body = document.getElementById('cb-classes-help-body');
+  if (!body) return;
+
+  const sections = [
+    {
+      title: '🎨 Cores de fundo',
+      hint: 'Aplicar na <strong>seção</strong> ou no <strong>conteúdo principal</strong>',
+      items: [
+        ['bg-yin', 'Fundo escuro (yin)'],
+        ['bg-yang', 'Fundo claro (yang)'],
+        ['bg-blue', 'Azul'],['bg-blue-secondary', 'Azul secundário'],
+        ['bg-red', 'Vermelho'],['bg-red-secondary', 'Vermelho secundário'],
+        ['bg-yellow', 'Amarelo'],['bg-yellow-secondary', 'Amarelo secundário'],
+        ['bg-gray', 'Cinza'],['bg-gray-secondary', 'Cinza secundário'],
+        ['bg-orange', 'Laranja'],['bg-orange-secondary', 'Laranja secundário'],
+        ['bg-green', 'Verde'],['bg-green-secondary', 'Verde secundário'],
+      ]
+    },
+    {
+      title: '✍️ Cores de texto',
+      hint: 'Sobrescreve a cor do texto',
+      items: [
+        ['text-yin','Texto escuro'],['text-yang','Texto claro'],
+        ['text-blue','Azul'],['text-blue-secondary','Azul sec.'],
+        ['text-red','Vermelho'],['text-red-secondary','Vermelho sec.'],
+        ['text-yellow','Amarelo'],['text-green','Verde'],
+        ['text-gray','Cinza'],['text-orange','Laranja'],
+      ]
+    },
+    {
+      title: '📐 Dimensões',
+      hint: 'Larguras e alturas (baseadas em <code>--default-measure</code>)',
+      items: [
+        ['w-full','Largura 100%'],['h-full','Altura 100%'],
+        ['w-fit','Largura ajustada'],['h-fit','Altura ajustada'],
+        ['w-1','Largura 1×'],['w-2','Largura 2×'],['w-3','Largura 4×'],['w-4','Largura 8×'],['w-5','Largura 16×'],
+        ['h-1','Altura 1×'],['h-2','Altura 2×'],['h-3','Altura 4×'],
+      ]
+    },
+    {
+      title: '↔️ Flex — layout',
+      hint: 'Aplicar na <strong>seção</strong> ou no <strong>conteúdo principal</strong> para organizar filhos lado a lado',
+      items: [
+        ['flex','Lado a lado (todos iguais)'],['flex-soft','Lado a lado (adaptável)'],
+        ['flex-row','Linha →'],['flex-column','Coluna ↓'],
+        ['flex-reverse','Linha invertida ←'],['flex-reverse-column','Coluna invertida ↑'],
+        ['flex-wrap','Quebra de linha'],
+        ['flex-center','Centralizado'],['flex-start','Início'],['flex-end','Fim'],
+        ['flex-between','Espaço entre'],['flex-around','Espaço ao redor'],['flex-evenly','Espaço igual'],
+      ]
+    },
+    {
+      title: '📱→🖥️ Flex — desktop (prefixo desktop:)',
+      hint: 'Mesmas classes acima mas só aplicam em telas ≥ 768px. Ex: <code>desktop:flex</code>',
+      items: [
+        ['desktop:flex','Lado a lado no desktop'],['desktop:flex-soft','Adaptável no desktop'],
+        ['desktop:flex-column','Coluna no desktop'],['desktop:flex-reverse','Invertido no desktop'],
+        ['desktop:flex-center','Centralizado no desktop'],['desktop:flex-between','Espaço entre (desktop)'],
+        ['desktop:flex-wrap','Quebra linha no desktop'],
+      ]
+    },
+    {
+      title: '📦 Espaçamento — padding',
+      hint: 'Valores: 0, 0/, 1, 1/, 2, 2/, 3, 3/, 4, 4/, 5',
+      items: [
+        ['padding-{n}','Padding todos os lados'],
+        ['padding-x-{n}','Padding horizontal'],
+        ['padding-y-{n}','Padding vertical'],
+        ['padding-t-{n}','Padding topo'],
+        ['padding-b-{n}','Padding baixo'],
+      ]
+    },
+    {
+      title: '📦 Espaçamento — margin',
+      hint: 'Cascata: <code>margin</code> > <code>margin-x/y</code> > <code>margin-t/b</code>',
+      items: [
+        ['margin-{n}','Margin todos os lados'],
+        ['margin-x-{n}','Margin horizontal'],
+        ['margin-y-{n}','Margin vertical'],
+        ['margin-t-{n}','Margin topo (override!)'],
+        ['margin-b-{n}','Margin baixo (override!)'],
+        ['inside-top','Sobrepõe seção acima (−5 rem)'],
+        ['inside-bottom','Sobrepõe seção abaixo (−5 rem)'],
+      ]
+    },
+    {
+      title: '🔤 Tamanho de texto',
+      items: [
+        ['text-small','Pequeno'],['text-default','Padrão'],['text-medium','Médio'],
+        ['text-large','Grande'],['text-xlarge','Extra grande'],['text-xxlarge','2× grande'],
+      ]
+    },
+    {
+      title: '🔤 Peso de texto',
+      items: [
+        ['thin / text-200','200'],['extra-light / text-300','300'],['light / text-400','400'],
+        ['regular / text-500','500'],['semibold / text-600','600'],['bold / text-700','700'],
+        ['extra-bold / text-800','800'],['black / text-900','900'],['italic','Itálico'],
+      ]
+    },
+    {
+      title: '↕️ Alinhamento de texto',
+      items: [
+        ['text-align-center','Centralizado'],['text-align-left','Esquerda'],
+        ['text-align-right','Direita'],['text-align-justify','Justificado'],
+      ]
+    },
+    {
+      title: '✨ Outros',
+      items: [
+        ['shadow','Sombra'],['shadow-hover','Sombra ao hover'],
+        ['text-shadow','Sombra no texto'],['text-shadow-darker','Sombra mais forte'],
+        ['border-radius','Bordas arredondadas (com overflow hidden)'],
+        ['cross-rounded','Arredondado cruzado (top-left + bottom-right)'],
+        ['container','Limita largura ao container da página'],
+        ['mobile-only','Visível só no celular'],['desktop-only','Visível só no desktop'],
+      ]
+    },
+    {
+      title: '🔲 Bordas',
+      hint: 'Espessura de borda (valores: 0, 0/, 1 … 5)',
+      items: [
+        ['border-{n}','Borda em todos os lados'],
+        ['header-line','Linha inferior fina'],
+      ]
+    },
+  ];
+
+  let html = '<div style="padding:14px;display:flex;flex-direction:column;gap:14px;">';
+  sections.forEach(s => {
+    html += `<div>
+      <div style="font-size:11px;font-weight:700;margin-bottom:4px;">${s.title}</div>
+      ${s.hint ? `<div style="font-size:10px;color:#64748b;margin-bottom:6px;">${s.hint}</div>` : ''}
+      <div style="display:flex;flex-wrap:wrap;gap:4px;">
+        ${s.items.map(([cls, desc]) =>
+          `<div title="${desc}" style="background:#f1f5f9;border:1px solid #e2e8f0;border-radius:4px;padding:2px 7px;font-size:10px;font-family:monospace;cursor:default;white-space:nowrap;" title="${desc}">${cls}</div>`
+        ).join('')}
+      </div>
+    </div>`;
+  });
+  html += '</div>';
+  body.innerHTML = html;
 }
 
 // ============================================================

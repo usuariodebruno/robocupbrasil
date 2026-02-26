@@ -88,18 +88,6 @@ class Evento(models.TextChoices):
     ROBOCUP_BRASIL = 'RoboCup Brasil', 'RoboCup Brasil'
     TODOS = 'Todos', 'Todos'
 
-    @property
-    def cor(self):
-        cores = {
-            'MNR': '#00ff00',
-            'CBR': '#00ffff',
-            'OBR': '#ff4d00',
-            'Robotica': '#0000ff',
-            'RoboCup Brasil': '#0000ff',
-            'Todos': '#0000ff',
-        }
-        return cores.get(self.value, '#000000')
-
 class Regiao(models.TextChoices):
     AC = 'AC', 'Acre'
     AL = 'AL', 'Alagoas'

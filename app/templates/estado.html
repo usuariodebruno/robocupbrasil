@@ -15,147 +15,46 @@
 {% endblock %}
 
 {% block content %}   
-    <!-- Tipos diferentes de Section -->
-    <!-- Exemplo de section com background colorido -->
-    <section class="bg-yin">
-        asdsaad
-        <!-- conteúdo aqui -->
+    <section class="mobile-only flex flex-center{% if reference|lower != 'mnr' %} padding-b-3{% endif %}">
+        <h1 class="margin-0 header-line ribbon-{{reference|lower}} padding-1 state-header text-align-center">
+            {{ nome_estado }}
+        </h1>
     </section>
-
-    <!-- Espaçamento customizado de margem e padding baseado no rcb.css: (0, 0.5, 1, 1.5, 2, 2.5, 3, 3.5, 4, 4.5, 5) (no caso a classe dos meios usa o caractere "/") -->
-    <section class="margin-y-4 padding-3 bg-blue">
-        <!-- conteúdo aqui -->
-         sadsadasd
-    </section>
-
-    <!-- propriedade inside-top / inside-bottom para colocar um container dentro do outro -->
-    <section class="padding-y-5 bg-gray-secondary inside-top">
-        <!-- conteúdo aqui -->
-        asdasdasd
-    </section>
-
-    <!-- detalhes na borda da seção -->
-    <section class="margin-y-5 bg-orange-secondary">
-        <!-- toda seção pode ter um (ou mais) objetos na borda que pode receber classes de posicionamento (padrão é centro) e você pode usar apenas computadores ou apenas celulares (ou não colocar nada e ser sempre visível) -->
-        <!-- objetos na borda podem ser de quatro tipos: cbr, mnr, obr, rcb -->
-        <!-- a seção não necessariamente precisa de um objeto na borda -->
-        <!-- verificar rcb.css para ver quais combinações são possíveis para cada tipo (por exemplo spin e cut só pode para rcb e OBR), não sei se tem outros que valem pros outros tb -->
-        <border-detail class="container obr blue top small spin desktop-only margin-t-1/"></border-detail>
-        <!-- conteúdo aqui -->
-        asdasdasd
-    </section>
-
-    <!-- dynamic containers (cabem outros containers dentro de containers, a ideia é que você possa colocar tabs dentro de tabs e containers dentro de containers) -->
-    <section id="dummy">
-        <main class="bg-yang"> <!-- pode ter a classe container ou não, se uma section tiver a classe container a classe vai no que seria o main dela -->
-            <!-- 1. TABS // recebe estilo yin ou yang e acompanha uma cor principal -->
-            {% include "components/content/tabs.html" with style_classes="yin blue-secondary" tabs=tabs %}
-            
-            <!-- 2. ACCORDION (recebe id, label, icon, content) // recebe estilo yin ou yang e acompanha uma cor principal -->
-            {% include "components/content/accordion.html" with style_classes="yang red-secondary" tabs=tabs opened='true' %}
-
-            <!-- 3. CAROUSEL (recebe id, label, image, content) // recebe estilo yin ou yang e acompanha uma cor principal -->
-            {% include "components/content/carousel.html" with style_classes="yin orange" tabs=tabs %}
-        </main>
+    <section class="margin-t-4 desktop:margin-t-3">
+        <section class="container flex-soft flex-center desktop:flex-start">
+            <div class="padding-0/ border-radius large bg-blue w-fit inside-bottom">
+                {% if reference|lower == 'obr' %}
+                    <border-detail class="container obr blue top small spin desktop:hidden margin-t-1/"></border-detail>
+                {% elif reference|lower == 'cbr' %}
+                    <border-detail class="container cbr blue top left small desktop:hidden margin-t-1/"></border-detail>
+                {% elif reference|lower == 'mnr' %}
+                    <border-detail class="container mnr blue top small desktop:hidden"></border-detail>
+                {% else %}
+                    <border-detail class="container rcb blue top small desktop:hidden margin-t-0/"></border-detail>
+                {% endif %}
+                {% with flag_path="images/bandeiras/"|add:sigla|lower|add:".png" state_path="images/estados/"|add:sigla|lower|add:".png" %}
+                    {% include "components/content/state_header_image.html" with flag_path=flag_path state_path=state_path sigla=sigla %}
+                {% endwith %}
+            </div>
+            <h1 class="desktop-only margin-0 header-line ribbon-{{reference|lower}} padding-x-1 padding-y-0/ state-header">{{ nome_estado }}</h1>
+        </section>
+        <section class="bg-blue">
+            {% if reference|lower == 'obr' %}
+                <border-detail class="container obr blue top right big hidden spin desktop:shown margin-t-1/"></border-detail>
+            {% elif reference|lower == 'cbr' %}
+                <border-detail class="container cbr blue top right big hidden desktop:shown margin-t-2/"></border-detail>
+            {% elif reference|lower == 'mnr' %}
+                <border-detail class="container mnr blue top right big hidden desktop:shown"></border-detail>
+            {% else %}
+                <border-detail class="container rcb blue top right big hidden desktop:shown margin-t-0/"></border-detail>
+            {% endif %}
+            <div class="container padding-t-5 padding-b-2">
+                {% include "components/content/tabs.html" with style_classes="yin blue-secondary" tabs=tabs %}
+            </div>
+        </section>
     </section>
     
-    <!-- 4. FLEX -->
-    <section id="dummy">
-        <main class="bg-yin flex flex-wrap gap-2 padding-3"> <!-- pode ter a classe container ou não, se uma section tiver a classe container a classe vai no main dela, junto com os estilos flex -->
-            <!-- os estilos de flex para o <main> estão no rcb.css -->
-            <!-- 
-                flex-center, flex-start, flex-end, flex-between, flex-around, flex-evenly, flex-wrap, flex-reverse, flex-row, flex-column, flex-center, flex-start, flex-end, flex-between, flex-around, flex-evenly, flex-wrap, flex-reverse, flex-row, flex-column
-                e todas essas classes tem sua versão "desktop:", para só surtirem efeito a partir do breakpoint desktop (768px) - exemplo: desktop:flex-row, desktop:flex-center, etc
-            -->
-        </main>
-    </section>
-
-
-    <!-- CONTAINER -->
-    <section class="bg-yang">
-        <div class="container">
-            <!-- COMPONENTS (toda seção pode ter) -->
-
-            <!-- componentes dinâmicos, recebem um query de tags de filtro de item, pagination=true/false se for arquivo ou noticias -->
-            {% include "components/dynamic/slider.html" with items=funcionarios item_template='components/dynamic/sliders/slider_item_funcionario.html' size='small' %} <!-- size é small, large ou medium -->
-
-            {% include "components/dynamic/slider.html" with items=arquivos item_template='components/dynamic/sliders/slider_item_arquivo.html' theme_primary='blue-secondary' theme_secondary='green-secondary' theme_foreground='yang' %} <!-- exemplo de como passar temas para o item específico, não é necessário, mas recebe as cores basicas do projeto -->
-
-            {% include "components/dynamic/slider.html" with items=sedes item_template='components/dynamic/sliders/slider_item_sede.html' theme_primary='green-secondary' theme_foreground='yang' %} <!-- exemplo de como passar temas para o item específico, não é necessário, mas recebe as cores basicas do projeto -->
-
-            {% include "components/dynamic/slider.html" with items=subeventos item_template='components/dynamic/sliders/slider_item_subevento.html' %}
-
-            {% include "components/dynamic/arquivo.html" with arquivo=arquivo %}
-
-            {% include "components/dynamic/noticias.html" with noticias=noticias pagination='true' %} <!-- também aceita os componentes de theme_primary='green-secondary' theme_foreground='yang' -->
-
-            {% include "components/dynamic/arquivos.html" with arquivos=arquivos pagination='true' theme_primary='blue-secondary' theme_secondary='green-secondary' theme_foreground='yang' %} <!-- exemplo de como passar temas para o item específico, não é necessário, mas recebe as cores basicas do projeto -->
-
-            {% include "components/dynamic/calendar.html" with datas=datas theme_primary='blue-secondary' theme_secondary='green-secondary' theme_foreground='yin' %} <!-- novamente exemplos de estilos, o ideal é sempre não usar estilos -->
-
-            {% include "components/dynamic/texto.html" with theme_foreground='yin' conteudo="<h2>Título do Conteúdo</h2><p>Este é um parágrafo com <strong>texto em negrito</strong> e <em>texto em itálico</em>.</p><h3>Subtítulo</h3><ul><li>Item 1 da lista</li><li>Item 2 da lista</li><li>Item 3 da lista</li></ul><p><a href='#'>Link dentro do texto</a></p>" %}
-
-            <!-- componentes de conteúdo - TESTES -->
-            
-            <!-- 1. HEADER COMPONENT - Exemplos de variações -->
-            {% include "components/content/header.html" with titulo="Header RCB Padrão" theme="rcb" alignment="center" fullwidth=False %}
-            
-            {% include "components/content/header.html" with titulo="Header Full Width" theme="obr" alignment="center" fullwidth=True %}
-            
-            {% include "components/content/header.html" with titulo="Header Alinhado à Esquerda" theme="cbr" alignment="start" fullwidth=False %}
-            
-            {% include "components/content/header.html" with titulo="Header MNR Alinhado à Direita" theme="mnr" alignment="end" fullwidth=False %}
-
-            <!-- 2. IMAGEM COMPONENT - Com e sem link clicável -->
-            <!-- Imagem Simples:</p> -->
-            {% include "components/content/imagem.html" with imagem=imagem_estado titulo="Imagem do Estado" clicavel=False rounded=True %}
-            
-            <!-- Imagem Clicável com Link Interno: -->
-            {% include "components/content/imagem.html" with imagem=imagem_estado titulo="Clique aqui para ver mais" clicavel=True link="/" blank=False rounded=False %}
-            
-            <!-- Imagem Clicável com Link Externo (Nova Aba): -->
-            {% include "components/content/imagem.html" with imagem=imagem_estado titulo="Clique para acessar RoboCup" clicavel=True link="https://robocup.org.br" blank=True rounded=False %}
-
-            <!-- 3. MAPA COMPONENT - Com coordenadas (exemplo: São Paulo) -->
-            {% include "components/content/mapa.html" with latitude="-23.5505" longitude="-46.6333" id="mapa-exemplo" %}
-
-            <!-- 4. YOUTUBE COMPONENT - Vídeo do YouTube (pode ser arredondado) -->
-        
-            {% include "components/content/youtube.html" with video_id="pcI8_HCMNSw" rounded=True %}
-
-            <!-- 5. BUTTON ROUNDED - Variações de temas e com/sem ícone -->
-            {% include "components/content/button_rounded.html" with texto="Botão Yellow" theme="yellow" icon="star" href="/" blank=False %}
-        
-            {% include "components/content/button_rounded.html" with texto="Botão Blue" theme="blue" icon="heart" href="/" blank=False %}
-        
-            {% include "components/content/button_rounded.html" with texto="Botão Yin" theme="yin" href="/" blank=False %}
-        
-            {% include "components/content/button_rounded.html" with texto="Botão Red com Link Externo" theme="red" icon="external-link" href="https://robocup.org.br" blank=True %}
-
-            <!-- 6. BUTTON SQUARE - Com ícone, título e descrição -->
-            {% include "components/content/button_square.html" with href="#" theme_primary='blue' theme_secondary='green' theme_foreground='yang' titulo="Robótica" descricao="Competições de robótica avançada" %}
-        
-            {% include "components/content/button_square.html" with href="#" icon="trophy" titulo="Prêmios" descricao="Conheça os reconhecimentos conquistados" %}
-        
-            {% include "components/content/button_square.html" with href="#" icon="users" titulo="Comunidade" descricao="Faça parte do nosso movimento" %}
-
-            <!-- 7. BUTTON INLINE - Variações de temas e cores -->
-            {% include "components/content/button_inline.html" with texto="Botão Padrão" theme="yang" color="yin" href="/" blank=False %}
-            
-            {% include "components/content/button_inline.html" with texto="Botão Blue" theme="yang" color="blue" icon="arrow-right" href="/" blank=False %}
-            
-            {% include "components/content/button_inline.html" with texto="Botão com Externe" theme="yin" color="yellow" icon="external-link" href="https://robocup.org.br" blank=True %}
-            
-            {% include "components/content/button_inline.html" with texto="Botão Shrink" theme="yang" color="red" shrink=True href="/" blank=False %}
-            
-            {% include "components/content/button_inline.html" with texto="Botão Green" theme="yang" color="green" icon="check" href="/" blank=False %}
-
-            <!-- 8. CONTEUDO SQUARE - Card com imagem, título, descrição e botão -->
-            {% include "components/content/conteudo_square.html" with theme_primary='blue' theme_secondary='green' theme_foreground='yang' imagem=imagem_estado titulo="Card com Imagem Esquerda" descricao="Este é um card de conteúdo com a imagem posicionada à esquerda no desktop." inline_text="Saiba Mais" inline_href="/" inline_color="blue" image_align_mobile='top' image_align_desktop='left' text_align="start" %}
-            
-            {% include "components/content/conteudo_square.html" with imagem=imagem_estado titulo="Card com Imagem Direita" descricao="Este é um card com a imagem posicionada à direita." inline_text="Clique Aqui" inline_href="https://robocup.org.br" inline_color="yellow" inline_theme="yang" image_align_mobile='bottom' image_align_desktop='right' text_align="start" %}
-            
-            {% include "components/content/conteudo_square.html" with imagem=imagem_estado titulo="Card com Imagem Centralizada" descricao="Este card tem a imagem centralizada e o texto alinhado ao centro." inline_text="Mais Info" inline_href="/" inline_color="green" text_middle=True text_align="center" image_align_mobile='top' image_align_desktop='center' %}
-        </div>
+    <section class="container margin-t-1">        
+        {{ conteudo }}
     </section>
 {% endblock %}

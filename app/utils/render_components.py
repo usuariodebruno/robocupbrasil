@@ -212,7 +212,7 @@ def render_components_to_html(componentes, extra_context=None):
             continue
 
         # static content widgets
-        if t in ('tabs', 'accordion', 'carousel'):
+        if t in ('tabs', 'accordion', 'carousel', 'state_header_image'):
             # carousel historically used "slides" key in JSON, but the
             # template expects "tabs" (it reuses the tabs code).  alias if
             # necessary so both work.

@@ -73,6 +73,8 @@
             min-width: 14rem;
         }
 
+        .collapse-content.max-w-screen-lg { max-width: none !important; }
+
         @media (min-width: 768px) {
 
             #sidebar {
@@ -105,7 +107,6 @@
 
         @media (min-width: 1536px) {
             #smartToggle:hover { background: #5688be80; }
-            fieldset .collapse-content { max-width: unset !important; }
             .grid.grid-cols-1.\32 xl\:grid-cols-4.gap-3.auto-rows-auto { display: flex !important; }
             .save-col {
                 max-width: 64px;
@@ -174,11 +175,6 @@
     {{ block.super }}
     <script>
         document.addEventListener("DOMContentLoaded", function() {
-            const fieldsets = document.querySelectorAll("form fieldset");
-            if (fieldsets.length > 2) {
-                document.querySelectorAll("form fieldset > input").forEach(input => input.click());
-            }
-
             const activeItem = document.querySelector("#sidebar details .menu-active");
             if (activeItem) {
                 const parentDetails = activeItem.closest("details");

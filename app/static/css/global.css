@@ -221,7 +221,7 @@ header main {
     flex-wrap: wrap;
     justify-content: space-between;
     align-items: center;
-    margin: calc(var(--default-measure) * 0.5);
+    margin: calc(var(--default-measure) * 0.75);
     padding: calc(var(--default-measure) * 0.75);
     transition: opacity 70ms ease-in-out;
     opacity: 1;

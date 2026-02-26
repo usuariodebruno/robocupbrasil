@@ -1,5 +1,6 @@
 from django.contrib import admin
 from django.contrib.auth.models import User, Group, Permission
+from django.utils.safestring import mark_safe
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.core.exceptions import ValidationError
 from django import forms
@@ -236,12 +237,19 @@ class TagNoticiaAdmin(admin.ModelAdmin):
 
 @admin.register(Noticia)
 class NoticiaAdmin(admin.ModelAdmin):
-    list_display = ['titulo', 'data', 'get_tags', 'header_type']
+    list_display = ['titulo', 'data', 'get_tags', 'header_type', 'view_link']
     list_filter = ['header_type', 'tags']
     search_fields = ['titulo', 'conteudo']
     date_hierarchy = 'data'
     filter_horizontal = ['tags']
     list_per_page = 50
+
+    def view_link(self, obj):
+        if obj.permalink:
+            url = obj.get_absolute_url()
+            return mark_safe(f"<a href='{url}' target='_blank' rel='noopener'><i class='fa fa-eye'></i></a>")
+        return ''
+    view_link.short_description = 'Ver'
 
     def get_tags(self, obj):
         return "; ".join([f"{tag.id} - {tag.nome}" for tag in obj.tags.all()])
@@ -387,10 +395,17 @@ class ArquivoAdmin(RolePermissionMixin, admin.ModelAdmin):
 
 @admin.register(Subevento)
 class SubeventoAdmin(RolePermissionMixin, admin.ModelAdmin):
-    list_display = ['nome', 'evento']
+    list_display = ['nome', 'evento', 'view_link']
     list_filter = ['evento']
     search_fields = ['nome']
     list_per_page = 50
+
+    def view_link(self, obj):
+        if obj.permalink:
+            url = obj.get_absolute_url()
+            return mark_safe(f"<a href='{url}' target='_blank' rel='noopener'><i class='fa fa-eye'></i></a>")
+        return ''
+    view_link.short_description = 'Ver'
 
     def get_queryset(self, request):
         qs = super().get_queryset(request)
@@ -520,7 +535,12 @@ class ComponentesWidget(forms.Textarea):
 
 @admin.register(Pagina)
 class PaginaAdmin(admin.ModelAdmin):
-    list_display = ['nome', 'slug', 'parent', 'header_type', 'privada', 'evento_associado']
+    list_display = ['nome', 'slug', 'parent', 'header_type', 'privada', 'evento_associado', 'view_link']
+
+    def view_link(self, obj):
+        url = obj.get_absolute_url()
+        return mark_safe(f"<a href='{url}' target='_blank' rel='noopener'><i class='fa fa-eye'></i></a>")
+    view_link.short_description = 'Ver'
     list_filter = ['header_type', 'privada', 'evento_associado']
     search_fields = ['nome', 'slug']
     list_per_page = 50
@@ -563,7 +583,13 @@ class PaginaAdmin(admin.ModelAdmin):
 
 @admin.register(Sede)
 class SedeAdmin(RolePermissionMixin, admin.ModelAdmin):
-    list_display = ['ano', 'cidade', 'estado']
+    list_display = ['ano', 'cidade', 'estado', 'view_link']
+    fields = ('ano','cidade','estado','foto','componentes')
+
+    def view_link(self, obj):
+        url = obj.get_absolute_url()
+        return mark_safe(f"<a href='{url}' target='_blank' rel='noopener'><i class='fa fa-eye'></i></a>")
+    view_link.short_description = 'Ver'
     ordering = ['-ano']
     list_per_page = 50
 
@@ -584,6 +610,12 @@ class SedeAdmin(RolePermissionMixin, admin.ModelAdmin):
 
 @admin.register(PaginaEstado)
 class PaginaEstadoAdmin(RolePermissionMixin, admin.ModelAdmin):
+    list_display = ['estado', 'view_link']
+
+    def view_link(self, obj):
+        url = obj.get_absolute_url()
+        return mark_safe(f"<a href='{url}' target='_blank' rel='noopener'><i class='fa fa-eye'></i></a>")
+    view_link.short_description = 'Ver'
     list_display = ['estado', 'get_estado_display']
     search_fields = ['estado']
     list_per_page = 50

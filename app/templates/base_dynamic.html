@@ -2,7 +2,7 @@
 {% load static %}
 
 {% block title %}
-    {% firstof pagina.titulo pagina.nome %} |
+    {{ titulo }} |
     {% if header_type == 'OBR' %}
         Olimpíada Brasileira de Robótica
     {% elif header_type == 'CBR' %}

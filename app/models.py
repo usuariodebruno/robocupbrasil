@@ -11,20 +11,58 @@ def validate_file_size(f):
     if f and getattr(f, 'size', 0) > 64 * 1024 * 1024:
         raise ValidationError("Tamanho máximo do arquivo: 64MB.")
 
+def _normalize_internal_links(value):
+    """If a string URL points at one of our own hosts, strip the scheme+host.
+
+    Uses settings.ALLOWED_HOSTS to detect which domains are considered internal.
+    """
+    from django.conf import settings
+
+    if not isinstance(value, str):
+        return value
+    if value.startswith(('http://', 'https://')):
+        # separate scheme
+        scheme, rest = value.split('://', 1)
+        # separate domain and path
+        parts = rest.split('/', 1)
+        domain = parts[0]
+        path = '/' + parts[1] if len(parts) > 1 else ''
+        for host in getattr(settings, 'ALLOWED_HOSTS', []):
+            if not host:
+                continue
+            host_domain = host.split(':')[0]
+            if domain == host_domain or domain.endswith('.' + host_domain):
+                return path or '/'
+    return value
+
+
 def _sanitize_recursive(value):
-    """Walk through strings/lists/dicts raising ValidationError if forbidden patterns are found."""
+    """Walk through strings/lists/dicts returning sanitized value or raising ValidationError.
+
+    In addition to rejecting dangerous fragments, we normalize any internal
+    URLs so that e.g. "https://robocup.org.br/media/foo.png" becomes
+    "/media/foo.png".  This keeps component JSON lean and avoids round-trip
+    DNS lookups when the site is served.
+    """
     if isinstance(value, str):
         lowered = value.lower()
         if '<script' in lowered or 'onclick=' in lowered or 'onerror=' in lowered or 'onload=' in lowered:
             raise ValidationError(
                 "Conteúdo contém trechos proibidos (scripts/onclick/etc). Remova qualquer tag <script> ou atributos de evento."
             )
+        # normalize any in-site links
+        return _normalize_internal_links(value)
     elif isinstance(value, dict):
-        for v in value.values():
-            _sanitize_recursive(v)
+        for k, v in list(value.items()):
+            value[k] = _sanitize_recursive(v)
+        return value
     elif isinstance(value, (list, tuple)):
+        new_list = []
         for v in value:
-            _sanitize_recursive(v)
+            new_list.append(_sanitize_recursive(v))
+        return new_list
+    else:
+        return value
 
 class GlobalQueryMixin(models.Model):
     class Meta:
@@ -191,7 +229,7 @@ class Noticia(GlobalQueryMixin, models.Model):
 
     def clean(self):
         # ensure markdown content doesn't contain disallowed scripts or event attributes
-        _sanitize_recursive(self.conteudo)
+        self.conteudo = _sanitize_recursive(self.conteudo)
 
     def save(self, *args, **kwargs):
         self.clean()
@@ -314,7 +352,7 @@ class Subevento(GlobalQueryMixin, models.Model):
     componentes = models.JSONField(
         default=list,
         blank=True,
-        verbose_name="Configuração da Página",
+        verbose_name="Conteúdo da Página",
     )
     # cache field removed; dynamic rendering used instead
 
@@ -344,7 +382,7 @@ class Subevento(GlobalQueryMixin, models.Model):
 
     def clean(self):
         # sanitize componentes JSON
-        _sanitize_recursive(self.componentes)
+        self.componentes = _sanitize_recursive(self.componentes)
 
 class ConfiguracaoGlobal(models.Model):
     descricao = models.TextField(blank=True, verbose_name="Descrição da Página (para o Google e Rodapé)")
@@ -593,7 +631,7 @@ class Pagina(models.Model):
     componentes = models.JSONField(
         default=list,
         blank=True,
-        verbose_name="Configuração da Página",
+        verbose_name="Conteúdo da Página",
     )
     # removed HTML cache field
 
@@ -630,7 +668,7 @@ class Pagina(models.Model):
 
     def clean(self):
         # sanitize components JSON to avoid dangerous snippets
-        _sanitize_recursive(self.componentes)
+        self.componentes = _sanitize_recursive(self.componentes)
 
         from django.core.exceptions import ValidationError
 
@@ -646,10 +684,18 @@ class Sede(GlobalQueryMixin, models.Model):
     ano = models.CharField(max_length=4, help_text="Ano (ex: 2026)", unique=True)
     cidade = models.CharField(max_length=200)
     estado = models.CharField(max_length=2, choices=Regiao.choices)
+    foto = ResizedImageField(
+        size=[3000, 3000],
+        quality=75,
+        upload_to='sedes/',
+        blank=True,
+        verbose_name='Foto da Cidade-Sede (prop. ideal 16:9)',
+        help_text='Imagem usada no header; será redimensionada para no máximo 3000x3000 pixels.',
+    )
     componentes = models.JSONField(
         default=list,
         blank=True,
-        verbose_name="Configuração da Página",
+        verbose_name="Conteúdo da Página",
     )
     # removed HTML cache field
 
@@ -663,7 +709,11 @@ class Sede(GlobalQueryMixin, models.Model):
         return f"{self.ano} - {self.cidade}, {self.estado}"
 
     def clean(self):
-        _sanitize_recursive(self.componentes)
+        self.componentes = _sanitize_recursive(self.componentes)
+
+    def get_absolute_url(self):
+        # URL used by admin "Ver" link
+        return f"/sede/{self.ano}"
 
     @classmethod
     def get_sedes_list(cls):
@@ -678,7 +728,7 @@ class PaginaEstado(models.Model):
     componentes = models.JSONField(
         default=list,
         blank=True,
-        verbose_name="Configuração da Página",
+        verbose_name="Conteúdo da Página",
     )
 
     class Meta:
@@ -689,7 +739,7 @@ class PaginaEstado(models.Model):
         return f"Página de {self.get_estado_display()} ({self.estado})"
 
     def clean(self):
-        _sanitize_recursive(self.componentes)
+        self.componentes = _sanitize_recursive(self.componentes)
 
     def get_absolute_url(self):
         return f"/estado/{self.estado.lower()}"

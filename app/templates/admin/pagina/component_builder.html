@@ -570,7 +570,7 @@ function formatSpacingLabel(v) {
 const FA_ICONS = ['adjust','anchor','archive','arrow-circle-down','arrow-circle-left','arrow-circle-right','arrow-circle-up','arrow-down','arrow-left','arrow-right','arrow-up','asterisk','at','ban','bar-chart','bars','bell','bolt','book','bookmark','briefcase','bug','building','bullhorn','calendar','camera','caret-down','caret-left','caret-right','caret-up','certificate','chain','check','check-circle','check-square','chevron-circle-down','chevron-circle-left','chevron-circle-right','chevron-circle-up','chevron-down','chevron-left','chevron-right','chevron-up','circle','clock-o','cloud','cog','cogs','comment','comments','compress','copy','cube','cubes','cut','dashboard','database','desktop','dot-circle-o','download','edit','envelope','envelope-open','exchange','exclamation','exclamation-circle','exclamation-triangle','expand','external-link','eye','eye-slash','facebook','file','file-code-o','file-pdf-o','file-text','filter','flag','flask','folder','folder-open','forward','gear','gift','github','globe','graduation-cap','group','hand-o-right','heart','history','home','image','inbox','info','info-circle','instagram','key','laptop','leaf','level-down','level-up','link','linkedin','list','location-arrow','lock','magic','map','map-marker','medal','minus','minus-circle','mobile','money','moon-o','newspaper-o','paint-brush','paper-plane','paperclip','pencil','phone','picture-o','pie-chart','play','play-circle','plug','plus','plus-circle','print','puzzle-piece','question','question-circle','random','recycle','refresh','remove','repeat','reply','rocket','rss','save','search','send','share','share-alt','shield','shopping-cart','sign-in','sign-out','signal','sitemap','sort','spinner','star','star-o','table','tag','tags','tasks','th','thumbs-down','thumbs-up','times','times-circle','toggle-off','toggle-on','trash','trophy','truck','twitter','unlock','upload','user','user-plus','users','video-camera','warning','wifi','wrench','youtube-play'];
 
 // COMPONENT TYPES
-const CONTENT_TYPES = ['header','imagem','mapa','youtube','button_rounded','button_square','button_inline','conteudo_square','arquivo_viewer'];
+const CONTENT_TYPES = ['header','imagem','imagem_container','mapa','youtube','button_rounded','button_square','button_inline','conteudo_square','arquivo_viewer','html'];
 const DYNAMIC_TYPES = ['dynamic_noticias','dynamic_arquivos','dynamic_calendar','slider_sedes','slider_subeventos','slider_funcionarios','slider_arquivos'];
 const TEXTO_TYPE = ['dynamic_texto'];
 const CONTAINER_TYPES = ['tabs','accordion','carousel'];
@@ -591,6 +591,8 @@ const TYPE_LABELS = {
   button_inline: 'Botão Inline',
   conteudo_square: 'Cartão',
   arquivo_viewer: '📄 Visualizador de PDF',
+  imagem_container: '🖼️ Imagem Container',
+  html: '🧩 HTML Livre',
   dynamic_texto: '📝 Texto',
   dynamic_noticias: '⚡ Notícias',
   dynamic_arquivos: '⚡ Lista de Arquivos',
@@ -605,6 +607,7 @@ const TYPE_ICONS = {
   header: 'header', imagem: 'picture-o', mapa: 'map-marker', youtube: 'youtube-play',
   button_rounded: 'dot-circle-o', button_square: 'square', button_inline: 'minus',
   conteudo_square: 'th-large', arquivo_viewer: 'file-pdf-o',
+  imagem_container: 'picture-o', html: 'code',
   tabs: '🗂️', accordion: '🪗', carousel: '🎠',
   dynamic_texto: '✏️',
   dynamic_noticias: 'newspaper-o', dynamic_arquivos: 'folder-open', dynamic_calendar: 'calendar',
@@ -758,6 +761,8 @@ function nodeLabel(node) {
   if (t === 'button_inline') return `🔲 Botão Inline${node.texto ? ': '+node.texto.slice(0,15) : ''}`;
   if (t === 'conteudo_square') return `🃏 Cartão${node.titulo ? ': '+node.titulo.slice(0,15) : ''}`;
   if (t === 'arquivo_viewer') return `📄 PDF Visualizador`;
+  if (t === 'imagem_container') return `🖼️ Imagem Container`;
+  if (t === 'html') return `🧩 HTML`;
   if (t === 'dynamic_texto') return `📝 Texto`;
   if (t === 'dynamic_noticias') return `⚡ Notícias`;
   if (t === 'dynamic_arquivos') return `⚡ Lista de Arquivos`;
@@ -859,7 +864,18 @@ function renderNode(node, path, depth) {
   row.addEventListener('click', () => selectNode(path));
   row.addEventListener('dragover', (e) => { e.preventDefault(); row.style.background='#eff6ff'; });
   row.addEventListener('dragleave', () => { row.style.background=''; });
-  row.addEventListener('drop', (e) => { e.preventDefault(); row.style.background=''; endDrag(path); });
+  row.addEventListener('drop', (e) => {
+    e.preventDefault(); row.style.background='';
+    // If dragging onto a section row itself, move into its components
+    if (isSection && dragState) {
+      const from = dragState.path;
+      const componentPath = [...path, 'components'];
+      const targetIdx = (node.components || []).length; // append at end
+      endDrag([...componentPath, targetIdx]);
+    } else {
+      endDrag(path);
+    }
+  });
 
   wrap.appendChild(row);
 
@@ -878,6 +894,14 @@ function renderNode(node, path, depth) {
     emptyCta.className = 'cb-tree-empty-cta';
     emptyCta.innerHTML = '<i class="fa fa-plus"></i> Adicionar Conteúdo';
     emptyCta.addEventListener('click', () => showAddChildPicker(path, wrap));
+    // Accept drops onto the empty CTA — move dragged node into this section
+    emptyCta.addEventListener('dragover', (e) => { e.preventDefault(); emptyCta.style.background='#bfdbfe'; emptyCta.style.borderColor='#3b82f6'; });
+    emptyCta.addEventListener('dragleave', () => { emptyCta.style.background=''; emptyCta.style.borderColor=''; });
+    emptyCta.addEventListener('drop', (e) => {
+      e.preventDefault(); emptyCta.style.background=''; emptyCta.style.borderColor='';
+      if (!dragState) return;
+      endDrag([...path, 'components', 0]);
+    });
     childWrap.appendChild(emptyCta);
   }
 
@@ -901,7 +925,7 @@ function renderNode(node, path, depth) {
     // Add tab CTA
     const addTabCta = document.createElement('div');
     addTabCta.className = 'cb-tree-empty-cta';
-    const ctaLabel = t === 'tabs' ? '+ Adicionar aba' : t === 'accordion' ? '+ Adicionar item' : '+ Adicionar slide';
+    const ctaLabel = t === 'tabs' ? 'Adicionar aba' : t === 'accordion' ? 'Adicionar item' : 'Adicionar slide';
     addTabCta.innerHTML = `<i class="fa fa-plus"></i> ${ctaLabel}`;
     addTabCta.addEventListener('click', () => {
       const parent = getNode(path);
@@ -1109,6 +1133,46 @@ function sectionDivider(label, icon) {
   return d;
 }
 
+// A section divider that acts as a toggle to show/hide the content below it.
+// Returns { wrapper, body } — append wrapper to form, add children to body.
+function collapsibleSection(label, icon, startCollapsed = true) {
+  const wrapper = document.createElement('div');
+  wrapper.className = 'cb-collapsible-section';
+
+  const header = document.createElement('div');
+  header.className = 'cb-section-divider cb-collapsible-header';
+  header.style.cursor = 'pointer';
+  header.style.userSelect = 'none';
+  header.style.marginTop = '14px';
+
+  const chevron = document.createElement('i');
+  chevron.className = startCollapsed ? 'fa fa-chevron-right' : 'fa fa-chevron-down';
+  chevron.style.cssText = 'font-size:9px;margin-right:5px;transition:transform .15s;opacity:.5;';
+
+  header.appendChild(chevron);
+  if (icon) {
+    const ic = document.createElement('i');
+    ic.className = `fa fa-${icon}`;
+    ic.style.marginRight = '5px';
+    header.appendChild(ic);
+  }
+  header.appendChild(document.createTextNode(label));
+
+  const body = document.createElement('div');
+  body.className = 'cb-collapsible-body';
+  if (startCollapsed) body.style.display = 'none';
+
+  header.addEventListener('click', () => {
+    const open = body.style.display !== 'none';
+    body.style.display = open ? 'none' : 'block';
+    chevron.className = open ? 'fa fa-chevron-right' : 'fa fa-chevron-down';
+  });
+
+  wrapper.appendChild(header);
+  wrapper.appendChild(body);
+  return { wrapper, body };
+}
+
 function markdownHelp() {
   const wrap = document.createElement('div');
   wrap.className = 'cb-md-help';
@@ -1285,6 +1349,7 @@ function createSpacingViz() {
     'min-height:80px',
     'position:relative',
     'overflow:auto',
+    'display:grid',
   ].join(';');
 
   const section = document.createElement('div');
@@ -1373,12 +1438,8 @@ function renderSectionForm(form, node) {
   insideWrap.appendChild(insideRow);
   form.appendChild(insideWrap);
 
-  // ---- ESPAÇAMENTO ----
-  form.appendChild(sectionDivider('Espaçamento', 'arrows-alt'));
-
   // visualizer (created first so spacing selects can reference it)
   const {outer: vizOuter, section: vizSection, inner: vizInner} = createSpacingViz();
-  form.appendChild(vizOuter);
 
   // All spacing values stored locally so viz can recalculate with cascade priority:
   // margin -> margin_x/y beats individual t/b
@@ -1428,6 +1489,13 @@ function renderSectionForm(form, node) {
     vizInner.style.borderColor  = (mainBg && COLOR_MAP[mainBg]) ? 'rgba(0,0,0,.2)' : '#10b981';
   }
 
+  // ---- ESPAÇAMENTO (colapsável) ----
+  const { wrapper: spacingWrapper, body: spacingBody } = collapsibleSection('Espaçamento', 'arrows-alt');
+  form.appendChild(spacingWrapper);
+
+  // visualizer lives inside the collapsible body
+  spacingBody.appendChild(vizOuter);
+
   // basic: padding + margin_y
   const basicSpacing = document.createElement('div');
   basicSpacing.className = 'cb-spacing-grid';
@@ -1452,7 +1520,7 @@ function renderSectionForm(form, node) {
   myG.appendChild(mySel);
 
   basicSpacing.appendChild(padG); basicSpacing.appendChild(myG);
-  form.appendChild(basicSpacing);
+  spacingBody.appendChild(basicSpacing);
 
   // advanced spacings
   const advSpacing = document.createElement('div');
@@ -1475,20 +1543,22 @@ function renderSectionForm(form, node) {
     advGrid.appendChild(g);
   });
   advSpacing.appendChild(advGrid);
-  form.appendChild(advSpacing);
+  spacingBody.appendChild(advSpacing);
 
   // init viz
   refreshSpacingViz();
   // expose so renderMainForm (called below) can also trigger it
   form._refreshViz = refreshSpacingViz;
 
-  // ---- OBJETOS NA BORDA ----
-  form.appendChild(sectionDivider('Objetos (detalhes, engrenagens) na borda', 'cog'));
-  renderBorderDetails(form, node);
+  // ---- OBJETOS NA BORDA (colapsável) ----
+  const { wrapper: bordaWrapper, body: bordaBody } = collapsibleSection('Objetos na borda', 'cog');
+  form.appendChild(bordaWrapper);
+  renderBorderDetails(bordaBody, node);
 
-  // ---- CONTEÚDO ----
-  form.appendChild(sectionDivider('Conteúdo da seção', 'th-large'));
-  renderMainForm(form, node, form);
+  // ---- CONTEÚDO (colapsável) ----
+  const { wrapper: conteudoWrapper, body: conteudoBody } = collapsibleSection('Conteúdo da seção', 'th-large');
+  form.appendChild(conteudoWrapper);
+  renderMainForm(conteudoBody, node, form);
 }
 
 function createCheckRow(items) {
@@ -1902,6 +1972,8 @@ function renderContentForm(form, node, t) {
   else if (t === 'button_inline') renderBtnInlineForm(form, node);
   else if (t === 'conteudo_square') renderConteudoSquareForm(form, node);
   else if (t === 'arquivo_viewer') renderArquivoViewerForm(form, node);
+  else if (t === 'imagem_container') renderImagemContainerForm(form, node);
+  else if (t === 'html') renderHtmlForm(form, node);
 }
 
 function renderHeaderForm(form, node) {
@@ -2070,6 +2142,26 @@ function renderArquivoViewerForm(form, node) {
   form.appendChild(field('ID do Arquivo PDF', '', idRow));
 }
 
+function renderImagemContainerForm(form, node) {
+  form.appendChild(sectionDivider('🖼️ Imagem Container', ''));
+  const imgRow = document.createElement('div'); imgRow.className = 'cb-input-with-link';
+  const imgInp = textInput(node.imagem, v => updateNodeField('imagem', v), 'https://exemplo.com/imagem.jpg');
+  const uploadLink = document.createElement('a');
+  uploadLink.href = '/admin/app/arquivo/'; uploadLink.target = '_blank'; uploadLink.className = 'cb-link-btn';
+  uploadLink.innerHTML = '<i class="fa fa-upload"></i> Upload';
+  imgRow.appendChild(imgInp); imgRow.appendChild(uploadLink);
+  form.appendChild(field('Link da imagem', '', imgRow));
+}
+
+function renderHtmlForm(form, node) {
+  form.appendChild(sectionDivider('🧩 HTML Livre', ''));
+  const ta = document.createElement('textarea');
+  ta.className = 'cb-textarea'; ta.style.minHeight = '140px'; ta.style.fontFamily = 'monospace';
+  ta.value = node.conteudo || ''; ta.placeholder = '<div>Seu HTML aqui...</div>';
+  ta.addEventListener('input', () => updateNodeField('conteudo', ta.value));
+  form.appendChild(field('Conteúdo HTML', 'HTML bruto, use com cuidado', ta));
+}
+
 // Tab item form
 function renderTabItemForm(form, node) {
   // ID (advanced)
@@ -2152,7 +2244,7 @@ function _buildTypePicker(grid, parentPath, onClose) {
     'dynamic_texto':'✏️','tabs':'🗂️','accordion':'🪗','carousel':'🎠',
     'header':'📢','imagem':'🖼️','mapa':'📍','youtube':'▶️',
     'button_rounded':'🔵','button_square':'⬛','button_inline':'🔲',
-    'conteudo_square':'🃏','arquivo_viewer':'📄',
+    'conteudo_square':'🃏','arquivo_viewer':'📄','imagem_container':'🖼️','html':'🧩',
     'dynamic_noticias':'📰','dynamic_arquivos':'📁','dynamic_calendar':'📅',
     'slider_sedes':'🗺️','slider_subeventos':'🏆','slider_funcionarios':'👥','slider_arquivos':'📂',
   };
@@ -2172,6 +2264,9 @@ function _buildTypePicker(grid, parentPath, onClose) {
     grid.appendChild(sec);
 
     g.items.forEach(type => {
+      // html component is advanced-only — hide when not in advanced mode
+      if (type === 'html' && !advancedMode) return;
+
       const btn = document.createElement('button');
       btn.type = 'button';
       btn.className = 'cb-type-btn' + (type === 'dynamic_texto' ? ' texto-btn' : '');
@@ -2225,6 +2320,8 @@ function createDefaultNode(type) {
   if (type === 'button_inline') return { type:'button_inline', texto:'Botão', theme:'yang', color:'blue', href:'/', shrink:true };
   if (type === 'conteudo_square') return { type:'conteudo_square', imagem:'', titulo:'Card', descricao:'', text_align:'start', image_align_mobile:'top', image_align_desktop:'left' };
   if (type === 'arquivo_viewer') return { type:'arquivo_viewer', arquivo_id: null };
+  if (type === 'imagem_container') return { type:'imagem_container', imagem: '' };
+  if (type === 'html') return { type:'html', conteudo: '' };
   if (type === 'dynamic_texto') return { type:'dynamic_texto', conteudo:'', theme_foreground:'yin' };
   if (type === 'dynamic_noticias') return { type:'dynamic_noticias', tag_ids:[], pagination:false };
   if (type === 'dynamic_arquivos') return { type:'dynamic_arquivos', tag_ids:[], pagination:false };
@@ -2288,14 +2385,48 @@ function endDrag(targetPath) {
   if (!dragState) return;
   const from = dragState.path; dragState = null;
   if (JSON.stringify(from) === JSON.stringify(targetPath)) return;
-  const fromParent = from.slice(0,-1);
-  const toParent = targetPath.slice(0,-1);
-  if (JSON.stringify(fromParent) !== JSON.stringify(toParent)) return;
-  const parent = fromParent.length === 0 ? state : getNode(fromParent);
-  if (!Array.isArray(parent)) return;
-  const fi = from[from.length-1]; const ti = targetPath[targetPath.length-1];
-  const item = parent.splice(fi, 1)[0];
-  parent.splice(ti, 0, item);
+
+  const fromParent = from.slice(0, -1);
+  const toParent   = targetPath.slice(0, -1);
+  const fi = from[from.length - 1];
+  const ti = targetPath[targetPath.length - 1];
+
+  // Helper: resolve the array that holds children at a given parent path
+  function getChildArray(parentPath) {
+    if (parentPath.length === 0) return state;
+    const p = getNode(parentPath);
+    if (!p) return null;
+    // section stores children in .components
+    if (p.type === 'section' || p.tipo === 'section') return p.components || null;
+    // tab/accordion/carousel items live directly as the node itself (array)
+    if (Array.isArray(p)) return p;
+    return null;
+  }
+
+  // Same-parent reorder (original behaviour, works for root-level sections too)
+  if (JSON.stringify(fromParent) === JSON.stringify(toParent)) {
+    const parent = fromParent.length === 0 ? state : getChildArray(fromParent);
+    if (!Array.isArray(parent)) return;
+    const item = parent.splice(fi, 1)[0];
+    parent.splice(ti, 0, item);
+    syncTextarea(); renderTree();
+    return;
+  }
+
+  // Cross-parent move: only allow between section.components arrays
+  const fromArr = fromParent.length === 0 ? state : getChildArray(fromParent);
+  const toArr   = toParent.length   === 0 ? state : getChildArray(toParent);
+  if (!Array.isArray(fromArr) || !Array.isArray(toArr)) return;
+
+  // Don't allow moving a section into its own descendant
+  const fromStr = JSON.stringify(from);
+  const toPStr  = JSON.stringify(toParent);
+  if (toPStr.startsWith(fromStr.slice(0, -1))) return;
+
+  const item = fromArr.splice(fi, 1)[0];
+  // clamp insertion index
+  const insertAt = Math.min(ti, toArr.length);
+  toArr.splice(insertAt, 0, item);
   syncTextarea(); renderTree();
 }
 

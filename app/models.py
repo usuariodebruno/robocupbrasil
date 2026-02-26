@@ -513,6 +513,8 @@ class UserProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     estado = models.CharField(max_length=2, choices=Regiao.choices, blank=True, null=True)
 
+    colaborador = models.ForeignKey('Funcionario', on_delete=models.SET_NULL, null=True, blank=True, verbose_name='Colaborador da Conta')
+
     ligas = models.ManyToManyField('Subevento', blank=True)
 
     GRUPO_CHOICES = [

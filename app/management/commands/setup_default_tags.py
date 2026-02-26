@@ -223,8 +223,8 @@ class Command(BaseCommand):
             {'slug': 'manuais', 'parent_slug': 'obr', 'nome': 'Manuais', 'header_type': 'OBR', 'privada': False, 'evento_associado': 'OBR'},
             {'slug': 'participante', 'parent_slug': 'obr', 'nome': 'Participante', 'header_type': 'OBR', 'privada': False, 'evento_associado': 'OBR'},
             {'slug': 'noticias', 'parent_slug': 'obr', 'nome': 'Notícias', 'header_type': 'OBR', 'privada': False, 'evento_associado': 'OBR'},
-            {'slug': 'modalidade-teorica', 'parent_slug': 'obr', 'nome': 'Modalidade Teórica', 'header_type': 'OBR', 'privada': False, 'evento_associado': 'OBR'},
-            {'slug': 'modalidades-praticas', 'parent_slug': 'obr', 'nome': 'Modalidades Práticas', 'header_type': 'OBR', 'privada': False, 'evento_associado': 'OBR'},
+            {'slug': 'modalidades', 'parent_slug': 'obr', 'nome': 'Conheça Nossas Modalidades', 'header_type': 'OBR', 'privada': False, 'evento_associado': 'OBR'},
+            {'slug': 'nacional', 'parent_slug': 'obr', 'nome': 'Evento Nacional', 'header_type': 'OBR', 'privada': False, 'evento_associado': 'OBR'},
             {'slug': 'faq', 'parent_slug': 'obr', 'nome': 'Perguntas Frequentes', 'header_type': 'OBR', 'privada': False, 'evento_associado': 'OBR'},
             {'slug': 'mundo-robotica', 'parent_slug': 'obr', 'nome': 'Mundo Robótica', 'header_type': 'OBR', 'privada': False, 'evento_associado': 'OBR'},
             # CBR children

@@ -60,13 +60,23 @@
         <div class="dropdown dropdown-bottom dropdown-end">
             <div tabindex="0" role="button" class="btn btn-ghost btn-circle m-1 overflow-hidden rounded-full">
                 <div class="w-26 h-26">
-                    <img  class="w-full h-full object-cover rounded-full -mt-2.5" src="{% static 'images/clouds/robot-happy.png' %}" style="background-color: #5688be;"/>
+                    {% if request.user.is_authenticated and request.user.userprofile.colaborador and request.user.userprofile.colaborador.foto %}
+                        <img class="w-full h-full object-contain rounded-full" src="{{ request.user.userprofile.colaborador.foto.url }}" />
+                    {% else %}
+                        <img class="w-full h-full object-cover rounded-full -mt-2.5" src="{% static 'images/clouds/robot-happy.png' %}" style="background-color: #5688be;"/>
+                    {% endif %}
                 </div>
             </div>
             <ul tabindex="0" class="dropdown-content rounded-md  bg-base-300 z-20 w-56 p-2 shadow-2xl">
                 <li class="menu-title px-3 py-2">
                     <div class="flex flex-col gap-0.5">
-                        <span class="font-bold text-base-content text-sm">{{ request.user.get_full_name|default:request.user.username }}</span>
+                        <span class="font-bold text-base-content text-sm">
+                            {% if request.user.is_authenticated and request.user.userprofile.colaborador %}
+                                {{ request.user.userprofile.colaborador.nome }}
+                            {% else %}
+                                {{ request.user.get_full_name|default:request.user.username }}
+                            {% endif %}
+                        </span>
                         {% if request.user.email %}
                             <span class="text-xs font-normal opacity-70 truncate w-full">{{ request.user.email }}</span>
                         {% endif %}

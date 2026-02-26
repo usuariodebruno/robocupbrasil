@@ -118,7 +118,7 @@ class UserProfileInline(admin.StackedInline):
     extra = 1
     max_num = 1
     can_delete = False
-    fields = ('estado', 'ligas', 'grupo_extra')
+    fields = ('estado', 'colaborador', 'ligas', 'grupo_extra')
     filter_horizontal = ['ligas']
     verbose_name = "Dados Extras do Usuário"
     verbose_name_plural = "Dados Extras do Usuário"
@@ -148,7 +148,14 @@ class CustomUserAdmin(BaseUserAdmin):
 
 
     def get_list_display(self, request):
-        return ['username', 'first_name', 'get_grupo', 'get_estado']
+        return ['username', 'get_colaborador_name', 'get_grupo', 'get_estado']
+
+    def get_colaborador_name(self, obj):
+        profile = getattr(obj, 'userprofile', None)
+        if profile and profile.colaborador:
+            return profile.colaborador.nome
+        return ''
+    get_colaborador_name.short_description = 'Nome do Colaborador'
 
     def get_grupo(self, obj):
         profile = getattr(obj, 'userprofile', None)
@@ -171,7 +178,8 @@ class CustomUserAdmin(BaseUserAdmin):
             fields = list(opts.get('fields', ()))
             filtered = tuple(f for f in fields if f not in (
                 'groups', 'user_permissions', 'last_login', 'date_joined',
-                'is_active', 'is_staff', 'is_superuser'
+                'is_active', 'is_staff', 'is_superuser',
+                'first_name', 'last_name'
             ))
             if filtered:
                 new_opts = opts.copy()
@@ -700,7 +708,7 @@ class PaginaEstadoAdmin(RolePermissionMixin, admin.ModelAdmin):
         return role not in ['COORD', 'REPRESENTANTE', 'MARKETING']
 
 class UserProfileAdmin(admin.ModelAdmin):
-    list_display = ['user', 'estado', 'grupo_extra', 'get_ligas_display']
+    list_display = ['user', 'estado', 'colaborador', 'grupo_extra', 'get_ligas_display']
     list_filter = ['estado', 'grupo_extra']
     search_fields = ['user__username', 'user__email']
     raw_id_fields = ['user']

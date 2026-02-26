@@ -256,6 +256,21 @@ class NoticiaAdmin(admin.ModelAdmin):
             field.widget.can_view_related = False
         return field
 
+    def get_form(self, request, obj=None, **kwargs):
+        form = super().get_form(request, obj, **kwargs)
+        form.base_fields['conteudo'].widget.attrs['placeholder'] = """Formatação básica:
+**negrito** → negrito
+_itálico_ → itálico
+# Título → Título grande
+## Título 2 → Título médio
+[texto](https://link.com) → Link clicável
+- item → Lista com marcador
+
+Imagens:
+![descrição](https://url-da-imagem.png) → Imagem simples
+[![descrição](https://url-da-imagem.png)](https://link.com) → Imagem clicável"""
+        return form
+
 @admin.register(TagData)
 class TagDataAdmin(RolePermissionMixin, admin.ModelAdmin):
     list_display = ['nome', 'id']

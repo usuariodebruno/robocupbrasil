@@ -1285,7 +1285,6 @@ function createSpacingViz() {
     'min-height:80px',
     'position:relative',
     'overflow:auto',
-    'display:grid'
   ].join(';');
 
   const section = document.createElement('div');
@@ -1354,11 +1353,15 @@ function renderSectionForm(form, node) {
 
   // ---- APARÊNCIA ----
   form.appendChild(sectionDivider('Aparência', 'paint-brush'));
-  // colorSwatchField with live viz update: wrap the node.bg update to also refresh viz
   form.appendChild(colorSwatchField('Cor de Fundo da Seção', node.bg, v => {
     updateNodeField('bg', v);
     refreshSpacingViz();
   }, ''));
+
+  const sectionContainerRow = document.createElement('div');
+  sectionContainerRow.className = 'cb-field-group';
+  sectionContainerRow.appendChild(checkboxField('Seção respeita o contêiner da página', node.container !== false, v => updateNodeField('container', v)));
+  form.appendChild(sectionContainerRow);
 
   const insideWrap = document.createElement('div');
   insideWrap.className = 'cb-advanced-only';
@@ -1510,7 +1513,7 @@ function renderMainForm(form, node, formRef) {
 
   const containerRow = document.createElement('div');
   containerRow.className = 'cb-field-group';
-  containerRow.appendChild(checkboxField('Seção respeita o contêiner da página', main.container !== false, v => updateMain('container', v)));
+  containerRow.appendChild(checkboxField('Conteúdo respeita o contêiner da página', main.container !== false, v => updateMain('container', v)));
   form.appendChild(containerRow);
 
   // Flex: basic

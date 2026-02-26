@@ -237,11 +237,95 @@ def pagina_dinamica_view(request, path):
 def noticia_detail(request, permalink):
     noticia = get_object_or_404(Noticia, permalink=permalink)
 
-    context = {
-        'noticia': noticia,
-        'header_type': noticia.header_type,
-    }
+    # 1. Determinar variáveis condicionais baseadas no header_type
+    header_type = noticia.header_type
+    if header_type == 'OBR':
+        bg_color = 'yellow-secondary'
+        mb_class = 'mb-obr'
+        border_type = 'obr'
+    elif header_type == 'CBR':
+        bg_color = 'gray'
+        mb_class = 'mb-cbr'
+        border_type = 'cbr'
+    elif header_type == 'MNR':
+        bg_color = 'green-secondary'
+        mb_class = 'mb-mnr'
+        border_type = 'mnr'
+    else:  # RCB (padrão)
+        bg_color = 'blue'
+        mb_class = 'mb-obr'
+        border_type = 'rcb'
 
-    return render(request, 'news_dynamic.html', context)
+    # 2. Preparar partes condicionais do conteúdo
+    tags_html = ""
+    if noticia.tags.exists():
+        tags_list = ", ".join([tag.nome for tag in noticia.tags.all()])
+        tags_html = f'<p><strong>Tags:</strong><br/>{tags_list}</p>'
+
+    ler_mais_html = ''
+    tag_div_class = ''
+    imagem_component = []
+    if noticia.imagem:
+        ler_mais_html = '<a class="square-button" href="#conteudo">Ler Mais</a>'
+        tag_div_class = 'desktop:text-align-right'
+        imagem_component.append({
+            "type": "imagem_container",
+            "imagem": str(noticia.imagem)
+        })
+
+    # 3. Montar a estrutura de componentes JSON
+    componentes_json = [
+        {
+            "type": "section",
+            "bg": bg_color,
+            "classes": mb_class,
+            "border_details": [{
+                "type": f"{border_type} cut", "color": bg_color, "position": "bottom right",
+                "container": True, "size": "small desktop:big"
+            }],
+            "components": [{
+                "type": "dynamic_texto", "theme_foreground": "yang",
+                "conteudo": f'<div class="container padding-y-1 text-yang text-shadow-darker bold text-medium">Visualizar Notícia</div>'
+            }]
+        },
+        {
+            "type": "section",
+            "main": {"container": True},
+            "components": [
+                {
+                    "type": "html",
+                    "conteudo": f"""
+                        <div class="margin-y-1/ desktop:margin-y-2">
+                            <h1 class="margin-0 extra-bold text-xlarge desktop:text-xxlarge">{noticia.titulo}</h1>
+                            <p class="margin-0 text-gray-secondary">Publicado em {noticia.data.strftime('%d/%m/%Y')}</p>
+                            <p class="margin-y-1/">{noticia.chamada}</p>
+                            <div class="flex-soft flex-between flex-reverse desktop:flex-row">
+                                {ler_mais_html}
+                                <div class="{tag_div_class}">{tags_html}</div>
+                            </div>
+                        </div>
+                    """
+                },
+                *imagem_component
+            ]
+        },
+        {
+            "type": "section",
+            "id": "conteudo",
+            "main": {"container": True},
+            "components": [
+                {"type": "dynamic_texto", "conteudo": noticia.conteudo}
+            ]
+        }
+    ]
+
+    rendered_html = render_components_to_html(componentes_json)
+
+    context = {
+        'pagina': noticia,  # Usamos o objeto noticia como se fosse uma 'pagina'
+        'header_type': noticia.header_type,
+        'componentes_rendered': [rendered_html],
+    }
+    return render(request, 'base_dynamic.html', context)
 
 from django.shortcuts import render

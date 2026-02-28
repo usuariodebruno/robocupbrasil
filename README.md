@@ -1,3 +1,5 @@
+![Project Thumbnail](app/management/thumb.png)
+
 # RoboCup Brasil CMS
 
 Institutional Content Management System (CMS) and website for RoboCup Brasil using Django and SQLite, featuring information about OBR, CBR, MNR, news, calendar, regional representatives, and more.

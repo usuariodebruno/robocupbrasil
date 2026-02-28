@@ -1,7 +1,7 @@
 {% load static %}
 <div id="noticias-component">
     <div class="noticias-list">
-        {% for n in noticias %}
+        {% for n in items %}
             <div class="noticia" 
             style="
                 {% if theme_primary %}--primary: var(--{{ theme_primary }});{% endif %}
@@ -17,9 +17,15 @@
                     <img src="/media/{{ n.imagem }}" alt="{{ n.titulo }}" class="noticia-image">
                 {% endif %}
             </div>
+        {% empty %}
+            {% if pagination and page_index|default:0 > 0 %}
+                <p class="margin-x-1 text-large text-gray">Não há notícias nesta página.</p>
+            {% else %}
+                <p class="margin-x-1 text-large text-gray">Nenhuma notícia disponível.</p>
+            {% endif %}
         {% endfor %}
     </div>
-    {% if pagination %}
-        {% include "components/dynamic/pagination.html" with page_param='news_page' component_id='noticias-component' %}
+    {% if pagination and total_pages > 1 %}
+        {% include "components/dynamic/pagination.html" with page_param=page_param component_id=component_id p_index=page_index total_pages=total_pages %}
     {% endif %}
 </div>

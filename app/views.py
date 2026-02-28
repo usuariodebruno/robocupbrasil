@@ -349,7 +349,6 @@ def sede_view(request, ano):
     }
     return render(request, 'base_dynamic.html', context)
 
-@cache_page(60 * 60 * 24 * 7)
 def pagina_dinamica_view(request, path):
     path = path.strip('/')
     # reserved paths that should not be treated as pages
@@ -359,6 +358,8 @@ def pagina_dinamica_view(request, path):
     # Get pagination context
     components_context = build_dynamic_components_context(request)
     extra_context = components_context['extra_context']
+    extra_context['news_page'] = components_context['news_page']
+    extra_context['file_page'] = components_context['file_page']
 
     # Resolve page by path
     if not path:

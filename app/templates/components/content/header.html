@@ -1,5 +1,5 @@
 <section class="flex-soft flex-center desktop:flex-{{ alignment|default:'center' }}">
-    <h1 class="margin-0 header-line text-{{ size|default:'xlarge' }} ribbon-{{ theme|default:'rcb'|lower }} padding-1 text-align-center{% if fullwidth %} w-100{% endif %}">
-        {{ titulo }}
+    <h1 class="margin-0 header-line text-{{ size|default:'xlarge' }} ribbon-{{ theme|default:'rcb'|lower }} padding-1 text-align-center desktop:text-align-{{ alignment|default:'center' }}{% if fullwidth %} w-100{% endif %}  {{ classes }}">
+        {{ titulo|safe }}
     </h1>
 </section>

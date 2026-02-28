@@ -50,6 +50,12 @@
                     </div>
                 </div>
             {% endwith %}
+        {% empty %}
+            {% if pagination and page_index|default:0 > 0 %}
+                <p class="margin-x-1 text-large text-gray">Não há arquivos nesta página.</p>
+            {% else %}
+                <p class="margin-x-1 text-large text-gray">Nenhum arquivo disponível.</p>
+            {% endif %}
         {% endfor %}
     </div>
     

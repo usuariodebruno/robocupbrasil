@@ -498,12 +498,8 @@ function rcb_change_page(param, delta, anchor) {
         url.searchParams.set(param, next);
         const base = url.toString().split('#')[0];
         window.location.assign(base + '#' + anchor);
-    } catch(e){ console.warn(e); }
+    } catch(e) { console.warn(e); }
 }
-
-document.querySelectorAll('.pagination .page-number').forEach(div => {
-    div.innerText = parseInt(new URLSearchParams(window.location.search).get(div.innerText.trim())) + 1 || 1;
-});
 
 // PDF Viewer Functions
 let activeBook = null;

@@ -15,6 +15,8 @@ def _normalize_internal_links(value):
     """If a string URL points at one of our own hosts, strip the scheme+host.
 
     Uses settings.ALLOWED_HOSTS to detect which domains are considered internal.
+    Only normalizes exact domain matches, not subdomains, to preserve URLs like
+    https://olimpo.robocup.org.br/ which should remain external.
     """
     from django.conf import settings
 
@@ -31,7 +33,8 @@ def _normalize_internal_links(value):
             if not host:
                 continue
             host_domain = host.split(':')[0]
-            if domain == host_domain or domain.endswith('.' + host_domain):
+            # Only normalize exact domain matches, not subdomains
+            if domain == host_domain:
                 return path or '/'
     return value
 
@@ -788,22 +791,46 @@ def delete_config_patrocinios(sender, instance, **kwargs):
         instance.patrocinio_horizontal.delete(save=False)
 
 # Cacheing strategy:
-# Invalida o cache em qualquer alteração nos modelos que afetam o front-end
-RELEVANT_MODELS_FOR_CACHE = [
-    'Noticia', 'Funcionario', 'Arquivo', 'Data', 'ItemMenu', 'AtalhoGlobal', 
-    'ConfiguracaoGlobal', 'Pagina', 'PaginaEstado', 'Sede', 'Subevento', 
-    'TagNoticia', 'TagFuncionario', 'TagData', 'TagArquivo',
-    'ItemMenuRCB', 'ItemMenuCBR', 'ItemMenuMNR', 'ItemMenuOBR'
-]
+# Invalida o cache em qualquer alteração apenas nos modelos que afetam o front-end
+def _invalidate_cache():
+    """Helper para limpar o cache de forma confiável."""
+    transaction.on_commit(lambda: cache.clear())
 
-@receiver(post_save)
+# Registra invalidação de cache apenas para modelos que modificam o front-end
+@receiver(post_save, sender=Noticia)
+@receiver(post_save, sender=Funcionario)
+@receiver(post_save, sender=Arquivo)
+@receiver(post_save, sender=Data)
+@receiver(post_save, sender=ItemMenu)
+@receiver(post_save, sender=AtalhoGlobal)
+@receiver(post_save, sender=ConfiguracaoGlobal)
+@receiver(post_save, sender=Pagina)
+@receiver(post_save, sender=PaginaEstado)
+@receiver(post_save, sender=Sede)
+@receiver(post_save, sender=Subevento)
+@receiver(post_save, sender=TagNoticia)
+@receiver(post_save, sender=TagFuncionario)
+@receiver(post_save, sender=TagData)
+@receiver(post_save, sender=TagArquivo)
 def cache_invalidator_on_save(sender, instance, **kwargs):
-    """Limpa o cache em qualquer save (criação ou edição) de modelos relevantes."""
-    if sender.__name__ in RELEVANT_MODELS_FOR_CACHE:
-        transaction.on_commit(lambda: cache.clear())
+    """Limpa o cache em save de qualquer modelo que afeta o front-end."""
+    _invalidate_cache()
 
-@receiver(post_delete)
+@receiver(post_delete, sender=Noticia)
+@receiver(post_delete, sender=Funcionario)
+@receiver(post_delete, sender=Arquivo)
+@receiver(post_delete, sender=Data)
+@receiver(post_delete, sender=ItemMenu)
+@receiver(post_delete, sender=AtalhoGlobal)
+@receiver(post_delete, sender=ConfiguracaoGlobal)
+@receiver(post_delete, sender=Pagina)
+@receiver(post_delete, sender=PaginaEstado)
+@receiver(post_delete, sender=Sede)
+@receiver(post_delete, sender=Subevento)
+@receiver(post_delete, sender=TagNoticia)
+@receiver(post_delete, sender=TagFuncionario)
+@receiver(post_delete, sender=TagData)
+@receiver(post_delete, sender=TagArquivo)
 def cache_invalidator_on_delete(sender, instance, **kwargs):
-    """Limpa o cache em qualquer delete de modelos relevantes."""
-    if sender.__name__ in RELEVANT_MODELS_FOR_CACHE:
-        transaction.on_commit(lambda: cache.clear())
+    """Limpa o cache em delete de qualquer modelo que afeta o front-end."""
+    _invalidate_cache()

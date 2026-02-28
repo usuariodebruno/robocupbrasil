@@ -21,7 +21,7 @@
     --shadow: 0 0 4px rgba(0, 0, 0, 0.1);
     --shadow-hover: 0 0 6px rgba(0, 0, 0, 0.15);
     --transition: all 0.3s ease-in-out;
-    --container: 1200px;
+    --container: 1250px;
     --header-logo: 3.5rem;
     --header-js: 0px;
 
@@ -29,12 +29,19 @@
     --header-footer-border: color-mix(in srgb, var(--yang), transparent 30%);
 
     /* Text-Sizes */
+    --text-size-xsmall: 0.75rem;
     --text-size-small: 0.875rem;
     --text-size-default: 1rem;
     --text-size-medium: 1.1rem;
+    --text-size-medium-plus: 1.2rem;
     --text-size-large: 1.25rem;
+    --text-size-large-plus: 1.5rem;
+    --text-size-large-plus-plus: 1.75rem;
     --text-size-xlarge: 2rem;
+    --text-size-xlarge-plus: 2.25rem;
     --text-size-xxlarge: 2.5rem;
+    --text-size-xxxlarge: 2.75rem;
+    --text-size-xxxxlarge: 3rem;
 
     /* Colors */
     --red: #EB6047;
@@ -338,10 +345,10 @@ header #menu .menu-link {
     text-decoration: none;
     color: var(--gray-secondary);
     font-weight: 550;
-    margin: calc(var(--default-measure) * 0.65) 0;
+    margin: calc(var(--default-measure) * 0.55) 0;
     display: block;
     font-size: var(--text-size-medium);
-    padding: calc(var(--default-measure) * 0.35) var(--default-measure);
+    padding: calc(var(--default-measure) * 0.65) var(--default-measure);
     border-left: 2px solid var(--blue);
 }
 
@@ -390,7 +397,9 @@ header .local-representation {
     text-shadow: var(--shadow-hover);
     background-color: color-mix(in srgb, var(--blue), transparent 20%);
     padding: var(--default-measure);
-    gap: var(--default-measure);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
 }
 
 header .local-representation .header {
@@ -478,7 +487,7 @@ header .rcb-links a:hover {
     display: none;
 }
 
-@media (min-width: 768px) {
+@media (min-width: 831px) {
     footer {
         margin: var(--default-measure);
         max-width: var(--container);

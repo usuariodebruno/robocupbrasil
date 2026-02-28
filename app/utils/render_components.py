@@ -93,7 +93,7 @@ def render_components_to_html(componentes, extra_context=None):
                 if bd.get('mobile_only'):
                     bd_classes.append('mobile-only')
                 if bd.get('margin_t'):
-                    bd_classes.append(f"margin-t-{bd['margin_t']}")
+                    bd_classes.append(bd['margin_t'])
                 html += f"<border-detail class=\"{' '.join(bd_classes)}\"></border-detail>"
 
             if c.get('content'):
@@ -108,6 +108,12 @@ def render_components_to_html(componentes, extra_context=None):
                     mclasses.append('container')
                 if main.get('flex'):
                     mclasses.append('flex')
+                if main.get('flex_soft'):
+                    mclasses.append('flex-soft')
+                if main.get('desktop:flex'):
+                    mclasses.append('desktop:flex')
+                if main.get('desktop:flex-soft'):
+                    mclasses.append('desktop:flex-soft')
                 for flexprop in ('flex_wrap','flex_row','flex_column','flex_center',
                                  'flex_start','flex_end','flex_between','flex_around','flex_evenly',
                                  'flex_reverse'):
@@ -120,7 +126,19 @@ def render_components_to_html(componentes, extra_context=None):
                 # allow arbitrary extra classes on main
                 if main.get('classes'):
                     mclasses.extend(str(main['classes']).split())
-                html += f"<main class=\"{' '.join(mclasses)}\">"
+                # gap as inline style (e.g. gap: "2" → style="gap:2rem", "1/" → "1.5rem")
+                main_style = ''
+                if main.get('gap'):
+                    gap_val = str(main['gap'])
+                    if gap_val.endswith('/'):
+                        gap_num = int(gap_val[:-1] or 0) + 0.5
+                    elif gap_val.isdigit():
+                        gap_num = int(gap_val)
+                    else:
+                        gap_num = 0
+                    if gap_num:
+                        main_style = f' style="gap:{gap_num}rem"'
+                html += f"<main class=\"{' '.join(mclasses)}\"{main_style}>"
                 if main.get('content'):
                     html += str(main['content'])
                 if c.get('components'):
@@ -197,19 +215,90 @@ def render_components_to_html(componentes, extra_context=None):
         # dynamic components (prefix dynamic_) - old slider logic is removed from here
         if t.startswith('dynamic_'):
             comp = t.split('dynamic_')[1]
-            ctx = {}
+            model = None
+            page_param_name = None
+            order_by = None
 
-            # copy all keys, but if the value is a string referencing an
-            # item in extra_context, substitute the real object.  this
-            # handles "items" as well as component-specific variable names
+            if comp == 'noticias':
+                from app.models import Noticia
+                model = Noticia
+                page_param_name = 'news_page'
+                order_by = '-data'
+            elif comp == 'arquivos':
+                from app.models import Arquivo
+                model = Arquivo
+                page_param_name = 'file_page'
+                # Assuming default ordering is fine for 'arquivos'
+
+            if model:
+                # 1. Get params from component JSON
+                tag_ids = c.get('tag_ids', [])
+                limit = int(c.get('limit', 10) or 10)
+
+                # 2. Get page index from request context
+                if c.get('pagination'):
+                    page_index = int(extra_context.get(page_param_name, 0) or 0)
+                else:
+                    page_index = 0
+
+                # 3. Build and filter queryset
+                qs = model.objects.all()
+                if order_by:
+                    qs = qs.order_by(order_by)
+
+                try:
+                    valid_tag_ids = [int(tid) for tid in tag_ids] if tag_ids else []
+                    if valid_tag_ids and hasattr(model, 'tags'):
+                        qs = qs.filter(tags__id__in=valid_tag_ids).distinct()
+                except (ValueError, TypeError):
+                    pass
+
+                # 4. Paginate
+                total_items = qs.count()
+                total_pages = (total_items - 1) // limit + 1 if total_items > 0 else 0
+                
+                # Prevent accessing invalid pages
+                if page_index >= total_pages and total_pages > 0:
+                    page_index = total_pages - 1
+                if page_index < 0:
+                    page_index = 0
+
+                start_index = page_index * limit
+                end_index = start_index + limit
+                items_data = list(qs[start_index:end_index])
+                
+                # 5. Build a clean context for the template
+                final_ctx = {
+                    'items': items_data,
+                    'page_index': page_index,
+                    'total_pages': total_pages,
+                    'pagination': bool(c.get('pagination', False)),
+                    'page_param': page_param_name,
+                    'component_id': f'{comp}-component',
+                    
+                    # Pass other keys from component 'c' explicitly if needed by template
+                    'theme_primary': c.get('theme_primary'),
+                    'theme_foreground': c.get('theme_foreground'),
+                    'theme_secondary': c.get('theme_secondary'),
+                }
+                
+                if comp == 'arquivos':
+                    from app.models import Data
+                    from datetime import date
+                    final_ctx['datas'] = list(Data.objects.filter(data__gte=date.today()).order_by('data')[:50])
+
+                out.append(render_template(f"components/dynamic/{comp}.html", final_ctx))
+                continue
+
+            # Fallback for any other dynamic components not explicitly handled above
+            ctx = {**c}
+            # Attempt to substitute values from extra_context
             for key, v in c.items():
                 if isinstance(v, str) and v in extra_context:
                     ctx[key] = extra_context[v]
-                else:
-                    ctx[key] = v
-
             out.append(render_template(f"components/dynamic/{comp}.html", ctx))
             continue
+
 
         # static content widgets
         if t in ('tabs', 'accordion', 'carousel', 'state_header_image'):

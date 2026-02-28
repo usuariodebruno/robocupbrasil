@@ -1,10 +1,12 @@
 <div class="pagination padding-1 margin-t-1 border-radius bg-yang">
     <div class="flex flex-between">
-        <button class="block text-default" onclick="rcb_change_page('{{ page_param }}', -1, '{{ component_id }}')">Anterior</button>
+        <button class="block text-default" {% if p_index == 0 %}disabled{% endif %} onclick="rcb_change_page('{{ page_param }}', -1, '{{ component_id }}')">Anterior</button>
+        
         <div class="desktop:padding-x-5 desktop:margin-x-5 text-align-center">
             <div class="desktop-only text-align-center text-small">Página</div>
-            <div class="page-number desktop-only text-large">{{ page_param }}</div>
+            <div class="page-number desktop-only text-large">{{ p_index | add:1 }} de {{ total_pages }}</div>
         </div>
-        <button class="block text-default" onclick="rcb_change_page('{{ page_param }}', 1, '{{ component_id }}')">Próxima</button>
+
+        <button class="block text-default" {% if p_index|add:1 >= total_pages %}disabled{% endif %} onclick="rcb_change_page('{{ page_param }}', 1, '{{ component_id }}')">Próxima</button>
     </div>
 </div>

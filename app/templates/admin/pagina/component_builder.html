@@ -102,6 +102,25 @@
       .cb-node-actions button:hover { background: #e2e8f0; }
       .cb-node-actions button.danger { color: #dc2626; border-color: #fecaca; }
       .cb-node-actions button.danger:hover { background: #fee2e2; }
+      /* Context menu */
+      #cb-ctx-menu {
+        position: fixed; z-index: 99999;
+        background: #fff; border: 1px solid #e2e8f0; border-radius: 8px;
+        box-shadow: 0 8px 24px rgba(0,0,0,.15); padding: 4px; min-width: 180px;
+        display: none;
+      }
+      #cb-ctx-menu.open { display: block; }
+      .cb-ctx-item {
+        display: flex; align-items: center; gap: 8px;
+        padding: 7px 12px; border-radius: 5px; cursor: pointer;
+        font-size: 12px; color: #334155; user-select: none;
+      }
+      .cb-ctx-item:hover { background: #f1f5f9; }
+      .cb-ctx-item.disabled { color: #94a3b8; cursor: default; }
+      .cb-ctx-item.disabled:hover { background: none; }
+      .cb-ctx-item i { width: 14px; text-align: center; color: #64748b; }
+      .cb-ctx-item.disabled i { color: #cbd5e1; }
+      .cb-ctx-sep { height: 1px; background: #e2e8f0; margin: 3px 0; }
       .cb-node-toggle {
         width: 14px; height: 14px;
         display: flex; align-items: center; justify-content: center;
@@ -192,13 +211,57 @@
         display: inline-flex; align-items: center; justify-content: center;
         font-size: 8px; color: #64748b; cursor: help; flex-shrink: 0;
       }
+      /* ---- Markdown Toolbar ---- */
+      .cb-md-toolbar-wrap { border:1px solid #e2e8f0; border-radius:7px; overflow:visible; }
+      .cb-md-toolbar-wrap .cb-textarea {
+        border:none; border-top:1px solid #e2e8f0; border-radius:0 0 7px 7px; margin:0;
+      }
+      .cb-md-toolbar-wrap .cb-textarea:focus { box-shadow:none; border-color:#e2e8f0; }
+      .cb-md-toolbar { display:flex; flex-wrap:wrap; gap:2px; padding:5px 6px; background:#f8fafc; align-items:center; border-radius:7px 7px 0 0; }
+      .cb-md-toolbar.row2 { border-top:1px solid #e2e8f0; border-radius:0; display:none; }
+      .cb-md-toolbar.row2.open { display:flex; }
+      .cb-md-toolbar-btn {
+        padding:3px 7px; border-radius:4px; border:1px solid transparent;
+        background:none; cursor:pointer; font-size:11px; font-weight:700; color:#334155;
+        display:flex; align-items:center; gap:3px; line-height:1; white-space:nowrap;
+        font-family: ui-monospace, monospace;
+      }
+      .cb-md-toolbar-btn:hover { background:#e2e8f0; border-color:#cbd5e1; }
+      .cb-md-toolbar-btn.active { background:#dbeafe; border-color:#93c5fd; color:#1d4ed8; }
+      .cb-md-toolbar-sep { width:1px; height:16px; background:#e2e8f0; margin:0 3px; flex-shrink:0; }
+      .cb-md-toolbar-spacer { flex:1; }
+      .cb-md-toolbar-expand { margin-left:auto; color:#94a3b8; font-size:10px; cursor:pointer; padding:3px 6px; border-radius:4px; background:none; border:1px solid transparent; }
+      .cb-md-toolbar-expand:hover { background:#e2e8f0; color:#475569; }
+      /* Toolbar dropdown popups */
+      .cb-tb-popup {
+        position:fixed; z-index:99999; background:#fff; border:1px solid #e2e8f0;
+        border-radius:8px; box-shadow:0 8px 24px rgba(0,0,0,.13); padding:12px;
+        min-width:240px; display:none;
+      }
+      .cb-tb-popup.open { display:block; }
+      .cb-tb-popup label { font-size:11px; font-weight:600; color:#475569; display:block; margin-bottom:3px; }
+      .cb-tb-popup input[type=text], .cb-tb-popup input[type=color] {
+        width:100%; padding:5px 8px; border:1px solid #e2e8f0; border-radius:5px;
+        font-size:12px; margin-bottom:8px; box-sizing:border-box;
+      }
+      .cb-tb-popup input[type=color] { height:32px; padding:2px 4px; cursor:pointer; }
+      .cb-tb-popup-btns { display:flex; gap:6px; justify-content:flex-end; margin-top:4px; }
+      .cb-tb-popup-btns button { padding:5px 14px; border-radius:5px; border:none; cursor:pointer; font-size:12px; }
+      .cb-tb-popup-btns .ok { background:#3b82f6; color:#fff; }
+      .cb-tb-popup-btns .ok:hover { background:#2563eb; }
+      .cb-tb-popup-btns .cancel { background:#f1f5f9; color:#475569; }
+      .cb-tb-popup-btns .cancel:hover { background:#e2e8f0; }
+      /* Color swatches in toolbar */
+      .cb-tb-color-grid { display:flex; flex-wrap:wrap; gap:5px; margin-bottom:8px; }
+      .cb-tb-color-swatch { width:22px; height:22px; border-radius:4px; border:2px solid transparent; cursor:pointer; }
+      .cb-tb-color-swatch:hover, .cb-tb-color-swatch.sel { border-color:#3b82f6; }
       .cb-input, .cb-select, .cb-textarea {
         width: 100%; padding: 7px 10px; border: 1px solid #e2e8f0;
         border-radius: 6px; font-size: 12px; color: #1e293b; background: #fff;
         box-sizing: border-box; outline: none; transition: border-color .15s;
       }
       .cb-input:focus, .cb-select:focus, .cb-textarea:focus { border-color: #3b82f6; box-shadow: 0 0 0 2px #dbeafe; }
-      .cb-textarea { resize: vertical; min-height: 80px; font-family: monospace; font-size: 11px; line-height: 1.6; }
+      .cb-textarea { resize: vertical; min-height: 240px; font-family: monospace; font-size: 11px; line-height: 1.6; }
       .cb-checkbox-row { display: flex; align-items: center; gap: 7px; cursor: pointer; padding: 3px 0; }
       .cb-checkbox-row input[type=checkbox] { width: 15px; height: 15px; cursor: pointer; accent-color: #3b82f6; }
       .cb-checkbox-row span { font-size: 12px; color: #334155; }
@@ -436,6 +499,7 @@
     <div id="cb-preview-wrapper" style="display:none; position:fixed; top:100px; left:100px; width:500px; height:400px; resize:both; overflow:hidden; border:1px solid #94a3b8; box-shadow: 0 10px 25px -5px rgba(0,0,0,.3); z-index:2147483647; background:#fff; transition:none !important; border-radius:8px;">
       <div id="cb-preview-bar" style="position:absolute;top:0;left:0;right:0;height:28px;cursor:move;background:#1e293b;z-index:100000;display:flex;align-items:center;padding:0 8px;gap:6px;">
         <span style="color:#94a3b8;font-size:10px;flex:1;"><i class="fa fa-eye" style="margin-right:4px;"></i>Pré-visualizar</span>
+        <button type="button" id="cb-preview-mobile" title="Visualização mobile" style="background:none;border:none;cursor:pointer;font-size:11px;color:#94a3b8;width:20px;height:20px;display:flex;align-items:center;justify-content:center;">📱</button>
         <button type="button" id="cb-preview-maximize" title="Maximizar" style="background:none;border:none;cursor:pointer;font-size:11px;color:#94a3b8;width:20px;height:20px;display:flex;align-items:center;justify-content:center;">🗖</button>
         <button type="button" id="cb-preview-close" title="Fechar" style="background:none;border:none;cursor:pointer;font-size:13px;color:#94a3b8;width:20px;height:20px;display:flex;align-items:center;justify-content:center;"><i class="fa fa-times"></i></button>
       </div>
@@ -523,8 +587,13 @@ const THEMES = ['','rcb','obr','cbr','mnr'];
 const THEME_LABELS = {'':'Padrão','rcb':'RoboCup Brasil','obr':'OBR','cbr':'CBR','mnr':'MNR'};
 const ALIGNMENTS = ['','center','start','end'];
 const ALIGNMENT_LABELS = {'':'Padrão','center':'Centro','start':'Esquerda','end':'Direita'};
-const HEADER_SIZES = ['','small','medium','large','xlarge','xxlarge'];
-const HEADER_SIZE_LABELS = {'':'Padrão','small':'Pequena','medium':'Média','large':'Grande','xlarge':'Extra Grande','xxlarge':'Extra Extra Grande'};
+const HEADER_SIZES = ['','xsmall','small','default','medium','medium-plus','large','large-plus','large-plus-plus','xlarge','xlarge-plus','xxlarge','xxxlarge','xxxxlarge'];
+const HEADER_SIZE_LABELS = {
+  '':'Padrão','xsmall':'XS — 0.75rem','small':'S — 0.875rem','default':'M — 1rem',
+  'medium':'M+ — 1.1rem','medium-plus':'L− — 1.4rem','large':'L — 1.25rem',
+  'large-plus':'L+ — 1.625rem','large-plus-plus':'L++ — 1.75rem','xlarge':'XL — 2rem',
+  'xlarge-plus':'XL+ — 2.25rem','xxlarge':'2XL — 2.5rem','xxxlarge':'3XL — 3rem','xxxxlarge':'4XL — 4rem'
+};
 const FLEX_PROPS = ['flex_wrap','flex_row','flex_column','flex_center','flex_start','flex_end','flex_between','flex_around','flex_evenly','flex_reverse'];
 const FLEX_CLASS_MAP = {
   'flex_wrap':'flex-wrap','flex_row':'flex-row','flex_column':'flex-column','flex_center':'flex-center',
@@ -624,6 +693,18 @@ let previewRequiresReload = false;
 let advancedMode = false;
 
 // ============================================================
+// PERSISTENCE HELPERS (localStorage)
+// ============================================================
+const LS_KEY = 'cb_ui_prefs';
+function loadPrefs() {
+  try { return JSON.parse(localStorage.getItem(LS_KEY) || '{}'); } catch(_) { return {}; }
+}
+function savePrefs(patch) {
+  const prefs = { ...loadPrefs(), ...patch };
+  try { localStorage.setItem(LS_KEY, JSON.stringify(prefs)); } catch(_) {}
+}
+
+// ============================================================
 // INIT
 // ============================================================
 const uiContainer = document.getElementById('component-builder-ui');
@@ -650,12 +731,22 @@ function init() {
 
   const advToggle = document.getElementById('cb-advanced-toggle');
   if (advToggle) {
+    // Restore persisted state
+    if (loadPrefs().advancedMode) {
+      advancedMode = true;
+      advToggle.classList.add('active');
+      const helpPanel = document.getElementById('cb-classes-help');
+      if (helpPanel) {
+        helpPanel.style.display = 'block';
+        if (!helpPanel.dataset.built) { buildClassesHelp(); helpPanel.dataset.built = '1'; }
+      }
+    }
     advToggle.addEventListener('click', () => {
       advancedMode = !advancedMode;
+      savePrefs({ advancedMode });
       advToggle.classList.toggle('active', advancedMode);
       const form = document.getElementById('cb-props-form');
       if (form) form.classList.toggle('cb-advanced-mode', advancedMode);
-      // Show/hide CSS classes help panel
       const helpPanel = document.getElementById('cb-classes-help');
       if (helpPanel) {
         helpPanel.style.display = advancedMode ? 'block' : 'none';
@@ -669,10 +760,14 @@ function init() {
 
   const jsonToggle = document.getElementById('cb-toggle-json-btn');
   if (jsonToggle) {
+    const c = document.getElementById('collapsableJSON');
+    // Restore persisted state
+    if (loadPrefs().jsonOpen) { c.style.display = 'block'; jsonToggle.style.background='#fef3c7'; }
     jsonToggle.addEventListener('click', () => {
-      const c = document.getElementById('collapsableJSON');
-      if (c.style.display === 'none') { c.style.display = 'block'; jsonToggle.style.background='#fef3c7'; }
-      else { c.style.display = 'none'; jsonToggle.style.background=''; }
+      const open = c.style.display === 'none';
+      c.style.display = open ? 'block' : 'none';
+      jsonToggle.style.background = open ? '#fef3c7' : '';
+      savePrefs({ jsonOpen: open });
     });
   }
 
@@ -692,6 +787,51 @@ function init() {
   if (previewClose) previewClose.addEventListener('click', () => { document.getElementById('cb-preview-wrapper').style.display = 'none'; });
 
   renderTree(); syncTextarea(); updatePreview();
+
+  // Right-click on empty tree area → paste-section menu
+  const treeScroll = document.getElementById('cb-tree-scroll');
+  treeScroll.addEventListener('contextmenu', async (e) => {
+    // Only handle if the click landed directly on the scroll container (not on a node)
+    if (e.target !== treeScroll && !e.target.classList.contains('cb-tree-empty-cta')) return;
+    e.preventDefault();
+    e.stopPropagation();
+
+    let menu = document.getElementById('cb-ctx-menu');
+    if (!menu) { menu = document.createElement('div'); menu.id = 'cb-ctx-menu'; document.body.appendChild(menu); }
+    menu.innerHTML = '<div class="cb-ctx-item disabled"><i class="fa fa-spinner fa-spin"></i> Carregando...</div>';
+    menu.classList.add('open');
+    menu.style.left = e.clientX + 'px';
+    menu.style.top  = e.clientY + 'px';
+
+    const clipboard = await readSystemClipboard();
+    menu.innerHTML = '';
+
+    function item(icon, text, onClick, disabled = false) {
+      const el = document.createElement('div');
+      el.className = 'cb-ctx-item' + (disabled ? ' disabled' : '');
+      el.innerHTML = `<i class="fa fa-${icon}"></i> ${text}`;
+      if (!disabled && onClick) el.addEventListener('mousedown', (ev) => { ev.preventDefault(); closeCtxMenu(); onClick(); });
+      return el;
+    }
+
+    if (!clipboard) {
+      menu.appendChild(item('clipboard', 'Colar: Área Vazia', null, true));
+    } else if (!clipboard.__cbBuilder || clipboard.kind !== 'section') {
+      menu.appendChild(item('clipboard', 'Colar: Código Inválido', null, true));
+    } else {
+      menu.appendChild(item('clipboard', 'Colar Seção aqui', () => {
+        const clone = JSON.parse(JSON.stringify(clipboard.node));
+        state.push(clone);
+        syncTextarea(); renderTree();
+      }));
+    }
+
+    const rect = menu.getBoundingClientRect();
+    const x = e.clientX + rect.width  > window.innerWidth  ? e.clientX - rect.width  : e.clientX;
+    const y = e.clientY + rect.height > window.innerHeight ? e.clientY - rect.height : e.clientY;
+    menu.style.left = x + 'px';
+    menu.style.top  = y + 'px';
+  });
 }
 
 // ============================================================
@@ -862,6 +1002,7 @@ function renderNode(node, path, depth) {
 
   row.appendChild(actions);
   row.addEventListener('click', () => selectNode(path));
+  row.addEventListener('contextmenu', (e) => openCtxMenu(e, path));
   row.addEventListener('dragover', (e) => { e.preventDefault(); row.style.background='#eff6ff'; });
   row.addEventListener('dragleave', () => { row.style.background=''; });
   row.addEventListener('drop', (e) => {
@@ -918,6 +1059,7 @@ function renderNode(node, path, depth) {
         tLabel.textContent = '📄 ' + (tab.label || 'Tab '+ti);
         tabRow.appendChild(tLabel);
         tabRow.addEventListener('click', () => selectNode([...path, 'tabs', ti]));
+        tabRow.addEventListener('contextmenu', (e) => openCtxMenu(e, [...path, 'tabs', ti]));
         tabWrap.appendChild(tabRow);
         childWrap.appendChild(tabWrap);
       });
@@ -982,7 +1124,14 @@ function renderProps() {
   else if (CONTAINER_TYPES.includes(t)) renderContainerForm(form, node, t);
   else if ([...DYNAMIC_TYPES,...TEXTO_TYPE,...SLIDER_TYPES].includes(t)) renderDynamicForm(form, node, t);
   else if (CONTENT_TYPES.includes(t)) renderContentForm(form, node, t);
-  else renderTabItemForm(form, node);
+  else {
+    // Tab/accordion/carousel item — deduce parent container type from path
+    // Path looks like [..., 'tabs', index] so the parent is two levels up
+    const parentPath = selectedPath.slice(0, -2);
+    const parentNode = parentPath.length === 0 ? null : getNode(parentPath);
+    const parentType = parentNode ? (parentNode.type || parentNode.tipo || '') : '';
+    renderTabItemForm(form, node, parentType);
+  }
 }
 
 // ---- FIELD BUILDERS ----
@@ -1015,9 +1164,326 @@ function textInput(val, onChange, placeholder) {
 function textArea(val, onChange, placeholder) {
   const t = document.createElement('textarea');
   t.className = 'cb-textarea'; t.value = val || '';
+  t.rows = 15;
   if (placeholder) t.placeholder = placeholder;
   t.addEventListener('input', () => onChange(t.value));
-  return t;
+  // Wrap with toolbar
+  return buildMdToolbar(t);
+}
+
+// ============================================================
+// MARKDOWN TOOLBAR
+// ============================================================
+function buildMdToolbar(ta) {
+  const wrap = document.createElement('div');
+  wrap.className = 'cb-md-toolbar-wrap';
+
+  // ---- undo stack ----
+  const undoStack = [];
+  const MAX_UNDO = 100;
+  function pushUndo() {
+    undoStack.push({ value: ta.value, selStart: ta.selectionStart, selEnd: ta.selectionEnd });
+    if (undoStack.length > MAX_UNDO) undoStack.shift();
+  }
+  function undoOne() {
+    if (!undoStack.length) return;
+    const snap = undoStack.pop();
+    ta.value = snap.value;
+    ta.setSelectionRange(snap.selStart, snap.selEnd);
+    ta.dispatchEvent(new Event('input'));
+    ta.focus();
+  }
+
+  // ---- helpers ----
+  function insertAround(before, after) {
+    pushUndo();
+    const start = ta.selectionStart, end = ta.selectionEnd;
+    const sel = ta.value.slice(start, end);
+    const replacement = before + sel + after;
+    ta.setRangeText(replacement, start, end, 'select');
+    ta.dispatchEvent(new Event('input'));
+    ta.focus();
+    if (!sel) ta.setSelectionRange(start + before.length, start + before.length);
+  }
+  function insertAt(text, moveCursorInBy) {
+    pushUndo();
+    const start = ta.selectionStart;
+    ta.setRangeText(text, start, ta.selectionEnd, 'end');
+    ta.dispatchEvent(new Event('input'));
+    ta.focus();
+    if (moveCursorInBy !== undefined) ta.setSelectionRange(start + moveCursorInBy, start + moveCursorInBy);
+  }
+  function insertLinePrefix(prefix) {
+    pushUndo();
+    const start = ta.selectionStart;
+    const lineStart = ta.value.lastIndexOf('\n', start - 1) + 1;
+    ta.setRangeText(prefix, lineStart, lineStart, 'end');
+    ta.dispatchEvent(new Event('input'));
+    ta.focus();
+  }
+
+  // ---- popup factory ----
+  let activePopup = null;
+  function closeAllPopups() { document.querySelectorAll('.cb-tb-popup').forEach(p => p.classList.remove('open')); activePopup = null; }
+  function makePopup(anchorBtn, buildFn) {
+    const popup = document.createElement('div');
+    popup.className = 'cb-tb-popup';
+    document.body.appendChild(popup);
+    buildFn(popup, () => { closeAllPopups(); popup.remove(); });
+    anchorBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      if (popup.classList.contains('open')) { closeAllPopups(); return; }
+      closeAllPopups();
+      popup.classList.add('open');
+      activePopup = popup;
+      // Position below button — reposition after layout so height is known
+      const r = anchorBtn.getBoundingClientRect();
+      const clampLeft = Math.min(r.left, window.innerWidth - popup.offsetWidth - 8);
+      const spaceBelow = window.innerHeight - r.bottom - 8;
+      const top = spaceBelow >= popup.offsetHeight
+        ? r.bottom + 4
+        : r.top - popup.offsetHeight - 4;
+      popup.style.left = Math.max(8, clampLeft) + 'px';
+      popup.style.top  = Math.max(8, top) + 'px';
+    });
+    return popup;
+  }
+  document.addEventListener('mousedown', (e) => {
+    if (activePopup && !activePopup.contains(e.target)) closeAllPopups();
+  }, true);
+
+  function labelEl(txt) { const l = document.createElement('label'); l.textContent = txt; return l; }
+  function inputEl(type, placeholder, val) {
+    const i = document.createElement('input'); i.type = type;
+    if (placeholder) i.placeholder = placeholder;
+    if (val) i.value = val;
+    return i;
+  }
+  function checkEl(labelTxt, checked) {
+    const row = document.createElement('div'); row.style.cssText = 'display:flex;align-items:center;gap:6px;margin-bottom:8px;font-size:12px;color:#475569;';
+    const cb = document.createElement('input'); cb.type = 'checkbox'; cb.checked = !!checked;
+    row.appendChild(cb); row.appendChild(document.createTextNode(labelTxt));
+    row.checkbox = cb;
+    return row;
+  }
+  function btns(okLabel, onOk, onCancel) {
+    const div = document.createElement('div'); div.className = 'cb-tb-popup-btns';
+    const c = document.createElement('button'); c.className = 'cancel'; c.textContent = 'Cancelar'; c.type='button';
+    const o = document.createElement('button'); o.className = 'ok'; o.textContent = okLabel; o.type='button';
+    c.addEventListener('click', onCancel); o.addEventListener('click', onOk);
+    div.appendChild(c); div.appendChild(o); return div;
+  }
+
+  // ---- toolbar button factory ----
+  function btn(label, title, onClick) {
+    const b = document.createElement('button');
+    b.type = 'button'; b.className = 'cb-md-toolbar-btn'; b.title = title;
+    b.innerHTML = label;
+    b.addEventListener('click', onClick);
+    return b;
+  }
+  function sep() { const s = document.createElement('div'); s.className = 'cb-md-toolbar-sep'; return s; }
+
+  // ============ ROW 1 ============
+  const row1 = document.createElement('div'); row1.className = 'cb-md-toolbar';
+
+  // Bold
+  row1.appendChild(btn('<b>B</b>', 'Negrito (Ctrl+B)', () => insertAround('**','**')));
+  // Italic
+  row1.appendChild(btn('<i>I</i>', 'Itálico (Ctrl+I)', () => insertAround('_','_')));
+  row1.appendChild(sep());
+
+  // H1 H2 H3
+  row1.appendChild(btn('H1', 'Título 1', () => insertLinePrefix('# ')));
+  row1.appendChild(btn('H2', 'Título 2', () => insertLinePrefix('## ')));
+  row1.appendChild(btn('H3', 'Título 3', () => insertLinePrefix('### ')));
+  row1.appendChild(sep());
+
+  // Link
+  const linkBtn = btn('<i class="fa fa-link"></i> Link', 'Inserir link', null);
+  makePopup(linkBtn, (popup, close) => {
+    popup.appendChild(labelEl('Texto do link'));
+    const txtInp = inputEl('text', 'Clique aqui');
+    popup.appendChild(txtInp);
+    popup.appendChild(labelEl('URL'));
+    const urlInp = inputEl('text', 'https://...');
+    popup.appendChild(urlInp);
+    popup.appendChild(btns('Inserir', () => {
+      const text = txtInp.value || 'link'; const url = urlInp.value || '#';
+      insertAt(`[${text}](${url})`);
+      close();
+    }, close));
+  });
+  row1.appendChild(linkBtn);
+
+  // Icon
+  const iconBtn = btn('<i class="fa fa-star"></i> Ícone', 'Inserir ícone', null);
+  makePopup(iconBtn, (popup, close) => {
+    popup.appendChild(labelEl('Nome do ícone (Font Awesome)'));
+    const iconInp = inputEl('text', 'ex: cog, star, heart');
+    popup.appendChild(iconInp);
+    popup.appendChild(btns('Inserir', () => {
+      insertAt(`<icon=${iconInp.value || 'star'}>`);
+      close();
+    }, close));
+  });
+  row1.appendChild(iconBtn);
+
+  row1.appendChild(sep());
+
+  // Image
+  const imgBtn = btn('<i class="fa fa-image"></i> Imagem', 'Inserir imagem', null);
+  makePopup(imgBtn, (popup, close) => {
+    popup.appendChild(labelEl('URL da imagem'));
+    const imgInp = inputEl('text', 'https://... ou /static/...');
+    popup.appendChild(labelEl('Texto alternativo (alt)'));
+    const altInp = inputEl('text', 'Descrição da imagem');
+    popup.appendChild(altInp);
+    const linkRow = checkEl('Tornar clicável', false);
+    popup.appendChild(linkRow);
+    popup.appendChild(labelEl('URL do link (opcional)'));
+    const linkInp = inputEl('text', 'https://...');
+    popup.appendChild(linkInp);
+    popup.appendChild(btns('Inserir', () => {
+      const src = imgInp.value || ''; const alt = altInp.value || '';
+      const imgMd = `![${alt}](${src})`;
+      if (linkRow.checkbox.checked && linkInp.value) insertAt(`[${imgMd}](${linkInp.value})`);
+      else insertAt(imgMd);
+      close();
+    }, close));
+  });
+  row1.appendChild(imgBtn);
+
+  // Line break
+  row1.appendChild(btn('<i class="fa fa-level-down"></i> Linha', 'Quebra de linha (<br>)', () => insertAt('<br>\n')));
+
+  // Expand arrow to toggle row 2
+  const expandBtn = document.createElement('button');
+  expandBtn.type = 'button'; expandBtn.className = 'cb-md-toolbar-expand';
+  expandBtn.innerHTML = '<i class="fa fa-angle-down"></i> HTML';
+  expandBtn.title = 'Mais opções HTML';
+  row1.appendChild(expandBtn);
+
+  // ============ ROW 2 (HTML options) ============
+  const row2 = document.createElement('div'); row2.className = 'cb-md-toolbar row2';
+
+  expandBtn.addEventListener('click', () => {
+    const open = row2.classList.toggle('open');
+    expandBtn.innerHTML = open ? '<i class="fa fa-angle-up"></i> HTML' : '<i class="fa fa-angle-down"></i> HTML';
+  });
+
+  // Color
+  const colorBtn = btn('<i class="fa fa-tint"></i> Cor', 'Cor do texto', null);
+  const BRAND_COLORS = [
+    {label:'Vermelho',hex:'#e53e3e'},{label:'Laranja',hex:'#dd6b20'},{label:'Amarelo',hex:'#d69e2e'},
+    {label:'Verde',hex:'#38a169'},{label:'Azul',hex:'#3182ce'},{label:'Roxo',hex:'#805ad5'},
+    {label:'Rosa',hex:'#d53f8c'},{label:'Preto',hex:'#1a202c'},{label:'Cinza',hex:'#718096'},
+    {label:'Branco',hex:'#ffffff'},
+  ];
+  makePopup(colorBtn, (popup, close) => {
+    popup.appendChild(labelEl('Cor rápida'));
+    const grid = document.createElement('div'); grid.className = 'cb-tb-color-grid';
+    let selHex = '#e53e3e';
+    BRAND_COLORS.forEach(({label, hex}) => {
+      const sw = document.createElement('div'); sw.className = 'cb-tb-color-swatch';
+      sw.style.background = hex; sw.title = label;
+      sw.addEventListener('click', () => { selHex = hex; grid.querySelectorAll('.cb-tb-color-swatch').forEach(s=>s.classList.remove('sel')); sw.classList.add('sel'); });
+      grid.appendChild(sw);
+    });
+    popup.appendChild(grid);
+    popup.appendChild(labelEl('Cor personalizada'));
+    const colInp = inputEl('color', '', '#e53e3e');
+    popup.appendChild(colInp);
+    popup.appendChild(btns('Aplicar', () => {
+      const hex = colInp.value !== '#e53e3e' ? colInp.value : selHex;
+      insertAround(`<span style="color:${hex}">`, '</span>');
+      close();
+    }, close));
+  });
+  row2.appendChild(colorBtn);
+
+  // Highlight / background color
+  const bgBtn = btn('<i class="fa fa-paint-brush"></i> Fundo', 'Fundo do texto', null);
+  makePopup(bgBtn, (popup, close) => {
+    popup.appendChild(labelEl('Cor de fundo rápida'));
+    const grid = document.createElement('div'); grid.className = 'cb-tb-color-grid';
+    let selHex = '#fefcbf';
+    const BG_COLORS = [{label:'Amarelo claro',hex:'#fefcbf'},{label:'Verde claro',hex:'#c6f6d5'},{label:'Azul claro',hex:'#bee3f8'},{label:'Rosa claro',hex:'#fed7e2'},{label:'Laranja claro',hex:'#feebc8'},{label:'Cinza claro',hex:'#edf2f7'}];
+    BG_COLORS.forEach(({label, hex}) => {
+      const sw = document.createElement('div'); sw.className = 'cb-tb-color-swatch';
+      sw.style.background = hex; sw.title = label;
+      sw.addEventListener('click', () => { selHex = hex; grid.querySelectorAll('.cb-tb-color-swatch').forEach(s=>s.classList.remove('sel')); sw.classList.add('sel'); });
+      grid.appendChild(sw);
+    });
+    popup.appendChild(grid);
+    popup.appendChild(labelEl('Cor personalizada'));
+    const colInp = inputEl('color', '', '#fefcbf');
+    popup.appendChild(colInp);
+    popup.appendChild(btns('Aplicar', () => {
+      const hex = colInp.value !== '#fefcbf' ? colInp.value : selHex;
+      insertAround(`<span style="background:${hex}; padding:1px 4px; border-radius:3px;">`, '</span>');
+      close();
+    }, close));
+  });
+  row2.appendChild(bgBtn);
+  row2.appendChild(sep());
+
+  // Class span
+  const clsBtn = btn('<i class="fa fa-tag"></i> Classe', 'Aplicar classe CSS', null);
+  const TEXT_SIZE_CLASSES = ['text-xsmall','text-small','text-default','text-medium','text-medium-plus','text-large','text-large-plus','text-large-plus-plus','text-xlarge','text-xlarge-plus','text-xxlarge','text-xxxlarge','text-xxxxlarge'];
+  const WEIGHT_CLASSES = ['thin','light','normal','medium','semibold','bold','extrabold','black','italic'];
+  const ALIGN_CLASSES = ['text-align-left','text-align-center','text-align-right','text-align-justify'];
+  makePopup(clsBtn, (popup, close) => {
+    popup.style.minWidth = '280px';
+    popup.appendChild(labelEl('Tamanho do texto'));
+    const szSel = document.createElement('select'); szSel.style.cssText='width:100%;margin-bottom:8px;padding:4px 6px;border:1px solid #e2e8f0;border-radius:5px;font-size:12px;';
+    [{value:'',label:'— nenhum —'}, ...TEXT_SIZE_CLASSES.map(c=>({value:c,label:c}))].forEach(({value,label})=>{ const o=document.createElement('option'); o.value=value; o.textContent=label; szSel.appendChild(o); });
+    popup.appendChild(szSel);
+    popup.appendChild(labelEl('Peso / estilo'));
+    const wSel = document.createElement('select'); wSel.style.cssText='width:100%;margin-bottom:8px;padding:4px 6px;border:1px solid #e2e8f0;border-radius:5px;font-size:12px;';
+    [{value:'',label:'— nenhum —'}, ...WEIGHT_CLASSES.map(c=>({value:c,label:c}))].forEach(({value,label})=>{ const o=document.createElement('option'); o.value=value; o.textContent=label; wSel.appendChild(o); });
+    popup.appendChild(wSel);
+    popup.appendChild(labelEl('Alinhamento'));
+    const aSel = document.createElement('select'); aSel.style.cssText='width:100%;margin-bottom:8px;padding:4px 6px;border:1px solid #e2e8f0;border-radius:5px;font-size:12px;';
+    [{value:'',label:'— nenhum —'}, ...ALIGN_CLASSES.map(c=>({value:c,label:c}))].forEach(({value,label})=>{ const o=document.createElement('option'); o.value=value; o.textContent=label; aSel.appendChild(o); });
+    popup.appendChild(aSel);
+    popup.appendChild(labelEl('Classes extras (livre)'));
+    const extraInp = inputEl('text', 'ex: bold text-center');
+    popup.appendChild(extraInp);
+    popup.appendChild(btns('Aplicar', () => {
+      const cls = [szSel.value, wSel.value, aSel.value, extraInp.value].filter(Boolean).join(' ');
+      if (cls) insertAround(`<span class="${cls}">`, '</span>');
+      close();
+    }, close));
+  });
+  row2.appendChild(clsBtn);
+  row2.appendChild(sep());
+
+  // Raw span
+  const spanBtn = btn('<i class="fa fa-code"></i> &lt;span&gt;', 'Inserir span HTML livre', null);
+  makePopup(spanBtn, (popup, close) => {
+    popup.appendChild(labelEl('Atributos do span (class, style, etc.)'));
+    const attrInp = inputEl('text', 'class="bold" style="color:red"');
+    popup.appendChild(attrInp);
+    popup.appendChild(btns('Inserir', () => {
+      const attr = attrInp.value.trim();
+      insertAround(`<span${attr ? ' '+attr : ''}>`, '</span>');
+      close();
+    }, close));
+  });
+  row2.appendChild(spanBtn);
+
+  // Keyboard shortcut support
+  ta.addEventListener('keydown', (e) => {
+    if ((e.ctrlKey || e.metaKey) && e.key === 'z') { e.preventDefault(); undoOne(); }
+    if ((e.ctrlKey || e.metaKey) && e.key === 'b') { e.preventDefault(); insertAround('**','**'); }
+    if ((e.ctrlKey || e.metaKey) && e.key === 'i') { e.preventDefault(); insertAround('_','_'); }
+  });
+
+  wrap.appendChild(row1);
+  wrap.appendChild(row2);
+  wrap.appendChild(ta);
+  return wrap;
 }
 
 function selectInput(options, val, onChange) {
@@ -1423,11 +1889,6 @@ function renderSectionForm(form, node) {
     refreshSpacingViz();
   }, ''));
 
-  const sectionContainerRow = document.createElement('div');
-  sectionContainerRow.className = 'cb-field-group';
-  sectionContainerRow.appendChild(checkboxField('Seção respeita o contêiner da página', node.container !== false, v => updateNodeField('container', v)));
-  form.appendChild(sectionContainerRow);
-
   const insideWrap = document.createElement('div');
   insideWrap.className = 'cb-advanced-only';
   insideWrap.style.marginTop = '8px';
@@ -1583,7 +2044,11 @@ function renderMainForm(form, node, formRef) {
 
   const containerRow = document.createElement('div');
   containerRow.className = 'cb-field-group';
-  containerRow.appendChild(checkboxField('Conteúdo respeita o contêiner da página', main.container !== false, v => updateMain('container', v)));
+  containerRow.appendChild(checkboxField('Conteúdo respeita o contêiner da página', main.container !== false, v => {
+    if (!node.main) node.main = {};
+    if (v) delete node.main.container; else node.main.container = false;
+    syncTextarea();
+  }));
   form.appendChild(containerRow);
 
   // Flex: basic
@@ -1593,15 +2058,31 @@ function renderMainForm(form, node, formRef) {
   flexLbl.innerHTML = 'Organização dos componentes';
   flexRow.appendChild(flexLbl);
   const flexSel = document.createElement('select'); flexSel.className = 'cb-select';
-  [['', 'Empilhados (padrão)'], ['flex', 'Componentes do container lado-a-lado'], ['flex flex-soft', 'Lado a lado (adaptável)']].forEach(([v, l]) => {
+  [
+    ['',                  'Empilhados (padrão)'],
+    ['flex',              'Lado a lado'],
+    ['flex-soft',         'Lado a lado (adaptável)'],
+    ['desktop:flex',      'Lado a lado (só computadores)'],
+    ['desktop:flex-soft', 'Lado a lado (adaptável, só computadores)'],
+  ].forEach(([v, l]) => {
     const o = document.createElement('option'); o.value = v; o.textContent = l;
-    if ((main.flex ? (main.flex_soft ? 'flex flex-soft' : 'flex') : '') === v) o.selected = true;
+    // detect current value from main fields
+    const cur = main['desktop:flex'] ? (main['desktop:flex-soft'] ? 'desktop:flex-soft' : 'desktop:flex')
+              : main.flex ? (main.flex_soft ? 'flex-soft' : 'flex') : '';
+    if (cur === v) o.selected = true;
     flexSel.appendChild(o);
   });
   flexSel.addEventListener('change', () => {
     const v = flexSel.value;
-    updateMain('flex', v.includes('flex') || null);
-    updateMain('flex_soft', v.includes('flex-soft') || null);
+    // clear all four flags first
+    updateMain('flex', null);
+    updateMain('flex_soft', null);
+    updateMain('desktop:flex', null);
+    updateMain('desktop:flex-soft', null);
+    if (v === 'flex')              updateMain('flex', true);
+    if (v === 'flex-soft')         updateMain('flex_soft', true);
+    if (v === 'desktop:flex')      updateMain('desktop:flex', true);
+    if (v === 'desktop:flex-soft') updateMain('desktop:flex-soft', true);
   });
   flexRow.appendChild(flexSel);
   form.appendChild(flexRow);
@@ -1623,8 +2104,8 @@ function renderMainForm(form, node, formRef) {
 
   // Responsive tabs
   const respTabs = document.createElement('div'); respTabs.className = 'cb-resp-tabs'; respTabs.style.borderRadius = '0'; respTabs.style.border = 'none'; respTabs.style.borderBottom = '1px solid #e2e8f0';
-  const tabMobile = document.createElement('button'); tabMobile.type='button'; tabMobile.className='cb-resp-tab active'; tabMobile.textContent='📱 Celular';
-  const tabDesktop = document.createElement('button'); tabDesktop.type='button'; tabDesktop.className='cb-resp-tab'; tabDesktop.textContent='🖥️ Desktop';
+  const tabMobile = document.createElement('button'); tabMobile.type='button'; tabMobile.className='cb-resp-tab active'; tabMobile.textContent='📱 Padrão (Celular+Desktop)';
+  const tabDesktop = document.createElement('button'); tabDesktop.type='button'; tabDesktop.className='cb-resp-tab'; tabDesktop.textContent='🖥️ Mudanças no Desktop';
   respTabs.appendChild(tabMobile); respTabs.appendChild(tabDesktop);
   respWrapper.appendChild(respTabs);
 
@@ -1739,10 +2220,10 @@ function renderBorderDetails(form, node) {
       szG.appendChild(selectInput([{value:'',label:'Normal'},{value:'small',label:'Pequeno'}], bd.size, v => updateBD('size', v)));
       szRow.appendChild(szG);
 
-      // Margin top (advanced)
+      // Classes extras (advanced) — stored as margin_t in JSON
       const mtG = document.createElement('div'); mtG.className = 'cb-advanced-only';
-      mtG.appendChild(Object.assign(document.createElement('div'), {className:'cb-field-label', style:'margin-bottom:4px', textContent:'Margem topo'}));
-      mtG.appendChild(textInput(bd.margin_t, v => updateBD('margin_t', v), '0, 0/, 1, 1/, 2, 2/, 3, 3/, 4, 4/, 5'));
+      mtG.appendChild(Object.assign(document.createElement('div'), {className:'cb-field-label', style:'margin-bottom:4px', textContent:'Classes extras'}));
+      mtG.appendChild(textInput(bd.margin_t, v => updateBD('margin_t', v), 'ex: margin-t-1, desktop:hidden'));
       szRow.appendChild(mtG);
       item.appendChild(szRow);
 
@@ -1862,8 +2343,43 @@ function renderDynamicForm(form, node, t) {
     const contentTA = textArea(node.conteudo, v => updateNodeField('conteudo', v), '# Título\n**negrito**, _itálico_, <icon=cog> ícone...');
     form.appendChild(field('Conteúdo', '', contentTA));
     form.appendChild(markdownHelp());
+
+    // Font size dropdown — sets/clears a text-* class in node.classes
+    const TEXT_SIZES_OPTS = [
+      {value:'',label:'Padrão'},
+      {value:'text-xsmall',label:'XS — 0.75rem'},
+      {value:'text-small',label:'S — 0.875rem'},
+      {value:'text-default',label:'M — 1rem'},
+      {value:'text-medium',label:'M+ — 1.1rem'},
+      {value:'text-medium-plus',label:'L− — 1.4rem'},
+      {value:'text-large',label:'L — 1.25rem'},
+      {value:'text-large-plus',label:'L+ — 1.625rem'},
+      {value:'text-large-plus-plus',label:'L++ — 1.75rem'},
+      {value:'text-xlarge',label:'XL — 2rem'},
+      {value:'text-xlarge-plus',label:'XL+ — 2.25rem'},
+      {value:'text-xxlarge',label:'2XL — 2.5rem'},
+      {value:'text-xxxlarge',label:'3XL — 3rem'},
+      {value:'text-xxxxlarge',label:'4XL — 4rem'},
+    ];
+    const textSizeClasses = TEXT_SIZES_OPTS.map(o => o.value).filter(Boolean);
+    function currentTextSize() {
+      const cls = (node.classes || '').split(' ');
+      return cls.find(c => textSizeClasses.includes(c)) || '';
+    }
+    const sizeSel = selectInput(TEXT_SIZES_OPTS, currentTextSize(), v => {
+      const cur = (node.classes || '').split(' ').filter(c => !textSizeClasses.includes(c) && c);
+      if (v) cur.push(v);
+      updateNodeField('classes', cur.join(' ') || null);
+    });
+    form.appendChild(field('Tamanho do texto', '', sizeSel));
+
     form.appendChild(sectionDivider('Tema', 'paint-brush'));
     form.appendChild(colorSwatchField('Cor do texto (foreground)', node.theme_foreground, v => updateNodeField('theme_foreground', v), 'yin'));
+
+    // Advanced: free classes
+    const classesAdv = document.createElement('div'); classesAdv.className = 'cb-advanced-only cb-field-group'; classesAdv.style.marginTop = '8px';
+    classesAdv.appendChild(field('Classes do texto', 'ex: text-center bold', textInput(node.classes, v => updateNodeField('classes', v || null))));
+    form.appendChild(classesAdv);
     return;
   }
 
@@ -1871,6 +2387,9 @@ function renderDynamicForm(form, node, t) {
   if (t === 'slider_sedes') {
     form.appendChild(sectionDivider('⚡ Carrossel de Sedes', ''));
     form.appendChild(field('Título', 'opcional', textInput(node.title, v => updateNodeField('title', v))));
+    form.appendChild(sectionDivider('Tema de cores', 'paint-brush'));
+    form.appendChild(colorSwatchField('Primário', node.theme_primary, v => updateNodeField('theme_primary', v)));
+    form.appendChild(colorSwatchField('Foreground (texto)', node.theme_foreground, v => updateNodeField('theme_foreground', v), 'yin'));
     return;
   }
 
@@ -1905,6 +2424,10 @@ function renderDynamicForm(form, node, t) {
     form.appendChild(sectionDivider('⚡ Carrossel de Arquivos', ''));
     form.appendChild(field('Título', 'opcional', textInput(node.title, v => updateNodeField('title', v))));
     renderTagsField(form, node, 'tags', '/admin/app/tagarquivo/');
+    form.appendChild(sectionDivider('Tema de cores', 'paint-brush'));
+    form.appendChild(colorSwatchField('Primário', node.theme_primary, v => updateNodeField('theme_primary', v)));
+    form.appendChild(colorSwatchField('Secundário', node.theme_secondary, v => updateNodeField('theme_secondary', v)));
+    form.appendChild(colorSwatchField('Foreground (texto)', node.theme_foreground, v => updateNodeField('theme_foreground', v), 'yin'));
     return;
   }
 
@@ -1992,6 +2515,10 @@ function renderHeaderForm(form, node) {
   const r = document.createElement('div'); r.className = 'cb-field-group';
   r.appendChild(checkboxField('Ocupar todo o espaço horizontal', node.fullwidth, v => updateNodeField('fullwidth', v)));
   form.appendChild(r);
+
+  const classesAdv = document.createElement('div'); classesAdv.className = 'cb-advanced-only cb-field-group'; classesAdv.style.marginTop = '8px';
+  classesAdv.appendChild(field('Classes do cabeçalho', 'ex: shadow text-center', textInput(node.classes, v => updateNodeField('classes', v || null))));
+  form.appendChild(classesAdv);
 }
 
 function renderImagemForm(form, node) {
@@ -2029,6 +2556,10 @@ function renderImagemForm(form, node) {
   const r2 = document.createElement('div'); r2.className = 'cb-field-group';
   r2.appendChild(checkboxField('Cantos arredondados', node.rounded, v => updateNodeField('rounded', v)));
   form.appendChild(r2);
+
+  const classesAdv = document.createElement('div'); classesAdv.className = 'cb-advanced-only cb-field-group'; classesAdv.style.marginTop = '8px';
+  classesAdv.appendChild(field('Classes da imagem', 'ex: shadow w-full', textInput(node.classes, v => updateNodeField('classes', v || null))));
+  form.appendChild(classesAdv);
 }
 
 function renderMapaForm(form, node) {
@@ -2070,9 +2601,9 @@ function renderBtnSquareForm(form, node) {
   form.appendChild(iconField('Ícone', node.icon, v => updateNodeField('icon', v)));
   form.appendChild(field('Link', '', textInput(node.href, v => updateNodeField('href', v), 'https://...')));
   form.appendChild(sectionDivider('Cores', 'paint-brush'));
-  form.appendChild(colorSwatchField('Primário', node.color_primary, v => updateNodeField('color_primary', v)));
-  form.appendChild(colorSwatchField('Secundário', node.color_secondary, v => updateNodeField('color_secondary', v)));
-  form.appendChild(colorSwatchField('Foreground (texto)', node.color_foreground, v => updateNodeField('color_foreground', v), 'yin'));
+  form.appendChild(colorSwatchField('Primário', node.theme_primary, v => updateNodeField('theme_primary', v)));
+  form.appendChild(colorSwatchField('Secundário', node.theme_secondary, v => updateNodeField('theme_secondary', v)));
+  form.appendChild(colorSwatchField('Foreground (texto)', node.theme_foreground, v => updateNodeField('theme_foreground', v), 'yin'));
 }
 
 function renderBtnInlineForm(form, node) {
@@ -2110,9 +2641,9 @@ function renderConteudoSquareForm(form, node) {
   form.appendChild(colorSwatchField('Tema do botão', node.inline_theme, v => updateNodeField('inline_theme', v)));
 
   form.appendChild(sectionDivider('Cores do Cartão', 'paint-brush'));
-  form.appendChild(colorSwatchField('Primário', node.color_primary, v => updateNodeField('color_primary', v)));
-  form.appendChild(colorSwatchField('Secundário', node.color_secondary, v => updateNodeField('color_secondary', v)));
-  form.appendChild(colorSwatchField('Foreground (texto)', node.color_foreground, v => updateNodeField('color_foreground', v), 'yin'));
+  form.appendChild(colorSwatchField('Primário', node.theme_primary, v => updateNodeField('theme_primary', v)));
+  form.appendChild(colorSwatchField('Secundário', node.theme_secondary, v => updateNodeField('theme_secondary', v)));
+  form.appendChild(colorSwatchField('Foreground (texto)', node.theme_foreground, v => updateNodeField('theme_foreground', v), 'yin'));
 
   form.appendChild(sectionDivider('Alinhamento', 'align-left'));
   const g2 = document.createElement('div'); g2.className = 'cb-grid-2';
@@ -2125,8 +2656,24 @@ function renderConteudoSquareForm(form, node) {
   const alignOpts = [{value:'',label:'Padrão'},{value:'start',label:'Esquerda'},{value:'center',label:'Centro'},{value:'end',label:'Direita'}];
   form.appendChild(field('Alinhamento horizontal do texto', '', selectInput(alignOpts, node.text_align, v => updateNodeField('text_align', v))));
   const r = document.createElement('div'); r.className = 'cb-field-group';
+  r.style.cssText = 'display:flex;gap:16px;flex-wrap:wrap;align-items:center;';
   r.appendChild(checkboxField('Alinhamento vertical do texto (centralizado)', node.text_middle, v => updateNodeField('text_middle', v)));
+
+  // "Imagem como ícone" toggle — adds/removes 'icon-image' from node.classes
+  const iconImageCheck = checkboxField('Imagem como ícone', (node.classes || '').includes('icon-image'), v => {
+    const cur = (node.classes || '').split(' ').filter(c => c && c !== 'icon-image');
+    if (v) cur.push('icon-image');
+    updateNodeField('classes', cur.join(' ') || null);
+  });
+  r.appendChild(iconImageCheck);
   form.appendChild(r);
+
+  // Classes extras (advanced only)
+  const classesAdv = document.createElement('div'); classesAdv.className = 'cb-advanced-only cb-field-group'; classesAdv.style.marginTop = '8px';
+  classesAdv.appendChild(field('Classes do cartão', 'ex: shadow border-radius', textInput(node.classes, v => {
+    updateNodeField('classes', v || null);
+  })));
+  form.appendChild(classesAdv);
 }
 
 function renderArquivoViewerForm(form, node) {
@@ -2163,14 +2710,29 @@ function renderHtmlForm(form, node) {
 }
 
 // Tab item form
-function renderTabItemForm(form, node) {
+function renderTabItemForm(form, node, containerType) {
+  const isCarousel = containerType === 'carousel';
+
   // ID (advanced)
   const idWrap = document.createElement('div'); idWrap.className = 'cb-advanced-only cb-field-group';
   idWrap.appendChild(field('ID', '', textInput(node.id, v => { node.id=v; syncTextarea(); renderTree(); })));
   form.appendChild(idWrap);
 
   form.appendChild(field('Rótulo', '', textInput(node.label, v => { node.label=v; syncTextarea(); renderTree(); })));
-  form.appendChild(iconField('Ícone', node.icon, v => { node.icon=v; syncTextarea(); }));
+
+  // Ícone só para tabs e accordion, não para carrossel
+  if (!isCarousel) {
+    form.appendChild(iconField('Ícone', node.icon, v => { node.icon=v; syncTextarea(); }));
+  }
+
+  // Imagem só para carrossel
+  if (isCarousel) {
+    const imgRow = document.createElement('div'); imgRow.className = 'cb-input-with-link';
+    const imgInp = textInput(node.image, v => { node.image=v; syncTextarea(); }, 'https://exemplo.com/imagem.jpg');
+    imgRow.appendChild(imgInp);
+    form.appendChild(field('Imagem do slide', 'URL da imagem', imgRow));
+  }
+
   const contentTA = textArea(node.content, v => { node.content=v; syncTextarea(); });
   form.appendChild(field('Conteúdo', '', contentTA));
   form.appendChild(markdownHelp());
@@ -2307,7 +2869,7 @@ function addChildToNode(parentPath, type) {
 
 function createDefaultNode(type) {
   const base = { type };
-  if (type === 'section') return { type:'section', bg:'', main:{container:true}, components:[] };
+  if (type === 'section') return { type:'section', bg:'', padding:'2', main:{container:true}, components:[] };
   if (type === 'tabs') return { type:'tabs', style:'yin blue-secondary', tabs:[{id:'tab-1',label:'Tab 1',icon:'file-o',content:''}] };
   if (type === 'accordion') return { type:'accordion', style:'yang red-secondary', tabs:[{id:'ac-1',label:'Accordion 1',icon:'cog',content:''}] };
   if (type === 'carousel') return { type:'carousel', style:'yin orange', tabs:[{id:'slide-1',label:'Slide 1',image:'',content:''}] };
@@ -2337,7 +2899,7 @@ function createDefaultNode(type) {
 // ADD ROOT SECTION
 // ============================================================
 function addRootSection() {
-  state.push({ type:'section', bg:'', main:{ container:true }, components:[] });
+  state.push({ type:'section', bg:'', padding:'2', main:{ container:true }, components:[] });
   syncTextarea(); renderTree();
 }
 
@@ -2481,15 +3043,53 @@ if (previewIframe) previewIframe.addEventListener('load', setupPreviewLinks);
     document.body.style.userSelect='none';
     if (overlay) overlay.style.display='block';
   });
-  document.addEventListener('mousemove', e => { if (dragging) { w.style.left=(e.clientX-offsetX)+'px'; w.style.top=(e.clientY-offsetY)+'px'; } });
+  document.addEventListener('mousemove', e => {
+    if (!dragging) return;
+    const BAR_H = 28;
+    const newLeft = e.clientX - offsetX;
+    const newTop  = e.clientY - offsetY;
+    // Clamp: bar must always remain at least partially on screen
+    const clampedLeft = Math.max(-(w.offsetWidth - 60), Math.min(window.innerWidth - 60, newLeft));
+    const clampedTop  = Math.max(0, Math.min(window.innerHeight - BAR_H, newTop)); // top=0 keeps bar fully visible
+    w.style.left = clampedLeft + 'px';
+    w.style.top  = clampedTop  + 'px';
+  });
   document.addEventListener('mouseup', () => { dragging=false; document.body.style.userSelect=''; if(overlay) overlay.style.display='none'; });
+
   const maxBtn = document.getElementById('cb-preview-maximize');
   let maximized=false; const prev={};
   if (maxBtn) {
     maxBtn.addEventListener('click', () => {
-      if (!maximized) { prev.top=w.style.top;prev.left=w.style.left;prev.width=w.style.width;prev.height=w.style.height; w.style.top='5%';w.style.left='5%';w.style.width='90%';w.style.height='90%'; }
-      else { w.style.top=prev.top;w.style.left=prev.left;w.style.width=prev.width;w.style.height=prev.height; }
-      maximized=!maximized;
+      if (!maximized) {
+        prev.top=w.style.top; prev.left=w.style.left; prev.width=w.style.width; prev.height=w.style.height;
+        w.style.top='2%'; w.style.left='2%'; w.style.width='96%'; w.style.height='96%';
+      } else {
+        w.style.top=prev.top; w.style.left=prev.left; w.style.width=prev.width; w.style.height=prev.height;
+      }
+      maximized=!maximized; mobileView=false;
+    });
+  }
+
+  const mobileBtn = document.getElementById('cb-preview-mobile');
+  let mobileView=false;
+  if (mobileBtn) {
+    mobileBtn.addEventListener('click', () => {
+      if (!mobileView) {
+        prev.top=w.style.top; prev.left=w.style.left; prev.width=w.style.width; prev.height=w.style.height;
+        // Mobile: full height, ~375px wide centered
+        const mw = Math.min(390, Math.round(window.innerWidth * 0.28));
+        w.style.width  = mw + 'px';
+        w.style.height = Math.round(window.innerHeight * 0.92) + 'px';
+        w.style.top    = '2%';
+        w.style.left   = Math.round((window.innerWidth - mw) / 2) + 'px';
+        mobileBtn.title = 'Sair do modo mobile';
+        mobileBtn.style.color = '#3b82f6';
+      } else {
+        w.style.top=prev.top; w.style.left=prev.left; w.style.width=prev.width; w.style.height=prev.height;
+        mobileBtn.title = 'Visualização mobile';
+        mobileBtn.style.color = '';
+      }
+      mobileView=!mobileView; maximized=false;
     });
   }
 })();
@@ -2595,8 +3195,11 @@ function buildClassesHelp() {
     {
       title: '🔤 Tamanho de texto',
       items: [
-        ['text-small','Pequeno'],['text-default','Padrão'],['text-medium','Médio'],
-        ['text-large','Grande'],['text-xlarge','Extra grande'],['text-xxlarge','2× grande'],
+        ['text-xsmall','XS — 0.75rem'],['text-small','S — 0.875rem'],['text-default','M — 1rem'],
+        ['text-medium','M+ — 1.1rem'],['text-medium-plus','L− — 1.4rem'],['text-large','L — 1.25rem'],
+        ['text-large-plus','L+ — 1.625rem'],['text-large-plus-plus','L++ — 1.75rem'],['text-xlarge','XL — 2rem'],
+        ['text-xlarge-plus','XL+ — 2.25rem'],['text-xxlarge','2XL — 2.5rem'],
+        ['text-xxxlarge','3XL — 3rem'],['text-xxxxlarge','4XL — 4rem'],
       ]
     },
     {
@@ -2650,6 +3253,186 @@ function buildClassesHelp() {
   html += '</div>';
   body.innerHTML = html;
 }
+
+// ============================================================
+// CONTEXT MENU — COPY / PASTE
+// ============================================================
+// Clipboard is the SYSTEM clipboard (navigator.clipboard).
+// Format stored: JSON string { __cbBuilder: true, kind, node }
+// ctxClipboardCache holds the last read value so the menu can render synchronously.
+let ctxClipboardCache = null; // populated async when menu opens
+
+function nodeKind(node) {
+  const t = node.type || node.tipo || '';
+  if (t === 'section') return 'section';
+  if (node.label !== undefined && node.content !== undefined && !t) return 'tab';
+  return 'component';
+}
+
+async function readSystemClipboard() {
+  try {
+    const text = await navigator.clipboard.readText();
+    const parsed = JSON.parse(text);
+    if (parsed && parsed.__cbBuilder && parsed.kind && parsed.node) return parsed;
+  } catch (_) {}
+  return null;
+}
+
+async function writeSystemClipboard(data) {
+  try {
+    await navigator.clipboard.writeText(JSON.stringify(data));
+    return true;
+  } catch (_) {
+    return false;
+  }
+}
+
+function pasteValidityFor(targetPath, clipboard) {
+  if (!clipboard) return null;
+  const { node, kind } = clipboard;
+  const targetNode = getNode(targetPath);
+  if (!targetNode) return null;
+  const targetType = targetNode.type || targetNode.tipo || '';
+  const targetKind = nodeKind(targetNode);
+
+  if (kind === 'section') {
+    if (targetKind !== 'section') return { valid: false, reason: 'Lugar Inválido' };
+    return { valid: true };
+  }
+  if (kind === 'component') {
+    if (targetKind === 'section') return { valid: true };
+    const parentPath = targetPath.slice(0, -2);
+    const parent = parentPath.length === 0 ? null : getNode(parentPath);
+    if (parent && (parent.type === 'section' || parent.tipo === 'section')) return { valid: true };
+    return { valid: false, reason: 'Lugar Inválido' };
+  }
+  if (kind === 'tab') {
+    if (CONTAINER_TYPES.includes(targetType)) return { valid: true };
+    const parentPath = targetPath.slice(0, -2);
+    const parent = parentPath.length === 0 ? null : getNode(parentPath);
+    if (parent && CONTAINER_TYPES.includes(parent.type || parent.tipo || '')) return { valid: true };
+    return { valid: false, reason: 'Lugar Inválido' };
+  }
+  return { valid: false, reason: 'Código Inválido' };
+}
+
+function doPaste(targetPath, clipboard) {
+  if (!clipboard) return;
+  const { node, kind } = clipboard;
+  const clone = JSON.parse(JSON.stringify(node));
+  const targetNode = getNode(targetPath);
+  const targetType = targetNode ? (targetNode.type || targetNode.tipo || '') : '';
+
+  if (kind === 'section') {
+    const idx = targetPath[0];
+    state.splice(idx + 1, 0, clone);
+  } else if (kind === 'component') {
+    if (targetType === 'section') {
+      if (!targetNode.components) targetNode.components = [];
+      targetNode.components.push(clone);
+    } else {
+      const parentPath = targetPath.slice(0, -2);
+      const idx = targetPath[targetPath.length - 1];
+      const parent = parentPath.length === 0 ? getNode([targetPath[0]]) : getNode(parentPath);
+      parent.components.splice(idx + 1, 0, clone);
+    }
+  } else if (kind === 'tab') {
+    if (CONTAINER_TYPES.includes(targetType)) {
+      if (!targetNode.tabs) targetNode.tabs = [];
+      targetNode.tabs.push(clone);
+    } else {
+      const parentPath = targetPath.slice(0, -2);
+      const idx = targetPath[targetPath.length - 1];
+      const parent = parentPath.length === 0 ? getNode([targetPath[0]]) : getNode(parentPath);
+      parent.tabs.splice(idx + 1, 0, clone);
+    }
+  }
+  syncTextarea(); renderTree();
+}
+
+function buildCtxMenu(path, clipboard) {
+  const menu = document.getElementById('cb-ctx-menu');
+  menu.innerHTML = '';
+  const node = getNode(path);
+  if (!node) return;
+  const kind = nodeKind(node);
+  const kindLabels = { section: 'Seção', component: 'Componente', tab: 'Aba/Slide' };
+
+  function item(icon, text, onClick, disabled = false) {
+    const el = document.createElement('div');
+    el.className = 'cb-ctx-item' + (disabled ? ' disabled' : '');
+    el.innerHTML = `<i class="fa fa-${icon}"></i> ${text}`;
+    if (!disabled && onClick) el.addEventListener('mousedown', (e) => { e.preventDefault(); closeCtxMenu(); onClick(); });
+    return el;
+  }
+  function sep() { const el = document.createElement('div'); el.className = 'cb-ctx-sep'; return el; }
+
+  // Copy — writes to system clipboard
+  menu.appendChild(item('copy', `Copiar ${kindLabels[kind] || ''}`, async () => {
+    const ok = await writeSystemClipboard({ __cbBuilder: true, kind, node: JSON.parse(JSON.stringify(node)) });
+    if (!ok) alert('Não foi possível acessar a área de transferência. Verifique as permissões do navegador.');
+  }));
+
+  menu.appendChild(sep());
+
+  // Paste — uses the clipboard read at menu-open time
+  const validity = pasteValidityFor(path, clipboard);
+  if (!clipboard) {
+    menu.appendChild(item('clipboard', 'Colar: Área Vazia', null, true));
+  } else if (!validity) {
+    menu.appendChild(item('clipboard', 'Colar: Código Inválido', null, true));
+  } else if (!validity.valid) {
+    menu.appendChild(item('clipboard', `Colar: ${validity.reason}`, null, true));
+  } else {
+    const pasteKind = clipboard.kind;
+    menu.appendChild(item('clipboard', `Colar ${kindLabels[pasteKind] || ''}`, () => doPaste(path, clipboard)));
+  }
+
+  menu.appendChild(sep());
+
+  menu.appendChild(item('files-o', 'Duplicar', () => { selectNode(path); setTimeout(() => duplicateSelected(), 0); }));
+  menu.appendChild(item('trash', 'Deletar', () => confirmDelete(path)));
+}
+
+async function openCtxMenu(e, path) {
+  e.preventDefault();
+  e.stopPropagation();
+
+  let menu = document.getElementById('cb-ctx-menu');
+  if (!menu) {
+    menu = document.createElement('div');
+    menu.id = 'cb-ctx-menu';
+    document.body.appendChild(menu);
+  }
+
+  // Show spinner while reading clipboard
+  menu.innerHTML = '<div class="cb-ctx-item disabled"><i class="fa fa-spinner fa-spin"></i> Carregando...</div>';
+  menu.classList.add('open');
+  // Preliminary position at cursor
+  menu.style.left = e.clientX + 'px';
+  menu.style.top  = e.clientY + 'px';
+
+  const clipboard = await readSystemClipboard();
+  buildCtxMenu(path, clipboard);
+
+  // Reposition keeping menu on screen
+  const rect = menu.getBoundingClientRect();
+  const x = e.clientX + rect.width  > window.innerWidth  ? e.clientX - rect.width  : e.clientX;
+  const y = e.clientY + rect.height > window.innerHeight ? e.clientY - rect.height : e.clientY;
+  menu.style.left = x + 'px';
+  menu.style.top  = y + 'px';
+}
+
+function closeCtxMenu() {
+  const menu = document.getElementById('cb-ctx-menu');
+  if (menu) menu.classList.remove('open');
+}
+
+// Close only on mousedown outside the menu — no scroll listener (would fire on tree scroll)
+document.addEventListener('mousedown', (e) => {
+  const menu = document.getElementById('cb-ctx-menu');
+  if (menu && !menu.contains(e.target)) closeCtxMenu();
+});
 
 // ============================================================
 // START

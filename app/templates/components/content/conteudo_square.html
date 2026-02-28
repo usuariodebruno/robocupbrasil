@@ -1,4 +1,4 @@
-<div class="conteudo-square flex flex-column
+<div class="conteudo-square flex flex-column {{ classes }}
     {% if image_align_mobile == 'top'%} flex-column{% endif %}
     {% if image_align_mobile == 'bottom'%} flex-reverse-column{% endif %}
     {% if image_align_desktop == 'right'%} desktop:flex-reverse{% endif %}
@@ -25,8 +25,15 @@
     {% endif %}
     
     <div class="conteudo-square-content text-align-{{ text_align|default:'start' }}">
-        <h2 class="text-xlarge margin-b-1 w-100 margin-t-0">{{ titulo }}</h2>
-        <p class="text-large margin-b-1 w-100">{{ descricao }}</p>
+        {% if titulo %}
+            <h2 class="text-xlarge margin-b-1 w-100 margin-t-0">{{ titulo }}</h2>
+        {% endif %}
+
+        {% if descricao %}
+            <p class="text-large margin-b-1 w-100">
+                {% include "components/dynamic/texto.html" with conteudo=descricao %}
+            </p>
+        {% endif %}
         
         {% if inline_text %}
             {% include "components/content/button_inline.html" with texto=inline_text href=inline_href theme=inline_theme color=inline_color shrink=True %}

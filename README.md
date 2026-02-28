@@ -103,7 +103,6 @@ To enhance performance, this project utilizes Django's file-based caching system
 
 - The cache files are stored in the `django_cache/` directory, which is created automatically in the project root.
 - Cache is automatically cleared whenever content is created, updated, or deleted in the admin panel.
-- This directory is intentionally not tracked by Git (and is listed in `.gitignore`).
 
 ### 7. Production
 

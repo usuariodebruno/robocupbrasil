@@ -105,6 +105,11 @@
     aspect-ratio: 3 / 2;
 }
 
+section main:not(.flex):not(.flex-soft):not(.desktop\:flex-soft):not(.desktop\:flex) {
+    display: flex;
+    flex-direction: column;
+}
+
 .state-image:hover { opacity: 0%; }
 
 .state-flag {
@@ -531,6 +536,7 @@ header div:first-child.holding {
     position: absolute;
     bottom: 0; left: 0;
     width: 100%; max-height: 100%;
+    height: inherit;
     object-fit: cover;
 }
 
@@ -679,7 +685,7 @@ header div:first-child.holding {
 }
 
 /* Desktop */
-@media (min-width: 768px) {
+@media (min-width: 831px) {
     .arquivo-details .download {
         width: fit-content;
     }
@@ -1013,7 +1019,7 @@ header div:first-child.holding {
     overflow-y: auto;
 }
 
-@media (min-width: 768px) {
+@media (min-width: 831px) {
     #calendar-list { flex: 1; }
     #calendar-grid { flex: 2; }
     .event-list-items { max-height: calc(var(--default-measure) * 38); }
@@ -1045,87 +1051,87 @@ header div:first-child.holding {
     transition: inherit;
 }
 
-.button-rounded-yellow {
-    --button-foreground: var(--yellow);
-    --button-background: var(--yang);
-    border-color: var(--button-foreground);
-    background: var(--button-foreground);
-}
-
-.button-rounded-yellow .inner {
-    color: var(--button-foreground);
-    background-color: var(--button-background);
-}
-
-.button-rounded-yellow:hover .inner {
-    background-color: var(--button-foreground);
-    color: var(--button-background);
-}
-
-.button-rounded-blue {
-    --button-foreground: var(--blue);
-    --button-background: var(--yang);
-    border-color: var(--button-foreground);
-    background: var(--button-foreground);
-}
-
-.button-rounded-blue .inner {
-    color: var(--button-foreground);
-    background-color: var(--button-background);
-}
-
-.button-rounded-blue:hover .inner {
-    background-color: var(--button-foreground);
-    color: var(--button-background);
+.button-rounded-yang {
+    --button-foreground: var(--yang);
+    --button-background: var(--yin);
 }
 
 .button-rounded-yin {
     --button-foreground: var(--yin);
     --button-background: var(--yang);
-    border-color: var(--button-foreground);
-    background: var(--button-foreground);
-}
-
-.button-rounded-yin .inner {
-    color: var(--button-foreground);
-    background-color: var(--button-background);
-}
-
-.button-rounded-yin:hover .inner {
-    background-color: var(--button-foreground);
-    color: var(--button-background);
-}
-
-.button-rounded-yang {
-    --button-foreground: var(--yang);
-    --button-background: var(--yin);
-    border-color: var(--button-foreground);
-    background: var(--button-foreground);
-}
-
-.button-rounded-yang .inner {
-    color: var(--button-foreground);
-    background-color: var(--button-background);
-}
-
-.button-rounded-yang:hover .inner {
-    background-color: var(--button-foreground);
-    color: var(--button-background);
 }
 
 .button-rounded-red {
-    --button-foreground: var(--red);
+    --button-foreground: var(--yin);
     --button-background: var(--yang);
+}
+
+.button-rounded-red-secondary {
+    --button-foreground: var(--yin);
+    --button-background: var(--yang);
+}
+
+.button-rounded-orange {
+    --button-foreground: var(--yin);
+    --button-background: var(--yang);
+}
+
+.button-rounded-orange-secondary {
+    --button-foreground: var(--yin);
+    --button-background: var(--yang);
+}
+
+.button-rounded-yellow {
+    --button-foreground: var(--yin);
+    --button-background: var(--yang);
+}
+
+.button-rounded-yellow-secondary {
+    --button-foreground: var(--yin);
+    --button-background: var(--yang);
+}
+
+.button-rounded-gray {
+    --button-foreground: var(--yin);
+    --button-background: var(--yang);
+}
+
+.button-rounded-gray-secondary {
+    --button-foreground: var(--yin);
+    --button-background: var(--yang);
+}
+
+.button-rounded-green {
+    --button-foreground: var(--yin);
+    --button-background: var(--yang);
+}
+
+.button-rounded-green-secondary {
+    --button-foreground: var(--yin);
+    --button-background: var(--yang);
+}
+
+.button-rounded-blue {
+    --button-foreground: var(--yin);
+    --button-background: var(--yang);
+}
+
+.button-rounded-blue-secondary {
+    --button-foreground: var(--yin);
+    --button-background: var(--yang);
+}
+
+.button-rounded {
     border-color: var(--button-foreground);
     background: var(--button-foreground);
 }
 
-.button-rounded-red .inner {
+.button-rounded .inner {
     color: var(--button-foreground);
     background-color: var(--button-background);
 }
 
-.button-rounded-red:hover .inner {
+.button-rounded:hover .inner {
     background-color: var(--button-foreground);
     color: var(--button-background);
 }
@@ -1366,14 +1372,17 @@ header div:first-child.holding {
     margin-left: auto;
     margin-right: auto;
     width: 100%;
-    max-width: 300px;
+}
+
+.conteudo-square.icon-image .conteudo-square-image {
+    max-width: 220px;
 }
 
 .conteudo-square-content {
     gap: var(--default-measure);
 }
 
-@media (min-width: 768px) {
+@media (min-width: 831px) {
     .conteudo-square {
         flex-direction: row;
         gap: calc(var(--default-measure) * 3) !important;
@@ -1384,6 +1393,10 @@ header div:first-child.holding {
         flex-shrink: 0;
         width: auto;
         max-width: 40%;
+    }
+
+    .conteudo-square.icon-image .conteudo-square-image {
+        max-width: 220px;
     }
     
     .conteudo-square-content {

@@ -8,7 +8,7 @@
             {% if theme_foreground %}--foreground: var(--{{ theme_foreground }});{% endif %}
         ">
             <div class="file-extension">
-                <div class="details flex-start {% if ext not in 'png jpg jpeg gif pdf' %} no-image {% endif %}">
+                <div class="details flex-start{% if ext not in 'png jpg jpeg gif' and not item.thumbnail %} no-image {% endif %}">
                     <i class="
                     {% if ext in 'png jpg jpeg gif' %}
                         fa fa-picture-o
@@ -30,8 +30,8 @@
                 </div>
                 {% if item.thumbnail or ext in 'png jpg jpeg gif'%}
                     {% if item.thumbnail %}
-                        <img draggable="false" src="{{ item.thumbnail.url }}" alt="{{ item.nome }}" />
-                        {% else %}
+                        <img draggable="false" src="{{ item.thumbnail.url }}" alt="{{ item.nome }}" class="thumb" />
+                    {% else %}
                         <img draggable="false" src="{{ item.arquivo.url }}" alt="{{ item.nome }}" />
                     {% endif %}
                 {% endif %}

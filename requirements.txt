@@ -5,13 +5,13 @@ django-daisy==2.0.7
 django-js-asset==3.1.2
 django-resized==1.0.3
 django_compressor==4.6.0
+gunicorn==25.1.0
 jsonfield==3.2.0
+packaging==26.0
+pdf2image==1.16.3
 pillow==12.1.0
 python-dotenv==1.2.1
 rcssmin==1.2.2
 rjsmin==1.2.5
 sqlparse==0.5.5
 whitenoise==6.11.0
-
-# markdown 3.5.4 is not available on some pip indices; pin to a widely available version
-pdf2image==1.16.3

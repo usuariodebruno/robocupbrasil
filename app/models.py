@@ -4,6 +4,7 @@ from django.db.models.signals import post_save, post_delete
 from django.dispatch import receiver
 from django.core.exceptions import ValidationError
 from django.utils.text import slugify
+from datetime import date
 from django_resized import ResizedImageField
 from django.core.cache import cache
 
@@ -267,7 +268,34 @@ class TagData(models.Model):
     def __str__(self):
         return self.nome
 
+class DataQuerySet(models.QuerySet):
+    """Regras de seleção de datas, em um lugar só: view e renderer partem daqui."""
+
+    def nao_encerrados(self, hoje=None):
+        """Eventos que ainda não terminaram: os futuros e os em andamento.
+
+        Um evento sem ``data_fim`` ocupa apenas o dia de ``data``.
+        """
+        if hoje is None:
+            hoje = date.today()
+        return self.filter(
+            models.Q(data_fim__gte=hoje) | models.Q(data_fim__isnull=True, data__gte=hoje)
+        )
+
+    def das_tags(self, tag_ids):
+        """Restringe às tags informadas; lista vazia ou inválida não restringe nada."""
+        try:
+            ids = [int(tid) for tid in tag_ids or []]
+        except (ValueError, TypeError):
+            return self
+        if not ids:
+            return self
+        return self.filter(tags__id__in=ids).distinct()
+
+
 class Data(GlobalQueryMixin, models.Model):
+    objects = DataQuerySet.as_manager()
+
     descricao = models.CharField(max_length=200, verbose_name='Nome / Descrição para a Data')
     data = models.DateField(verbose_name='Data de início')
     data_fim = models.DateField(

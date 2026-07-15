@@ -1,9 +1,8 @@
 from django.shortcuts import render, get_object_or_404
 from django.http import Http404, HttpResponse
-from .models import Regiao, Pagina, Funcionario, Arquivo, Data, Noticia, PaginaEstado, Sede, Subevento
+from .models import Regiao, Pagina, Funcionario, Arquivo, Noticia, PaginaEstado, Sede, Subevento
 from django.views.decorators.cache import cache_page
 from django.template.loader import render_to_string
-from datetime import date
 
 import json
 from .utils.render_components import render_components_to_html
@@ -17,7 +16,7 @@ def build_dynamic_components_context(request):
     Returns a dict with:
     - file_page: pagination index for files
     - news_page: pagination index for news
-    - extra_context: dict with funcionarios, sedes, subeventos, arquivos, noticias, datas
+    - extra_context: dict with funcionarios, sedes, subeventos, arquivos, noticias
     """
     try:
         file_page = int(request.GET.get('file_page', 0))
@@ -34,8 +33,7 @@ def build_dynamic_components_context(request):
     subeventos = Subevento.get_items(tag_ids=[])
     arquivos = Arquivo.get_items(tag_ids=[], page_index=file_page)
     noticias = Noticia.get_items(tag_ids=[], page_index=news_page)
-    datas = list(Data.objects.filter(data__gte=date.today()).order_by('data')[:50])
-    
+
     arquivo_obj = arquivos[0] if arquivos else None
     
     extra_context = {
@@ -44,7 +42,6 @@ def build_dynamic_components_context(request):
         'subeventos': subeventos,
         'arquivos': arquivos,
         'noticias': noticias,
-        'datas': datas,
         'arquivo': arquivo_obj,
     }
     

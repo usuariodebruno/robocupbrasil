@@ -1,9 +1,6 @@
 {% load static %}
-<div id="calendar-component" class="component calendar-component" data-events='[
-    {% for d in datas %}
-        {"date": "{{ d.data|date:"Y-m-d" }}", "descricao": "{{ d.descricao|escapejs }}", "cor": "{{ d.cor }}", "link": "{{ d.action_link }}"}{% if not forloop.last %},{% endif %}
-    {% endfor %}
-    ]'
+{{ eventos_json|json_script:"calendar-events" }}
+<div id="calendar-component" class="component calendar-component"
     style="
         {% if theme_primary %}--header: var(--{{ theme_primary }});{% endif %}
         {% if theme_secondary %}--card: var(--{{ theme_secondary }});{% endif %}
@@ -17,16 +14,16 @@
             <div class="event-list-items">
                 {% for d in datas %}
                     {% if d.action_link %}
-                        <a href="{{ d.action_link }}" class="event-card" data-date="{{ d.data|date:'Y-m-d' }}" style="--event-color: {{ d.cor }}">
+                        <a href="{{ d.action_link }}" class="event-card" data-date="{{ d.data|date:'Y-m-d' }}" data-date-fim="{{ d.data_final|date:'Y-m-d' }}" style="--event-color: {{ d.cor }}">
                             <div class="event-card-content flex">
-                                <div class="event-date text-large bold">{{ d.data|date:"d/m" }}</div>
+                                <div class="event-date text-large bold">{{ d.data|date:"d/m" }}{% if d.data_fim and d.data_fim != d.data %} <span class="event-date-sep">-</span> {{ d.data_fim|date:"d/m" }}{% endif %}</div>
                                 <div class="event-desc">{{ d.descricao }}</div>
                             </div>
                         </a>
                     {% else %}
-                        <div class="event-card no-link" data-date="{{ d.data|date:'Y-m-d' }}" style="--event-color: {{ d.cor }}">
+                        <div class="event-card no-link" data-date="{{ d.data|date:'Y-m-d' }}" data-date-fim="{{ d.data_final|date:'Y-m-d' }}" style="--event-color: {{ d.cor }}">
                             <div class="event-card-content flex">
-                                <div class="event-date text-large bold">{{ d.data|date:"d/m" }}</div>
+                                <div class="event-date text-large bold">{{ d.data|date:"d/m" }}{% if d.data_fim and d.data_fim != d.data %} <span class="event-date-sep">-</span> {{ d.data_fim|date:"d/m" }}{% endif %}</div>
                                 <div class="event-desc">{{ d.descricao }}</div>
                             </div>
                         </div>

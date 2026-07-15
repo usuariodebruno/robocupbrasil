@@ -7,6 +7,9 @@ def markdown(text):
 
 from django.template import Engine, Context
 
+# Quantos eventos o calendário carrega quando o componente não define "limit".
+LIMITE_EVENTOS_CALENDARIO = 50
+
 # Renderer for componentes JSON to HTML.  Supports the richer schema
 # described in claude.txt.  Accepts an optional ``extra_context`` dict of
 # variables made available to dynamic component templates (e.g. lists of
@@ -219,6 +222,31 @@ def render_components_to_html(componentes, extra_context=None):
             page_param_name = None
             order_by = None
 
+            if comp == 'calendar':
+                from app.models import Data
+
+                limit = int(c.get('limit') or LIMITE_EVENTOS_CALENDARIO)
+                datas = list(
+                    Data.objects.nao_encerrados()
+                    .das_tags(c.get('tag_ids'))
+                    .order_by('data')[:limit]
+                )
+
+                eventos = [
+                    {
+                        'date': d.data.isoformat(),
+                        'date_fim': d.data_final.isoformat(),
+                        'descricao': d.descricao,
+                        'cor': d.cor,
+                        'link': d.action_link,
+                    }
+                    for d in datas
+                ]
+
+                ctx = {**c, 'datas': datas, 'eventos_json': eventos}
+                out.append(render_template("components/dynamic/calendar.html", ctx))
+                continue
+
             if comp == 'noticias':
                 from app.models import Noticia
                 model = Noticia
@@ -282,11 +310,6 @@ def render_components_to_html(componentes, extra_context=None):
                     'theme_secondary': c.get('theme_secondary'),
                 }
                 
-                if comp == 'arquivos':
-                    from app.models import Data
-                    from datetime import date
-                    final_ctx['datas'] = list(Data.objects.filter(data__gte=date.today()).order_by('data')[:50])
-
                 out.append(render_template(f"components/dynamic/{comp}.html", final_ctx))
                 continue
 

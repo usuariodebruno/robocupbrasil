@@ -243,7 +243,8 @@ function setupCalendar() {
     const calendarComponent = document.getElementById('calendar-component');
     if (!calendarComponent) return;
 
-    const eventsData = JSON.parse(calendarComponent.dataset.events || '[]');
+    const eventsScript = document.getElementById('calendar-events');
+    const eventsData = (eventsScript && JSON.parse(eventsScript.textContent)) || [];
     const grid = document.getElementById('rcb-calendar-days');
     const weekdaysContainer = document.getElementById('rcb-calendar-weekdays');
     const monthDisplay = document.getElementById('cal-month');
@@ -253,14 +254,28 @@ function setupCalendar() {
     let currentDate = new Date();
     const minDate = new Date();
 
+    // toISOString() converte para UTC e adiantaria o dia em fusos a leste de Greenwich.
+    function toDateKey(d) {
+        const mes = String(d.getMonth() + 1).padStart(2, '0');
+        const dia = String(d.getDate()).padStart(2, '0');
+        return `${d.getFullYear()}-${mes}-${dia}`;
+    }
+
     // Hover Sync Logic
     function setHover(dateKey, active) {
         if (!dateKey) return;
-        const selector = `[data-date="${dateKey}"]`;
-        const elements = document.querySelectorAll(selector);
-        elements.forEach(el => {
-            if (active) el.classList.add('hover-sync');
-            else el.classList.remove('hover-sync');
+
+        document.querySelectorAll(`.calendar-day[data-date="${dateKey}"]`).forEach(el => {
+            el.classList.toggle('hover-sync', active);
+        });
+
+        // O card da lista guarda o intervalo inteiro: casar pelo dia exato só
+        // acenderia o card no primeiro dia de um evento de vários dias.
+        document.querySelectorAll('.event-card').forEach(card => {
+            const inicio = card.dataset.date;
+            if (!inicio) return;
+            const fim = card.dataset.dateFim || inicio;
+            card.classList.toggle('hover-sync', active && dateKey >= inicio && dateKey <= fim);
         });
     }
 
@@ -319,8 +334,9 @@ function setupCalendar() {
 
         for (let d = 1; d <= lastDayOfMonth.getDate(); d++) {
             const dayDate = new Date(year, month, d);
-            const dateKey = dayDate.toISOString().slice(0, 10);
-            const eventsForDay = eventsData.filter(e => e.date === dateKey);
+            const dateKey = toDateKey(dayDate);
+            // Um evento ocupa todos os dias entre date e date_fim (inclusive).
+            const eventsForDay = eventsData.filter(e => dateKey >= e.date && dateKey <= (e.date_fim || e.date));
 
             const cell = document.createElement('div');
             cell.className = 'calendar-day';
@@ -349,8 +365,21 @@ function setupCalendar() {
                     const eventLine = document.createElement('div');
                     eventLine.className = 'event-line';
                     eventLine.style.backgroundColor = event.cor;
-                    eventLine.innerHTML = `<span>${event.descricao}</span>`;
-                    
+
+                    // Repetir a descrição em cada dia do intervalo polui a barra, então
+                    // o texto só aparece onde a barra recomeça visualmente: no primeiro
+                    // dia do evento, a cada domingo (quebra de linha da grade) e no dia
+                    // 1º, quando o intervalo vem emendado do mês anterior.
+                    const startsVisibleRun = dateKey === event.date
+                        || dayDate.getDay() === 0
+                        || d === 1;
+
+                    const label = document.createElement('span');
+                    if (startsVisibleRun) {
+                        label.textContent = event.descricao;
+                    }
+                    eventLine.appendChild(label);
+
                     if (event.link) {
                         const link = document.createElement('a');
                         link.href = event.link;

@@ -1,7 +1,7 @@
 {% load static file_extras %}
 <div id="arquivos-component">
     <div class="arquivo-list">
-        {% for a in arquivos %}
+        {% for a in items %}
             {% with a.arquivo|file_extension as ext %}
                 <div class="arquivo text-shadow"
                     style="

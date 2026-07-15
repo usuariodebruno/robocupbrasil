@@ -310,7 +310,12 @@ class DataAdminForm(forms.ModelForm):
 @admin.register(Data)
 class DataAdmin(RolePermissionMixin, admin.ModelAdmin):
     form = DataAdminForm
-    list_display = ['descricao', 'data', 'cor', 'action_link', 'get_tags']
+    fieldsets = (
+        (None, {
+            'fields': ('descricao', ('data', 'data_fim'), 'cor', 'action_link', 'tags')
+        }),
+    )
+    list_display = ['descricao', 'data', 'data_fim', 'cor', 'action_link', 'get_tags']
     list_filter = ['data', 'tags']
     search_fields = ['descricao']
     date_hierarchy = 'data'

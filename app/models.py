@@ -269,19 +269,44 @@ class TagData(models.Model):
 
 class Data(GlobalQueryMixin, models.Model):
     descricao = models.CharField(max_length=200, verbose_name='Nome / Descrição para a Data')
-    data = models.DateField()
+    data = models.DateField(verbose_name='Data de início')
+    data_fim = models.DateField(
+        null=True,
+        blank=True,
+        verbose_name='Data de fim',
+        help_text='Opcional. Deixe em branco para um evento de um único dia.',
+    )
     cor = models.CharField(max_length=7, default='#000000')
     action_link = models.URLField(blank=True, verbose_name='Link de mais informações')
     tags = models.ManyToManyField(TagData, verbose_name='Tag(s) da Data')
 
     owner = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, editable=False)
 
+    @property
+    def data_final(self):
+        """Último dia do evento. Evento de um dia tem data_fim em branco."""
+        return self.data_fim or self.data
+
+    def clean(self):
+        super().clean()
+        if self.data and self.data_fim and self.data_fim < self.data:
+            raise ValidationError({'data_fim': 'A data de fim não pode ser anterior à data de início.'})
+
     def __str__(self):
+        if self.data_fim and self.data_fim != self.data:
+            return f"{self.descricao} ({self.data} - {self.data_fim})"
         return f"{self.descricao} ({self.data})"
 
     class Meta:
         verbose_name = "Data no Calendário"
         verbose_name_plural = "Datas no Calendário"
+        constraints = [
+            # clean() só roda via ModelForm; a constraint vale para qualquer escrita.
+            models.CheckConstraint(
+                condition=models.Q(data_fim__isnull=True) | models.Q(data_fim__gte=models.F('data')),
+                name='data_fim_nao_anterior_a_data',
+            )
+        ]
 
 class TagArquivo(models.Model):
     nome = models.CharField(max_length=100)

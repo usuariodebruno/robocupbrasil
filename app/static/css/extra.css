@@ -1372,10 +1372,20 @@ header div:first-child.holding {
     margin-left: auto;
     margin-right: auto;
     width: 100%;
+    height: auto;
+    object-fit: contain;
+}
+
+/* .flex > * (rcb.css) daria flex:1 1 0 na imagem; o flex-basis substituiria o height
+   no eixo principal e o Safari passaria a usar a altura intrínseca do arquivo */
+.conteudo-square > .conteudo-square-image {
+    flex: none;
 }
 
 .conteudo-square.icon-image .conteudo-square-image {
-    max-width: 220px;
+    width: 220px;
+    height: 220px;
+    max-width: 100%;
 }
 
 .conteudo-square-content {
@@ -1391,6 +1401,8 @@ header div:first-child.holding {
     
     .conteudo-square-image {
         flex-shrink: 0;
+        /* sem isso o align-items:stretch do container em row estica a imagem na vertical */
+        align-self: flex-start;
         width: auto;
         max-width: 40%;
     }
